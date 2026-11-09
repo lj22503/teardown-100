@@ -71,3 +71,14 @@ teardown-100/
 | 图挂掉 | `SHOT_n_URL` 必须是可热链的 `images.ctfassets.net` 原图 |
 | 进度墙不更新 | 目录名必须是 `NNN-slug`，且 `_data/queue.csv` 里有对应 no |
 | 中文乱码 | 所有文件统一 UTF-8（无 BOM），Python 写文件显式 `encoding="utf-8"` |
+
+## 发布交接（谁接手做什么）
+
+| 环节 | 谁做 | 交接物 |
+|---|---|---|
+| 每日提醒 | Marvis | 一句话提醒 + 本 PIPELINE 路径 |
+| 采集 → 卡片 → content.json → 渲染 → 提交 | 我（DSH） | 仓库里的 `NNN-slug/` |
+| IMA 知识库同步 | Marvis | `<dir>/README.md` + `<dir>/teardown-zh.html` |
+| 公众号 / 小红书 / 知乎 改写 | 我（DSH） | `<dir>/` 作为唯一素材源 |
+
+> 边界：我只写仓库，不碰 IMA；Marvis 只做提醒与 IMA 同步，不改文案。素材永远以仓库里的 `<dir>/` 为准。
