@@ -79,6 +79,28 @@ def clean(html, lang, c):
     return html
 
 
+def append_sections(html, lang, c):
+    """追加 16-19 四段（竞品地图 / 竞品技术底座 / 迁移机会 / 流量与变现），来自 content["extra_"+lang]"""
+    extra = c.get("extra_" + lang) or []
+    if not extra:
+        return html
+    na = "附录 A" if lang == "zh" else "Appendix A"
+    blocks = []
+    toc = []
+    for i, sec in enumerate(extra, 1):
+        sid = "s%d" % (15 + i)
+        title = sec.get("title", "")
+        body = sec.get("body", "")
+        blocks.append(
+            '<section id="%s">\n  <div class="section-head">\n    <span class="num">%02d</span>\n'
+            '    <h3>%s</h3>\n    <span class="pill">%s</span>\n  </div>\n  %s\n</section>\n' % (sid, 15 + i, title, na, body)
+        )
+        toc.append('    <li><a href="#%s">%d. %s</a></li>' % (sid, 15 + i, title))
+    html = html.replace("</ol>", "\n".join(toc) + "\n  </ol>", 1)
+    html = html.replace("<footer>", "\n".join(blocks) + "\n<footer>", 1)
+    return html
+
+
 def build(dirname):
     d = os.path.join(ROOT, dirname)
     cf = os.path.join(d, "content.json")
@@ -91,6 +113,7 @@ def build(dirname):
         tpl = open(tpl_path, encoding="utf-8").read()
         html = fill(tpl, c[lang])
         html = clean(html, lang, c)
+        html = append_sections(html, lang, c)
         html = brand(html, lang, c)
         left = sorted(set(re.findall(r"\{\{([^{}]*)\}\}", html)))
         dst = os.path.join(d, "teardown-%s.html" % lang)

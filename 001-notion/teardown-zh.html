@@ -381,6 +381,10 @@
     <li><a href="#s13">13. 风险矩阵</a></li>
     <li><a href="#s14">14. 机会 & 重设计</a></li>
     <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
   </ol>
 </nav>
 
@@ -934,6 +938,105 @@
       <p>迁移成本是真护城河；AI 能力不是，12 个月内会被追平</p>
     </div>
   </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  
+<p class="section-intro">先分清楚一件容易混的事。竞品不是一类，是三类。抢同一个需求的、抢同一段链路的、抢买家的。分开看才知道它到底在跟谁打。</p>
+<table class="risk-table">
+<thead><tr><th>竞品</th><th>抢的哪一段</th><th>它在哪块更近</th><th>类型</th></tr></thead>
+<tbody>
+<tr><td><strong>Craft.do</strong></td><td>好看的文档 + 轻协作</td><td>单人和小团队的写作体验</td><td>同类产品（PH 相似推荐）</td></tr>
+<tr><td><strong>Capacities</strong></td><td>对象化笔记 + 个人知识网络</td><td>个人知识的结构化</td><td>同类产品（PH 相似推荐）</td></tr>
+<tr><td><strong>Fibery</strong></td><td>数据库 + 流程一体</td><td>中小团队的流程落地</td><td>同类产品（PH 相似推荐）</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>本地文件 + 插件</td><td>数据主权、离线、可折腾</td><td>替代品（G2 差评里的实际迁移去向）</td></tr>
+<tr><td><strong>飞书</strong></td><td>组织协同 + 文档一体</td><td>国内组织的沟通与合规</td><td>替代品（地域型）</td></tr>
+<tr><td><strong>Glean</strong></td><td>跨应用找答案</td><td>「检索这一层」</td><td>抢链路（不是抢买家的同类）</td></tr>
+<tr><td><strong>Asana / Jira</strong></td><td>项目执行</td><td>流程的确定性</td><td>替代品（G2 差评里的退回去向）</td></tr>
+<tr><td><strong>Confluence</strong></td><td>企业知识库</td><td>大企业的 IT 采购惯性</td><td>替代品（存量）</td></tr>
+</tbody>
+</table>
+<p class="section-intro">读法。前三个是「同样想做一体化」的同类，正面对打。Obsidian 和 Asana 是用户真正跑掉的两个方向，一个往本地跑，一个往确定性强的小工具跑。飞书是地域变量。Glean 最危险，因为它不抢用户，它抢的是「去哪里问」这个动作。</p>
+
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  
+<p class="section-intro">技术底子决定了它能接住什么需求，也决定了谁会先被替换。这一节只写结构性差异，不打分。</p>
+<table class="risk-table">
+<thead><tr><th>竞品</th><th>技术底座</th><th>被这个底座锁住的能力</th></tr></thead>
+<tbody>
+<tr><td><strong>Notion</strong></td><td>Block 树 + 关系型数据库 + 权限模型，AI 层可换模型</td><td>「一句话变成结构」的能力，别人抄不走数据结构</td></tr>
+<tr><td><strong>Craft / Capacities</strong></td><td>文档对象模型，偏单机与云同步</td><td>写作与个人知识，团队流程偏弱</td></tr>
+<tr><td><strong>Fibery</strong></td><td>实体关系 + 工作流引擎</td><td>流程自动化强，写作自由度弱</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>本地 Markdown 文件 + 插件</td><td>数据主权、离线、可编程；协作是硬伤</td></tr>
+<tr><td><strong>Glean</strong></td><td>企业连接器 + 全量索引 + <strong>权限映射</strong></td><td>权限感知检索（看到什么因人有别），这是它真正的护城河</td></tr>
+<tr><td><strong>飞书</strong></td><td>组织账号体系 + IM 分发</td><td>触达和合规，AI 深度不是它的强项</td></tr>
+</tbody>
+</table>
+<p class="section-intro">[推断] 这类产品真正的技术分水岭不在模型，在「权限感知的索引」。谁能把「谁能看什么」和「AI 能读什么」对齐，谁就能进企业。Notion 的权限模型是现成的，但它的索引只覆盖自己空间里的内容；Glean 反过来，索引全公司但不管内容生长。两边都在补对方那半。</p>
+
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  
+<p class="section-intro">这一节全是我的判断，不是事实。逻辑是，竞品弱的地方如果换个渠道或场景，可能正好是别人的强需求。</p>
+<table class="risk-table">
+<thead><tr><th>竞品弱在哪</th><th>换到哪</th><th>会带来什么机会</th></tr></thead>
+<tbody>
+<tr><td>权限感知检索只有大企业买得起（Glean 路线）</td><td>中小团队、个人工作室</td><td>能自建、不用接 IT 审批的「权限干净的私有检索」</td></tr>
+<tr><td>新人第一公里没人管（Notion 自己也弱）</td><td>入职、换工具、迁移场景</td><td>做「迁移引导」而不是做「工作空间」，卖的是搬家服务</td></tr>
+<tr><td>本地优先的没协作，云端的没主权（Obsidian vs Notion）</td><td>自由职业、小事务所</td><td>本地文件 + 可选协作的混合形态，卖的是「我的东西还是我的」</td></tr>
+<tr><td>中文语料的检索质量普遍没验证</td><td>国内中小团队</td><td>风险也很实在，飞书在这块免费且强，正面撞很难赢</td></tr>
+</tbody>
+</table>
+<p class="section-intro">我的判断。这几个机会里，只有第二个不需要重资产，一个人两周能出东西。第一个要啃权限和索引，第三个要啃同步，都是工程债。</p>
+
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  
+<p class="section-intro">框架来自我自己在 GetNote 里写的《关于流量变现交易的商业逻辑思考笔记》。核心是三件事，钱从哪儿来、能拿多久、凭什么你拿到。这一节用这三问套 Notion。</p>
+<table class="risk-table">
+<thead><tr><th>套利三问</th><th>Notion 的答案</th><th>依据</th></tr></thead>
+<tbody>
+<tr><td>钱从谁的口袋出</td><td>企业的软件预算，不是用户个人钱包。同一批席位从 $10 提到 $20，靠的是 AI，不是新客户</td><td>定价页四档结构</td></tr>
+<tr><td>还能拿多久</td><td>[推断] 窗口取决于「去哪儿问」这个动作是否被通用 Agent 接手。检索层一旦被绕过，席位还在，AI 的加价理由会掉</td><td>Glean 与通用 Agent 的连接器都在扩张</td></tr>
+<tr><td>凭什么你拿到</td><td>结构性套利，不是平台红利。它靠的是内容产能（模板生态）加信任（多年的公开页面与社区），这两样别人短期堆不出来</td><td>模板库与公开页面是产品内置功能</td></tr>
+</tbody>
+</table>
+<p class="section-intro">再看流量这一侧。</p>
+<table class="risk-table">
+<thead><tr><th>流量类型</th><th>Notion 吃的是哪种</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>爆款（夺注意力）</td><td>弱</td><td>它不做新闻式投放，不上热点</td></tr>
+<tr><td>长尾（争时间）</td><td><strong>强</strong></td><td>模板被搜到、公开页面被搜到，用户一件件把工作搬进来</td></tr>
+<tr><td>平台补贴 / 渠道返佣</td><td>基本没有</td><td>它的增长不靠补贴换量</td></tr>
+</tbody>
+</table>
+<p class="section-intro">变现这一侧，它的结构其实很清楚。定价管「谁付多少」，credits 管「用多少就要不要加钱」，企业版管「杠杆和合规溢价」。三层叠起来，营收结构比大多数 AI 产品健康。</p>
+<p class="section-intro">反过来看弱点。[推断] 它的变现完全押在「席位 + 用量」上，没有第二条腿。一旦 AI 不值那个差价，20 美元这档就会掉回 10 美元，中间那 100% 的差价就是它的全部 AI 收入。这是我看到的它最脆的一根梁。</p>
+
 </section>
 
 <section id="sources" class="notice" style="margin-bottom:32px">
