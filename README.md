@@ -41,6 +41,14 @@
 2. **未公开的写推断，但必须标 `[推断]` 并写依据**；不写假精度数字。
 3. **一手体验署名**（体验者：燃冰），不冒充他人实测。
 
+## 文档
+
+| 文件 | 干什么 |
+|---|---|
+| [PIPELINE.md](PIPELINE.md) | 一篇拆解的完整流水线（7 步 + 质量闸 + 故障排查） |
+| [_tools/CONTENT-SCHEMA.md](_tools/CONTENT-SCHEMA.md) | content.json 字段规范（加新一篇必读） |
+| [_tools/EXPERIENCE.md](_tools/EXPERIENCE.md) | 实测清单（人做，20 分钟） |
+
 ## 目录说明
 
 ```
