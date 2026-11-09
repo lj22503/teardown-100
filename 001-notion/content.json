@@ -554,6 +554,26 @@
   [
    "用户评论 · G2",
    "https://www.g2.com/products/notion/reviews"
+  ],
+  [
+   "官方对比页 · Notion vs Confluence",
+   "https://www.notion.com/compare-against/notion-vs-confluence"
+  ],
+  [
+   "官方对比页 · Notion vs Asana",
+   "https://www.notion.com/compare-against/notion-vs-asana"
+  ],
+  [
+   "官方对比页 · Notion vs Trello",
+   "https://www.notion.com/compare-against/notion-vs-trello"
+  ],
+  [
+   "官方对比页 · Notion vs Evernote",
+   "https://www.notion.com/compare-against/notion-vs-evernote"
+  ],
+  [
+   "官方对比页 · Notion vs ClickUp",
+   "https://www.notion.com/compare-against/notion-vs-clickup"
   ]
  ],
  "sources_en": [
@@ -631,11 +651,11 @@
  "extra_zh": [
   {
    "title": "对标竞品地图",
-   "body": "\n<p class=\"section-intro\">先分清楚一件容易混的事。竞品不是一类，是三类。抢同一个需求的、抢同一段链路的、抢买家的。分开看才知道它到底在跟谁打。</p>\n<table class=\"risk-table\">\n<thead><tr><th>竞品</th><th>抢的哪一段</th><th>它在哪块更近</th><th>类型</th></tr></thead>\n<tbody>\n<tr><td><strong>Craft.do</strong></td><td>好看的文档 + 轻协作</td><td>单人和小团队的写作体验</td><td>同类产品（PH 相似推荐）</td></tr>\n<tr><td><strong>Capacities</strong></td><td>对象化笔记 + 个人知识网络</td><td>个人知识的结构化</td><td>同类产品（PH 相似推荐）</td></tr>\n<tr><td><strong>Fibery</strong></td><td>数据库 + 流程一体</td><td>中小团队的流程落地</td><td>同类产品（PH 相似推荐）</td></tr>\n<tr><td><strong>Obsidian</strong></td><td>本地文件 + 插件</td><td>数据主权、离线、可折腾</td><td>替代品（G2 差评里的实际迁移去向）</td></tr>\n<tr><td><strong>飞书</strong></td><td>组织协同 + 文档一体</td><td>国内组织的沟通与合规</td><td>替代品（地域型）</td></tr>\n<tr><td><strong>Glean</strong></td><td>跨应用找答案</td><td>「检索这一层」</td><td>抢链路（不是抢买家的同类）</td></tr>\n<tr><td><strong>Asana / Jira</strong></td><td>项目执行</td><td>流程的确定性</td><td>替代品（G2 差评里的退回去向）</td></tr>\n<tr><td><strong>Confluence</strong></td><td>企业知识库</td><td>大企业的 IT 采购惯性</td><td>替代品（存量）</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">读法。前三个是「同样想做一体化」的同类，正面对打。Obsidian 和 Asana 是用户真正跑掉的两个方向，一个往本地跑，一个往确定性强的小工具跑。飞书是地域变量。Glean 最危险，因为它不抢用户，它抢的是「去哪里问」这个动作。</p>\n"
+   "body": "\n<p class=\"section-intro\">先摆一个可以直接核实的事实。Notion 官网有一个专门的对比页目录，路径是 /compare-against/。我逐个试了这批页面，能打开的是五个，Confluence、Asana、Trello、Evernote、ClickUp。打不开、返回 404 的是 Obsidian、Coda、Google Docs。</p>\n<p class=\"section-intro\">这件事本身就是结论。它把谁当对手，写在了 URL 里。</p>\n<table class=\"risk-table\">\n<thead><tr><th>官方有没有对比页</th><th>对手</th><th>说明</th></tr></thead>\n<tbody>\n<tr><td><strong>有</strong></td><td>Confluence</td><td>抢企业知识库预算。页面上直接写 Atlasian Data Center 停服，你要迁，横竖都得迁</td></tr>\n<tr><td><strong>有</strong></td><td>Asana、Trello、ClickUp</td><td>抢项目执行工具。话术是零散化，一个数据模型、一套权限、一次 rollout</td></tr>\n<tr><td><strong>有</strong></td><td>Evernote</td><td>抢存量笔记用户，打的是迁移</td></tr>\n<tr><td><strong>没有</strong></td><td>Obsidian</td><td>个人笔记，不在商战名单里</td></tr>\n<tr><td><strong>没有</strong></td><td>Coda、Google Docs</td><td>文档协作，同样不正面打</td></tr>\n<tr><td>不在名单但危险</td><td>Glean</td><td>抢的是「去哪儿问」这个动作，不是抢用户</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">再看它自己怎么说 Confluence。页面上连用四个短句打同一件事，一个工作空间，零散化归零，一套治理，AI 直接干活。原文写的是 one data model, one permission system, one rollout。</p>\n<p class=\"section-intro\">这句话说出了它真正的卖法。它不卖功能，卖的是「你不用再管四五个系统」。这也是它敢把 Confluence 当猎物的原因，因为买家不是用户，是那个要管权限和采购的人。</p>\n<p class=\"section-intro\">反过来看，PH 上的 Similar Products 又是另一路，Craft.do、Capacities、Fibery，那是用户视角的相似，不是官方视角的对手。两套名单不一样，这件事本身值得记一笔。官方打的是买家，用户比的是体验。</p>\n"
   },
   {
    "title": "竞品技术底座",
-   "body": "\n<p class=\"section-intro\">技术底子决定了它能接住什么需求，也决定了谁会先被替换。这一节只写结构性差异，不打分。</p>\n<table class=\"risk-table\">\n<thead><tr><th>竞品</th><th>技术底座</th><th>被这个底座锁住的能力</th></tr></thead>\n<tbody>\n<tr><td><strong>Notion</strong></td><td>Block 树 + 关系型数据库 + 权限模型，AI 层可换模型</td><td>「一句话变成结构」的能力，别人抄不走数据结构</td></tr>\n<tr><td><strong>Craft / Capacities</strong></td><td>文档对象模型，偏单机与云同步</td><td>写作与个人知识，团队流程偏弱</td></tr>\n<tr><td><strong>Fibery</strong></td><td>实体关系 + 工作流引擎</td><td>流程自动化强，写作自由度弱</td></tr>\n<tr><td><strong>Obsidian</strong></td><td>本地 Markdown 文件 + 插件</td><td>数据主权、离线、可编程；协作是硬伤</td></tr>\n<tr><td><strong>Glean</strong></td><td>企业连接器 + 全量索引 + <strong>权限映射</strong></td><td>权限感知检索（看到什么因人有别），这是它真正的护城河</td></tr>\n<tr><td><strong>飞书</strong></td><td>组织账号体系 + IM 分发</td><td>触达和合规，AI 深度不是它的强项</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">[推断] 这类产品真正的技术分水岭不在模型，在「权限感知的索引」。谁能把「谁能看什么」和「AI 能读什么」对齐，谁就能进企业。Notion 的权限模型是现成的，但它的索引只覆盖自己空间里的内容；Glean 反过来，索引全公司但不管内容生长。两边都在补对方那半。</p>\n"
+   "body": "\n<p class=\"section-intro\">技术底子决定它能接住什么需求，也决定谁先被替换。这节只写结构性差异，不打分。</p>\n<table class=\"risk-table\">\n<thead><tr><th>竞品</th><th>技术底座</th><th>被这个底座锁住的能力</th></tr></thead>\n<tbody>\n<tr><td><strong>Notion</strong></td><td>Block 树 + 关系型数据库 + 权限模型，AI 层可换模型</td><td>一句话变成结构，数据结构别人抄不走</td></tr>\n<tr><td><strong>Craft / Capacities</strong></td><td>文档对象模型，偏单机与云同步</td><td>写作与个人知识，团队流程偏弱</td></tr>\n<tr><td><strong>Fibery</strong></td><td>实体关系 + 工作流引擎</td><td>流程自动化强，写作自由度弱</td></tr>\n<tr><td><strong>Obsidian</strong></td><td>本地 Markdown + 插件</td><td>数据主权与离线，协作是硬伤</td></tr>\n<tr><td><strong>Glean</strong></td><td>连接器 + 全量索引 + 权限映射</td><td>权限感知检索，这是它真正的护城河</td></tr>\n<tr><td><strong>Confluence</strong></td><td>页面树 + 空间权限 + 大客户部署</td><td>存量与被 IT 采购锁定，AI 能力弱</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">有一件事值得单独说。Notion 在 Confluence 对比页里承诺了三样迁移能力，Confluence Importer、Jira 双向同步（能改负责人、状态、优先级，还能加评论）、以及大规模迁移的评估服务。</p>\n<p class=\"section-intro\">[推断] 这三样才是它抢企业最狠的地方，不是 AI。因为换工具的阻力从来不是功能缺失，是搬家成本。谁能把搬家做成一个按钮，谁就能收那些正在换系统的人。这条能力不是模型给的，是工程给的。</p>\n<p class=\"section-intro\">[推断] 反过来，这也是它的软肋。它的索引只覆盖自己空间里的内容，翻不出去；Glean 反着来，索引全公司但不管内容生长。两边都在补对方那半。</p>\n"
   },
   {
    "title": "可迁移的机会",
