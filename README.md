@@ -3,17 +3,17 @@
 > 每天拆一个 AI 产品：**可核实的事实 + 一手实测 + 明确标注的判断**。
 > 不给假精度，不把推断说成事实。
 
-**进度：1 / 100（1%）**
+**进度：2 / 100（2%）**
 
 ---
 
 ## 进度墙
 
-✅ = 已拆（点进目录看报告）· ⬜ = 在队列里
+✅ = 已出报告（点进目录）· 🟡 = 素材齐了待出报告 · ⬜ = 在队列里
 
 |  |  |  |  |  |  |  |  |  |  |
 |---|---|---|---|---|---|---|---|---|---|
-| ✅ [Notion](001-notion/) | ⬜ Obsidian | ⬜ Capacities | ⬜ Reflect | ⬜ HyNote AI | ⬜ Craft.do | ⬜ Bear | ⬜ Paste | ⬜ Voicenotes | ⬜ Readwise |
+| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | 🟡 Capacities | ⬜ Reflect | ⬜ HyNote AI | ⬜ Craft.do | ⬜ Bear | ⬜ Paste | ⬜ Voicenotes | ⬜ Readwise |
 | ⬜ Claude by Anthropic | ⬜ ChatGPT by OpenAI | ⬜ Gemini | ⬜ STORI | ⬜ Monica | ⬜ IONI | ⬜ Me.bot | ⬜ YourGPT | ⬜ OpenAI | ⬜ Midjourney |
 | ⬜ n8n | ⬜ Llama | ⬜ Perplexity | ⬜ Limitless | ⬜ Cortex | ⬜ Klu | ⬜ Fabric | ⬜ Mesh | ⬜ Magnific | ⬜ Recraft |
 | ⬜ Image Object Removal API | ⬜ Synthesia | ⬜ KLING AI | ⬜ RunwayML | ⬜ Suno.ai | ⬜ Photoroom | ⬜ Gamma | ⬜ Pitch | ⬜ Chronicle | ⬜ Beautiful.ai |

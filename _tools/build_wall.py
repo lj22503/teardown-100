@@ -34,7 +34,7 @@ def main():
     rows = load_queue()
     done = done_set()
     total = len(rows)
-    completed = sum(1 for r in rows if int(r["no"]) in done)
+    completed = sum(1 for r in rows if int(r["no"]) in done and os.path.exists(os.path.join(REPO, done[int(r["no"])], "teardown-zh.html")))
     pct = (completed / total * 100) if total else 0
 
     lines = []
@@ -49,7 +49,7 @@ def main():
     lines.append("")
     lines.append("## 进度墙")
     lines.append("")
-    lines.append("✅ = 已拆（点进目录看报告）· ⬜ = 在队列里")
+    lines.append("✅ = 已出报告（点进目录）· 🟡 = 素材齐了待出报告 · ⬜ = 在队列里")
     lines.append("")
     lines.append("|  |  |  |  |  |  |  |  |  |  |")
     lines.append("|---|---|---|---|---|---|---|---|---|---|")
@@ -58,7 +58,11 @@ def main():
         n = int(r["no"])
         name = r["name"].replace("|", "/")
         if n in done:
-            cell_by_no[n] = "✅ [%s](%s/)" % (name, done[n])
+            has_html = os.path.exists(os.path.join(REPO, done[n], "teardown-zh.html"))
+            if has_html:
+                cell_by_no[n] = "✅ [%s](%s/)" % (name, done[n])
+            else:
+                cell_by_no[n] = "🟡 %s" % name
         else:
             cell_by_no[n] = "⬜ %s" % name
     for start in range(1, total + 1, 10):
