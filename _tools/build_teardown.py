@@ -111,6 +111,11 @@ def build(dirname):
     for lang in ("zh", "en"):
         tpl_path = os.path.join(TOOLS, "template-%s.html" % lang)
         tpl = open(tpl_path, encoding="utf-8").read()
+        # 语言切换链接强制用实际文件名，忽略 content.json 里可能残留的旧名字
+        c[lang]["LANG_ZH_HREF"] = "teardown-zh.html"
+        c[lang]["LANG_EN_HREF"] = "teardown-en.html"
+        c[lang]["ACTIVE_IF_ZH"] = "active" if lang == "zh" else ""
+        c[lang]["ACTIVE_IF_EN"] = "active" if lang == "en" else ""
         html = fill(tpl, c[lang])
         html = clean(html, lang, c)
         html = append_sections(html, lang, c)
