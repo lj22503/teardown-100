@@ -217,7 +217,7 @@
   "VERDICT_ONE_LINER": "Notion 是文档即数据，Obsidian 是文档即连结。",
   "VERDICT_BODY_2_3_LINES": "可核实：官方零内置 AI，AI 插件 1,214 个由社区提供；官方四个对比页全部 404，它不做竞品对比；免费版无限制、不注册也能用。实测（燃冰）：建库到写第一篇 1 分钟，但真正会用花了几个月。我的判断：它把 AI 让给了外部，自己不承担这件事，这既是它的开放，也是它不涨的墙。",
   "MOAT_SCORE": "8",
-  "MOAT_REASONING_ONE_LINE": "格式所有权 9 分、生态规模 9 分、AI 能力 3 分，加权 8",
+  "MOAT_REASONING_ONE_LINE": "格式所有权 9、生态规模 9、AI 能力 3，加权 8。CEO 自己说 app 会过时、文件才长久，护城河因此建在格式上（我的评分，非测量）",
   "TLDR_1_HEADLINE": "官方不做 AI，用户替它做",
   "TLDR_1_BODY": "内置 AI 为零，社区 AI 插件 1,214 个；用户把它当「notebook for AI」",
   "TLDR_2_HEADLINE": "护城河是格式，不是功能",
@@ -478,7 +478,7 @@
   "VERDICT_ONE_LINER": "Notion is documents as data. Obsidian is documents as connections.",
   "VERDICT_BODY_2_3_LINES": "Verifiable: no built-in AI, 1,214 community AI plugins; all four official comparison pages return 404; the free tier is unlimited and needs no sign-up. Hands-on (RanBing): one minute to the first note, several months to actually get it. My call: it outsources AI to the outside, which is both its openness and its ceiling.",
   "MOAT_SCORE": "8",
-  "MOAT_REASONING_ONE_LINE": "Format ownership 9, ecosystem scale 9, AI capability 3 — weighted to 8",
+  "MOAT_REASONING_ONE_LINE": "Format 9, ecosystem 9, AI 3, weighted 8. The CEO says the app will go obsolete and the files will last, so the moat sits in the format (my rating, not a measurement)",
   "TLDR_1_HEADLINE": "The company skips AI; users build it",
   "TLDR_1_BODY": "Zero built-in AI, 1,214 community AI plugins, and users call it \"a notebook for AI\"",
   "TLDR_2_HEADLINE": "The moat is the format, not the features",
@@ -576,6 +576,22 @@
   [
    "对比参照 · Anytype",
    "https://anytype.io/"
+  ],
+  [
+   "File over app · Steph Ango（2023）",
+   "https://stephango.com/file-over-app"
+  ],
+  [
+   "Obsidian CLI",
+   "https://obsidian.md/cli"
+  ],
+  [
+   "关于 Obsidian（团队与理念）",
+   "https://obsidian.md/zh/about"
+  ],
+  [
+   "外部报道 · 3 个工程师 / 0 融资（36kr，估值属外部估算）",
+   "https://eu.36kr.com/zh/p/3755031628005892"
   ]
  ],
  "sources_en": [
@@ -626,6 +642,22 @@
   [
    "Reference · Capacities",
    "https://capacities.io/"
+  ],
+  [
+   "File over app · Steph Ango (2023)",
+   "https://stephango.com/file-over-app"
+  ],
+  [
+   "Obsidian CLI",
+   "https://obsidian.md/cli"
+  ],
+  [
+   "About Obsidian",
+   "https://obsidian.md/about"
+  ],
+  [
+   "Third-party report · 3 engineers, no funding (36kr; valuation is an outside estimate)",
+   "https://eu.36kr.com/zh/p/3755031628005892"
   ]
  ],
  "metrics_zh": "  <div class=\"num-card\">\n    <div class=\"label\">价值到达时间</div>\n    <div class=\"big\">1 <small>分钟</small></div>\n    <div class=\"desc\">实测（燃冰）：vault 建好到能写第一篇 1 分钟；从下载安装那一段没测，不给数</div>\n  </div>\n  <div class=\"num-card\">\n    <div class=\"label\">核心循环频次 [推断]</div>\n    <div class=\"big\">日</div>\n    <div class=\"desc\">推断依据：笔记是日频动作；双链与图谱是低频，靠提醒才会用</div>\n  </div>\n  <div class=\"num-card\">\n    <div class=\"label\">护城河评分 [我的评分]</div>\n    <div class=\"big\">8<small>/10</small></div>\n    <div class=\"desc\">格式所有权 9、生态规模 9、AI 能力 3，加权 8。这是主观评分，不是测量</div>\n  </div>",
@@ -646,6 +678,10 @@
   {
    "title": "流量与变现拆解",
    "body": "\n<p class=\"section-intro\">框架来自我在 GetNote 里写的《关于流量变现交易的商业逻辑思考笔记》，三问，钱从谁兜里出、还能拿多久、凭什么你拿到。</p>\n<table class=\"risk-table\">\n<thead><tr><th>套利三问</th><th>Obsidian 的答案</th><th>依据</th></tr></thead>\n<tbody>\n<tr><td>钱从谁兜里出</td><td>个人用户的订阅，不是企业预算。Sync $4/人/月、Publish $8/站/月、Catalyst $25 一次性、Commercial $50/人/年</td><td>官方定价页</td></tr>\n<tr><td>还能拿多久</td><td>[推断] 只要纯文本还是 AI 最友好的格式，这个位置就稳；风险在于 AI 产品自己开始吃笔记这个场景</td><td>官方零 AI 功能，社区 1,214 个 AI 插件</td></tr>\n<tr><td>凭什么你拿到</td><td>结构性套利。它用十年时间攒下「本地 + 免费 + 可扩展」这三件信任资产，别人短期堆不出来</td><td>不做竞品对比页，也不买量</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">流量这一侧：几乎不吃爆款，吃的是长尾。插件目录、教程、YouTube 测评、SEO，都是别人替它铺的。它的增长不是投放出来的，是社区自己长出来的。</p>\n<p class=\"section-intro\">变现这一侧：软件白送，卖的是「跨设备」和「对公开」。这个结构的问题在于，它只有一个收费理由（同步），而同步恰恰是最容易被 iCloud、Git、坚果云绕过的一环。实测（燃冰）就是零付费用户，他压根没这个需求。</p>\n<p class=\"section-intro\">[推断] 所以它最脆的一根梁不是 AI 缺失，是它没有第二个收费理由。AI 时代本来可以是第二个理由，但它把这个理由让给了社区。</p>\n"
+  },
+  {
+   "title": "兼容性与替代路径",
+   "body": "\n<p class=\"section-intro\">这一节回答一个具体问题。既然它把笔记存成纯 Markdown，那是不是任何新工具、任何 AI 都能自动兼容它，等于它随时可以被绕过。</p>\n<p class=\"section-intro\">答案是一半对。数据层确实自动兼容，语义层不兼容。</p>\n<table class=\"risk-table\">\n<thead><tr><th>层面</th><th>是否自动兼容</th><th>说明</th></tr></thead>\n<tbody>\n<tr><td>正文纯文本</td><td>✅ 能读</td><td>任何工具都能打开</td></tr>\n<tr><td>双链 [[...]]</td><td>⚠️ 半兼容</td><td>能读到字面，但不一定解析成图</td></tr>\n<tr><td>YAML 属性、dataview 查询</td><td>❌ 不兼容</td><td>只有 Obsidian 与插件读得懂</td></tr>\n<tr><td>Canvas（.canvas JSON）</td><td>⚠️ 半兼容</td><td>开放格式，但需要有人实现渲染</td></tr>\n<tr><td>编辑、搜索、图谱、命令面板</td><td>❌ 不兼容</td><td>这些不在文件里，是客户端能力</td></tr>\n<tr><td>权限、协作、历史版本</td><td>❌ 不兼容</td><td>文件本身没有，除非自己上 Git</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">所以迁移成本发生了一次位移。以前换工具的成本是「导出数据」，现在是「重建理解」。这是它比 Notion 安全的地方，用户敢把十年笔记放进去；也是它容易被部分替代的地方，用户随时可以换个界面看同一批文件。</p>\n<p class=\"section-intro\">接入层其实已经打通了。官网有 /cli，社区有第三方 MCP 类方案，外部 AI 现在就能直接读写 vault，Obsidian 这个客户端可以完全不参与。</p>\n<p class=\"section-intro\">这件事它不是没想过。CEO Steph Ango 在 2023 年写过一篇《File over app》，原文是，写东西的人要的是文件能活下来，不是工具能活下来。他写道，以为 Obsidian 会永远存在是一种幻觉，app 终将过时，而纯文本文件是为长久存在的。这篇东西现在还挂在他个人站上。</p>\n<p class=\"section-intro\">所以「Obsidian 会不会消失」这个问题，在它的价值观里不是风险，是前提。它从来没承诺 app 永存，只承诺文件永存。这也解释了三件事，官方零内置 AI、不做竞品对比页、100% 用户付费不拿融资。</p>\n<p class=\"section-intro\">（我的判断）真正的威胁不是被复制，是被绕过。复制它的功能，AI 几天就能做出个 demo，但复制不了 1,214 个 AI 插件、百万级已存在的 vault、和十年的信任。可绕过不需要复制，只要用户习惯在别的地方问 AI，客户端就不再是必需品。它把锁定让渡出去，换回了信任，代价是它永远不是必需品。这笔交换在文件会永存的时候划算，在用户随时能走的时候脆弱。</p>\n"
   }
  ],
  "extra_en": [
@@ -664,6 +700,10 @@
   {
    "title": "Traffic and monetisation",
    "body": "<table class=\"risk-table\"><thead><tr><th>Question</th><th>Answer</th><th>Basis</th></tr></thead><tbody><tr><td>Whose pocket</td><td>Individual subscriptions, not enterprise budget. Sync $4/user/mo, Publish $8/site/mo, Catalyst $25 one-off, Commercial $50/user/yr</td><td>Pricing page</td></tr><tr><td>How long</td><td>[inferred] As long as plain text stays the most AI-readable format</td><td>Zero built-in AI; 1,214 community plugins</td></tr><tr><td>Why you</td><td>Structural arbitrage: a decade of local, free and extensible trust</td><td>No comparison pages, no ad spend</td></tr></tbody></table><p class=\"section-intro\">Traffic: almost no breakout, heavy long tail. Plugin directory, tutorials, YouTube reviews, SEO, all built by the community. Growth is grown, not bought.</p><p class=\"section-intro\">Monetisation: the software is free, the money is in cross-device and publishing. The weak beam, [inferred], is that it has exactly one paid reason, and that reason is easy to bypass with iCloud, Git or a NAS. The hands-on user pays nothing and never needed to.</p>"
+  },
+  {
+   "title": "Compatibility and the bypass path",
+   "body": "\n<p class=\"section-intro\">A concrete question: if notes are plain Markdown, does that mean any new tool or AI can automatically work with them, and Obsidian can be bypassed at any time.</p>\n<p class=\"section-intro\">Half true. The data layer is compatible. The semantics are not.</p>\n<table class=\"risk-table\">\n<thead><tr><th>Layer</th><th>Compatible?</th><th>Note</th></tr></thead>\n<tbody>\n<tr><td>Plain text body</td><td>✅ yes</td><td>Any tool can open it</td></tr>\n<tr><td>Wikilinks [[...]]</td><td>⚠️ partly</td><td>Readable as text, not necessarily parsed into a graph</td></tr>\n<tr><td>YAML properties, dataview queries</td><td>❌ no</td><td>Only Obsidian and plugins understand them</td></tr>\n<tr><td>Canvas (.canvas JSON)</td><td>⚠️ partly</td><td>Open format, needs an implementation to render</td></tr>\n<tr><td>Editing, search, graph, command palette</td><td>❌ no</td><td>Not in the files; client capabilities</td></tr>\n<tr><td>Permissions, collaboration, history</td><td>❌ no</td><td>Not in files, unless you run Git yourself</td></tr>\n</tbody>\n</table>\n<p class=\"section-intro\">So switching cost moved. It used to be 'export the data'; now it is 'reconstruct the understanding'. That is why it is safer than Notion, people trust it with ten years of notes, and why it is easier to partially replace, people can view the same files in another shell tomorrow.</p>\n<p class=\"section-intro\">The access layer is already open: the site ships a /cli, and third-party MCP-style bridges exist, so an external AI can read and write the vault with Obsidian itself uninvolved.</p>\n<p class=\"section-intro\">This was not an accident. CEO Steph Ango wrote 'File over app' in 2023: believing Obsidian will last forever is a delusion; the app will become obsolete, the plain text files are designed to last.</p>\n<p class=\"section-intro\">So 'will Obsidian disappear' is not a risk in their worldview, it is a premise. They never promised the app would last, only the files. That explains three choices: no built-in AI, no comparison pages, and 100% user-supported with no VC.</p>\n<p class=\"section-intro\">(my call) The real threat is being bypassed, not copied. Copying the features takes an AI a few days; copying 1,214 AI plugins, millions of existing vaults and a decade of trust does not. Bypassing needs no copy at all, only a habit of asking elsewhere. It traded lock-in for trust, and the price is never being essential.</p>\n"
   }
  ]
 }

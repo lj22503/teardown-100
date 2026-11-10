@@ -385,6 +385,7 @@
     <li><a href="#s17">17. Competitor technical stack</a></li>
     <li><a href="#s18">18. Transferable opportunities</a></li>
     <li><a href="#s19">19. Traffic and monetisation</a></li>
+    <li><a href="#s20">20. Compatibility and the bypass path</a></li>
   </ol>
 </nav>
 
@@ -976,6 +977,34 @@
   <table class="risk-table"><thead><tr><th>Question</th><th>Answer</th><th>Basis</th></tr></thead><tbody><tr><td>Whose pocket</td><td>Individual subscriptions, not enterprise budget. Sync $4/user/mo, Publish $8/site/mo, Catalyst $25 one-off, Commercial $50/user/yr</td><td>Pricing page</td></tr><tr><td>How long</td><td>[inferred] As long as plain text stays the most AI-readable format</td><td>Zero built-in AI; 1,214 community plugins</td></tr><tr><td>Why you</td><td>Structural arbitrage: a decade of local, free and extensible trust</td><td>No comparison pages, no ad spend</td></tr></tbody></table><p class="section-intro">Traffic: almost no breakout, heavy long tail. Plugin directory, tutorials, YouTube reviews, SEO, all built by the community. Growth is grown, not bought.</p><p class="section-intro">Monetisation: the software is free, the money is in cross-device and publishing. The weak beam, [inferred], is that it has exactly one paid reason, and that reason is easy to bypass with iCloud, Git or a NAS. The hands-on user pays nothing and never needed to.</p>
 </section>
 
+<section id="s20">
+  <div class="section-head">
+    <span class="num">20</span>
+    <h3>Compatibility and the bypass path</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  
+<p class="section-intro">A concrete question: if notes are plain Markdown, does that mean any new tool or AI can automatically work with them, and Obsidian can be bypassed at any time.</p>
+<p class="section-intro">Half true. The data layer is compatible. The semantics are not.</p>
+<table class="risk-table">
+<thead><tr><th>Layer</th><th>Compatible?</th><th>Note</th></tr></thead>
+<tbody>
+<tr><td>Plain text body</td><td>✅ yes</td><td>Any tool can open it</td></tr>
+<tr><td>Wikilinks [[...]]</td><td>⚠️ partly</td><td>Readable as text, not necessarily parsed into a graph</td></tr>
+<tr><td>YAML properties, dataview queries</td><td>❌ no</td><td>Only Obsidian and plugins understand them</td></tr>
+<tr><td>Canvas (.canvas JSON)</td><td>⚠️ partly</td><td>Open format, needs an implementation to render</td></tr>
+<tr><td>Editing, search, graph, command palette</td><td>❌ no</td><td>Not in the files; client capabilities</td></tr>
+<tr><td>Permissions, collaboration, history</td><td>❌ no</td><td>Not in files, unless you run Git yourself</td></tr>
+</tbody>
+</table>
+<p class="section-intro">So switching cost moved. It used to be 'export the data'; now it is 'reconstruct the understanding'. That is why it is safer than Notion, people trust it with ten years of notes, and why it is easier to partially replace, people can view the same files in another shell tomorrow.</p>
+<p class="section-intro">The access layer is already open: the site ships a /cli, and third-party MCP-style bridges exist, so an external AI can read and write the vault with Obsidian itself uninvolved.</p>
+<p class="section-intro">This was not an accident. CEO Steph Ango wrote 'File over app' in 2023: believing Obsidian will last forever is a delusion; the app will become obsolete, the plain text files are designed to last.</p>
+<p class="section-intro">So 'will Obsidian disappear' is not a risk in their worldview, it is a premise. They never promised the app would last, only the files. That explains three choices: no built-in AI, no comparison pages, and 100% user-supported with no VC.</p>
+<p class="section-intro">(my call) The real threat is being bypassed, not copied. Copying the features takes an AI a few days; copying 1,214 AI plugins, millions of existing vaults and a decade of trust does not. Bypassing needs no copy at all, only a habit of asking elsewhere. It traded lock-in for trust, and the price is never being essential.</p>
+
+</section>
+
 <section id="sources" class="notice" style="margin-bottom:32px">
   <strong>Sources：</strong>Every factual claim comes from the public pages below; first-hand observations come from the hands-on test.
   <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
@@ -991,6 +1020,10 @@
     <li><a href="https://logseq.com/" target="_blank" rel="noopener">Reference · Logseq</a></li>
     <li><a href="https://anytype.io/" target="_blank" rel="noopener">Reference · Anytype</a></li>
     <li><a href="https://capacities.io/" target="_blank" rel="noopener">Reference · Capacities</a></li>
+    <li><a href="https://stephango.com/file-over-app" target="_blank" rel="noopener">File over app · Steph Ango (2023)</a></li>
+    <li><a href="https://obsidian.md/cli" target="_blank" rel="noopener">Obsidian CLI</a></li>
+    <li><a href="https://obsidian.md/about" target="_blank" rel="noopener">About Obsidian</a></li>
+    <li><a href="https://eu.36kr.com/zh/p/3755031628005892" target="_blank" rel="noopener">Third-party report · 3 engineers, no funding (36kr; valuation is an outside estimate)</a></li>
   </ul>
 </section>
 

@@ -385,6 +385,7 @@
     <li><a href="#s17">17. 竞品技术底座</a></li>
     <li><a href="#s18">18. 可迁移的机会</a></li>
     <li><a href="#s19">19. 流量与变现拆解</a></li>
+    <li><a href="#s20">20. 兼容性与替代路径</a></li>
   </ol>
 </nav>
 
@@ -1030,6 +1031,34 @@
 
 </section>
 
+<section id="s20">
+  <div class="section-head">
+    <span class="num">20</span>
+    <h3>兼容性与替代路径</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  
+<p class="section-intro">这一节回答一个具体问题。既然它把笔记存成纯 Markdown，那是不是任何新工具、任何 AI 都能自动兼容它，等于它随时可以被绕过。</p>
+<p class="section-intro">答案是一半对。数据层确实自动兼容，语义层不兼容。</p>
+<table class="risk-table">
+<thead><tr><th>层面</th><th>是否自动兼容</th><th>说明</th></tr></thead>
+<tbody>
+<tr><td>正文纯文本</td><td>✅ 能读</td><td>任何工具都能打开</td></tr>
+<tr><td>双链 [[...]]</td><td>⚠️ 半兼容</td><td>能读到字面，但不一定解析成图</td></tr>
+<tr><td>YAML 属性、dataview 查询</td><td>❌ 不兼容</td><td>只有 Obsidian 与插件读得懂</td></tr>
+<tr><td>Canvas（.canvas JSON）</td><td>⚠️ 半兼容</td><td>开放格式，但需要有人实现渲染</td></tr>
+<tr><td>编辑、搜索、图谱、命令面板</td><td>❌ 不兼容</td><td>这些不在文件里，是客户端能力</td></tr>
+<tr><td>权限、协作、历史版本</td><td>❌ 不兼容</td><td>文件本身没有，除非自己上 Git</td></tr>
+</tbody>
+</table>
+<p class="section-intro">所以迁移成本发生了一次位移。以前换工具的成本是「导出数据」，现在是「重建理解」。这是它比 Notion 安全的地方，用户敢把十年笔记放进去；也是它容易被部分替代的地方，用户随时可以换个界面看同一批文件。</p>
+<p class="section-intro">接入层其实已经打通了。官网有 /cli，社区有第三方 MCP 类方案，外部 AI 现在就能直接读写 vault，Obsidian 这个客户端可以完全不参与。</p>
+<p class="section-intro">这件事它不是没想过。CEO Steph Ango 在 2023 年写过一篇《File over app》，原文是，写东西的人要的是文件能活下来，不是工具能活下来。他写道，以为 Obsidian 会永远存在是一种幻觉，app 终将过时，而纯文本文件是为长久存在的。这篇东西现在还挂在他个人站上。</p>
+<p class="section-intro">所以「Obsidian 会不会消失」这个问题，在它的价值观里不是风险，是前提。它从来没承诺 app 永存，只承诺文件永存。这也解释了三件事，官方零内置 AI、不做竞品对比页、100% 用户付费不拿融资。</p>
+<p class="section-intro">（我的判断）真正的威胁不是被复制，是被绕过。复制它的功能，AI 几天就能做出个 demo，但复制不了 1,214 个 AI 插件、百万级已存在的 vault、和十年的信任。可绕过不需要复制，只要用户习惯在别的地方问 AI，客户端就不再是必需品。它把锁定让渡出去，换回了信任，代价是它永远不是必需品。这笔交换在文件会永存的时候划算，在用户随时能走的时候脆弱。</p>
+
+</section>
+
 <section id="sources" class="notice" style="margin-bottom:32px">
   <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
   <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
@@ -1046,6 +1075,10 @@
     <li><a href="https://capacities.io/" target="_blank" rel="noopener">对比参照 · Capacities</a></li>
     <li><a href="https://logseq.com/" target="_blank" rel="noopener">对比参照 · Logseq</a></li>
     <li><a href="https://anytype.io/" target="_blank" rel="noopener">对比参照 · Anytype</a></li>
+    <li><a href="https://stephango.com/file-over-app" target="_blank" rel="noopener">File over app · Steph Ango（2023）</a></li>
+    <li><a href="https://obsidian.md/cli" target="_blank" rel="noopener">Obsidian CLI</a></li>
+    <li><a href="https://obsidian.md/zh/about" target="_blank" rel="noopener">关于 Obsidian（团队与理念）</a></li>
+    <li><a href="https://eu.36kr.com/zh/p/3755031628005892" target="_blank" rel="noopener">外部报道 · 3 个工程师 / 0 融资（36kr，估值属外部估算）</a></li>
   </ul>
 </section>
 
