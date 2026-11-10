@@ -1,0 +1,27 @@
+{
+ "slug": "capacities",
+ "name": "Capacities",
+ "dist": [
+  "4 star100%"
+ ],
+ "overall": [
+  "4",
+  "1"
+ ],
+ "lowRated": [
+  {
+   "rating": "4",
+   "title": "",
+   "like": "Personnal note taking and the possibility to create custom items for the oraganization.",
+   "dislike": "easy to lose items because of the number of tags that can be created and the lack of rigidity"
+  }
+ ],
+ "default": [
+  {
+   "rating": "4",
+   "title": "",
+   "like": "Personnal note taking and the possibility to create custom items for the oraganization.",
+   "dislike": "easy to lose items because of the number of tags that can be created and the lack of rigidity"
+  }
+ ]
+}
