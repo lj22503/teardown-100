@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · Capacities — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-11</span>
+  <span class="dot"></span>
+  <span>产品：Capacities</span>
+</div>
+
+<h1>Capacities<span class="tag">它卖的不是笔记软件，是「你不用再花三个月，先把自己的系统搭出来」</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">对象化个人知识管理（PKM）· 开箱即有结构</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">官方 why 页出示两行数字：50,000+ 活跃知识工作者、10,000+ Discord 社区成员；PH 4.8 分（官网 badge 写 198 条评价，PH 产品页实采 66 条，两个口径不一致）；App Store 4.28 / 116 个评分；G2 仅 1 条评论，样本不足</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">软件白送，钱收在「调用」与「回顾」</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成长期（PH 三次发布：2023-05-30 首登、2023-07-12、2024-07-25 移动端；App Store 版本 1.72.13，2026-11-09 更新）</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. AI · 未来就绪度</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+    <li><a href="#s20">20. 官方「不做」清单与替代路径</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 三类输入：（1）可核实的公开材料——官网首页、why 页、定价页、whats-next（2026-09-08）、whats-not-next、六张官方对比页（obsidian / evernote / tana / heptabase / anytype / notion）、PH 66 条、G2 1 条、App Store 40 条；（2）一手实测——2026-11-11 由燃冰完成 20 分钟实测，文件名《2026-11-11 Capacities 真实体验》，注册引导、对象创建、AI 墙、首篇笔记用时都在里面；（3）我的判断——凡标 [推断] 或（我的判断）的都不是事实。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>Notion 卖自由度，Obsidian 卖所有权，Capacities 卖「不用搭」——代价是它替你决定结构长什么样。</h2>
+    <div class="sub">可核实：官方把「不做团队、不做插件、不做端到端加密」写成了公开清单（whats-not-next），把「打谁」写进了 URL（/compare 六个竞品全部 200，/vs、/alternatives、/switch 全部 404）。实测（燃冰）：注册流程里就有使用引导，打开到写第一篇笔记 1 分钟，全程没有卡住。但它的 AI 全在 Pro 之后，免费版拿到的是「结构」，不是「智能」。</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>它把「配置成本」当成头号敌人</strong> — why 页第一句就是「Stop building your system. Start using it.」，整页在骂 Notion 的数据库搭建和 Obsidian 的插件维护</li>
+    <li><strong>钱不赚在整理，赚在调用</strong> — 免费版给无限 object、无限自定义类型、全平台同步；AI、查询、任务、日历、语义检索全在 Pro 之后</li>
+    <li><strong>它替 agent 做完了脏活</strong> — 实测（燃冰）的判断：它已经把人、书、会议、项目清洗成带字段的对象，这正好是 personal agent 最缺的输入层</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">1 <small>分钟</small></div>
+    <div class="desc">实测（燃冰）：打开到写出第一篇 1 分钟，因为使用说明嵌在注册流程里；下载安装那段没测，不给数</div>
+  </div>
+  <div class="num-card">
+    <div class="label">核心循环频次 [推断]</div>
+    <div class="big">日</div>
+    <div class="desc">推断依据：每日笔记是唯一日频入口；对象关系网是被动生长，不需要日常维护</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分 [我的评分]</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">对象模型 7、开箱结构 7、AI 4、生态 2、可迁移性 4，加权 6。主观评分，不是测量</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">官网原话是「The studio for your mind」——a place for all your information。落到产品上：你的笔记不是文件，是有类型、有属性、有位置的 object，上传的 PDF 会自动落到 PDF 那一堆里，加一场会议它已经知道有日期和参与者。</div>
+      <h4>核心用户承诺</h4>
+      <p>官网 why 页的承诺是三句：结构天生就有、每天一页当收件箱、每条链接都双向。翻成人话是「今天就能用，不用先设计系统」。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>一个反常识的定位事实：官网首页、定价页、whats-next 都没有把它归到 AI 工具类目里，whats-next 甚至写「AI in Capacities should stay assistive」。但它的付费墙恰恰卡在 AI 上——免费版没有 AI 助手，Pro 才有。所以它的真实位置是：用「不用搭」抢 Notion/Obsidian 的存量用户，用「AI 额度」做二次变现。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>App Store 评分取自 iTunes lookup 接口（2026-11-11 核实：4.2845 / 116 个评分 / 版本 1.72.13）；40 条评论取自 iTunes 评论 RSS，不是官方榜单</li>
+        <li>一手实测由燃冰于 2026-11-11 完成。其中「脏材料边界」（喂 8000 字长文看它会不会通顺地错）这一项当次没做，报告里不给结论</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1200&q_75/landing-page-screenshots/art-deco-hero.jpg" alt="官网首图：它把知识管理拍成了画廊，不是在展示功能表" loading="lazy"/><figcaption><span class="fig-num">图 01</span>官网首图：它把知识管理拍成了画廊，不是在展示功能表</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/book-properties.jpg" alt="一本书的 object 页：作者、状态、评分都是字段——它的护城河候选就在这张图里" loading="lazy"/><figcaption><span class="fig-num">图 02</span>一本书的 object 页：作者、状态、评分都是字段——它的护城河候选就在这张图里</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/daily-note-graph-view.jpg" alt="每日笔记 + 图谱：今天写的东西自己挂到关系网里，这是它的核心循环" loading="lazy"/><figcaption><span class="fig-num">图 03</span>每日笔记 + 图谱：今天写的东西自己挂到关系网里，这是它的核心循环</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/inbox-for-thoughts.jpg" alt="「今天就是收件箱」：碎片先进每日笔记，以后再升级成 object" loading="lazy"/><figcaption><span class="fig-num">图 04</span>「今天就是收件箱」：碎片先进每日笔记，以后再升级成 object</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/research/backlinks-mentions.jpeg" alt="反向链接与未链接提及：它主张「按你怎么想去找，而不是按你怎么归档去找」" loading="lazy"/><figcaption><span class="fig-num">图 05</span>反向链接与未链接提及：它主张「按你怎么想去找，而不是按你怎么归档去找」</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/f_webp&q_80&s_1200x800/team/team-wide-2.jpg" alt="官方自述团队 7 人、完全独立自营（whats-next 2026-09-08 原文）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>官方自述团队 7 人、完全独立自营（whats-next 2026-09-08 原文）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>换过三四个笔记软件、还没找到系统的知识工作者</strong> — PH 评论里的迁移链很清楚：Evernote → Notion → Roam → Obsidian → Capacities。这批人不是没工具，是被「搭系统」耗光了耐心。实测（燃冰）：对象就是书、项目、人、每日笔记、灵感五类，一打开就知道干嘛。</li>
+        <li><strong>研究者、写作者、终身学习者（个人为主）</strong> — 官方对比页把 Best For 写成 researchers / writers / lifelong learners，落在功能上是阅读笔记、会议、项目、人脉这几条线。实测（燃冰）：输入书名《深度工作》，它自动补齐作者等结构化信息，不用手打。</li>
+        <li><strong>想给 AI 喂干净上下文的个人用户</strong> — Pro 里有 AI Chat Connectors（ChatGPT / Claude / Cursor 可直接建改 object）和 REST API 2.0。实测（燃冰）的原话判断是：它的字段设计本身可以当 personal agent 的结构化样本学。注意这批人是「用得起 Pro」的人，免费版拿不到 AI。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 两个时刻：一是又一次把笔记从 A 搬到 B 之后；二是开始用 AI，发现自己的笔记库根本没法喂给模型</p>
+      <p><strong>使用频次：</strong> 记录与回顾是每天（每日笔记）；对象关系网是被动积累，不需要日常维护</p>
+      <p><strong>使用场景：</strong> 读书笔记、会议纪要、项目推进、人脉维护、灵感碎片、给 AI 当上下文库</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">把读过、见过、聊过的东西存成有类型的东西，需要时能找到 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">「我不想再当自己笔记系统的项目经理」——配置和维护本身是一种隐形劳动 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">看上去是个有体系的人（而不是装了一屏 App 的人） <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">触发</div>
+      <div class="why">今天要读一本书 / 要开一个会 / 想到一个点子</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">动作</div>
+      <div class="why">在每日笔记里写下碎片，或者直接建一个 object（书 / 会议 / 人），填几个字段</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">奖励</div>
+      <div class="why">打开那个人或那本书，今天写的东西已经在它下面；反向链接自己长出来了</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">回流</div>
+      <div class="why">第二天的每日笔记空了，但关系网更厚了；攒得越久，越舍不得换（也越难换）</div>
+    </div>
+  </div>
+  <div class="loop-note">"这个循环教用户的是：结构不是设计出来的，是写出来的。所以它真正的产品不是编辑器，是那套「先有类型、后有内容」的默认值。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p>官方未披露渠道结构。可核实的三条：① 六张对比页吃长尾搜索（capacities vs obsidian / evernote / notion 这类意图离付费最近）；② 官网直接对着 Notion 与 Obsidian 的用户喊话，why 页整页是「你搭了一堆没用的数据库」的共鸣稿；③ PH 三次发布 + 4.8 分长期挂着。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>官方押的 aha 是「上传 PDF 它自己落到 PDF 那堆」；实测（燃冰）真实触发的 aha 是另一件事——输入书名，字段自己填好了，第一次不用手打结构化信息</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>对象关系网随时间变厚：写得越久，打开一个人就能看到全部上下文，换工具等于放弃这张网</li>
+        <li>每日笔记养成的日频习惯，是它最稳的一条留存（评论里高频出现「brain dump 完以后再整理」）</li>
+        <li>导出与导入都在免费档（定价页原文：Import and export to Markdown, CSV, and more — 三个档位都含），所以锁定不靠数据，靠习惯与关系网</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>弱传播，但有明确形态：查看权限（view-only sharing）在免费档，天然是分享入口；真正被传播的是截图式的「我的 object 页长这样」。它不做邀请返利。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">每日笔记（Today）</span><div class="desc">默认首页兼收件箱：今天的所有输入先落这里，和日历并排</div></div>
+    <div class="surface"><span class="name">Object 页（书 / 人 / 会议 / 项目）</span><div class="desc">产品的真正主场：属性 + 正文 + 反向链接 + 相关对象，一个东西只存一次</div></div>
+    <div class="surface"><span class="name">Spaces（空间）</span><div class="desc">个人 / 工作分仓，免费版就不限数量</div></div>
+    <div class="surface"><span class="name">查询与集合（Queries / Collections）</span><div class="desc">Pro 功能：按类型、标签、语义把对象重新组织成视图——回顾层</div></div>
+    <div class="surface"><span class="name">图谱与反向链接</span><div class="desc">把关系网画出来；对个人是情绪价值，对 AI 是检索入口</div></div>
+    <div class="surface"><span class="name">AI 面板与 Explore 对话</span><div class="desc">Pro 功能：划词翻译/摘要、属性自动填充、图片 OCR、跨库问答</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">Object（任何有类型的东西）</span>
+    <span class="entity">Object Type（自定义类型 + 属性）</span>
+    <span class="entity">Daily Note（每天一页）</span>
+    <span class="entity">Space（空间）</span>
+    <span class="entity">Collection / Query（集合与查询）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>没有文件夹，也没有数据库要你设计。第一层是「这是什么类型」，第二层是「它有哪些属性」，第三层是「它连到谁」。这三层是预置的，用户只是在往里填——这就是它和 Notion（要你设计库）、Obsidian（要你设计文件夹）最根本的差别。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>主路径只有两个：@ 引用一个对象、/ 插入一个块。学会这两个，产品就通了；学不会也不会卡死，因为注册流程里有引导。实测（燃冰）：全程没有「下一步该点哪」的时刻。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">它所有的手艺都指向一件事：把「先配置、后使用」的顺序倒过来——先给你能用的结构，配置变成使用过程中的副产品。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">对象类型 + 属性继承</span><div class="body">定义一次类型，同类型的所有对象共享属性；给类型加一个字段，已有对象全部获得。这是它对抗 Notion「每个库都要单独设计」的核心手法</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">反向链接默认开启</span><div class="body">不用插件、不用写查询，提到谁，谁下面就有一条。对比页原话：Backlinks by default，No query to write</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">每日笔记当收件箱</span><div class="body">把「先决定放哪」这个动作从入口拿掉：今天写的东西先落当天那一页，以后再升级成 object。WhatsApp / Telegram / 邮件都能往里投</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">预置示例与流程内引导</span><div class="body">每个类型自带默认案例，用官方文档教你怎么用。实测（燃冰）：使用说明嵌在注册流程里，所以打开到写出第一篇只有 1 分钟</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">全部内建，不做插件</span><div class="body">白板、查询、日历、任务、AI 全是官方内建（whats-not-next 明确写不做插件）。代价是长尾需求没人接，收益是一致性和速度</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">价值到达时间：1 分钟（实测）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">认知负荷：低（实测：全程没卡）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">惊喜感：中高（实测：书名自动补字段）</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">信任机制：不用 AI 就不共享数据（文档原文）</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">上手难度：低；难的是迁移</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>实测（燃冰）：输入书名《深度工作》，它自己把结构化信息填好了，不用手打——这是产品最像「智能」的一刻，而且发生在免费流程里</li>
+        <li>实测（燃冰）：注册流程本身就是引导，不需要看文档、不需要找教程</li>
+        <li>免费档给无限 object、无限自定义类型、全平台同步、导入导出、只读分享（定价页三档对比可核实）——它把「整理」彻底白送</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>实测（燃冰）：把已有内容搬进来会遇到类型不匹配——它的对象类型是它定义的，你的旧笔记没有这些字段</li>
+        <li>免费版摸不到 AI：定价表里 Basic 那一行 AI 是 Not included。奔着「AI 笔记」来的人会在第一次想用 AI 时撞墙</li>
+        <li>实测（燃冰）原话判断：想自己定制一些东西，它不合适。自由度被换掉了，这是设计选择不是缺陷</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>免费核心 + Pro 订阅 + AI 加购（Plus）</h5><p>定价页（港区，2026-11 采集）：Basic 免费永久；Pro HK$77.99/月、Believer HK$98.99/月（月付价），年付 -16%；Plus 加购 HK$66.67/月（年付），给更大的 AI 额度，用超了可再买 top-up。官方对比页统一用美元口径：Pro $9.99/月（按年付）。Believer 的差别是「支持团队 + 新功能内测」，不是功能更多。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>边界：智能与回顾</h5><p>免费给的是「结构 + 存储」：无限 object / 空间 / 自定义类型、全平台同步、离线、导入导出、只读分享、从 WhatsApp / Telegram / 邮件捕获。Pro 才给「调用 + 回顾」：AI 助手、智能查询、任务、日历集成、语义检索、版本历史、未链接提及、白板、Readwise / Kindle 导入、公开 API、图片与 PDF 分析。（依据：定价页三档对比表）</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>把整理白送，把调用收钱</h5><p>它没有像同类那样按存储或对象数量限免费档，反而把最容易被骂的容量做成无限。收钱的两层都很「用起来之后才有感觉」：AI（想让它替我读）和查询/日历/任务（想让它替我安排）。这个切法的好处是免费用户永远用得下去，坏处是「AI 笔记」这个招牌与免费体验有落差。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>基本对齐，有一处结构性张力</h5><p>对齐的部分：免费档不阉割核心承诺（结构、同步、导出都在），用户越用关系网越厚，越有理由升级。张力有两处：① AI 是它最响的卖点，却完全在付费墙后，第一次想用必然撞墙；② 官方明说不做端到端加密，而用 AI 就会把数据共享给模型供应商（文档原文）——愿意付费的个人用户，必须同时接受这两件事。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">以下对比是我的主观判断，不是评分或测量。AI 内置度这一列按「官方是否内置」评，不按社区插件评。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>Capacities</th>
+          <th>Obsidian</th>
+          <th>Notion</th>
+          <th>Tana</th>
+          <th>Anytype</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>数据所有权</th><td class="own">低（云端，无 E2EE）</td><td>极高（本地 md 文件）</td><td>低（云端）</td><td>低（云端）</td><td>极高（本地加密 + P2P）</td></tr>
+        <tr><th>开箱结构</th><td class="own">极高（不用搭）</td><td>无（要自己搭）</td><td>中（要设计库）</td><td>中高（supertag 仍要学）</td><td>中（有类型，但要自己配）</td></tr>
+        <tr><th>AI 内置度</th><td class="own">中（全在 Pro 之后）</td><td>无内置（靠社区插件）</td><td>高（Notion AI）</td><td>中（有 AI，偏工作流）</td><td>低</td></tr>
+        <tr><th>上手曲线</th><td class="own">低（实测 1 分钟）</td><td>高（慢）</td><td>中</td><td>最高</td><td>中高</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 开箱结构与上手曲线。这是它唯一敢在 slogan 上写的东西：Stop building your system。实测（燃冰）印证了——注册流程里就有引导，1 分钟写出第一篇，全程没有「下一步点哪」的时刻。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 数据所有权与自由度。Anytype 与 Obsidian 把「文件归你」做成了默认值；Obsidian 的生态规模是它结构上放弃的东西（Capacities 自己的对比页写 Obsidian 有 2,700+ 社区插件，而 Obsidian 社区站 2026-11 的计数是 10,194 个——对比页的数字会过期，这本身就是个提示）。团队协作则被 Notion 全拿走，且官方明确不打算抢。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>六张官方对比页吃长尾搜索（/compare/obsidian、evernote、notion、tana、heptabase、anytype 全部 200）</li>
+        <li>Reddit 与 Discord 口碑（官网自述 10,000+ 社区成员），why 页直接引用 r/capacitiesapp 的用户原话</li>
+        <li>Product Hunt 三次发布（2023-05-30 / 2023-07-12 / 2024-07-25），长期挂 4.8 分</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>迁移者 → 新用户</strong> — 对比页 + 官方迁移指南（docs 里有 Obsidian import guide / switching guide）。它专门接「从别处搬过来」的人，这条链路离付费最近，因为搬家的人已经付过一次学费。</li>
+        <li><strong>社区 → 模板与截图</strong> — Discord 1 万人、Reddit 分版，传播物是「我的 object 页长这样」。它没有插件市场，所以生态的载体是模板和截图，而不是代码。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>全平台客户端：Web、Mac、Windows、Linux、iOS、Android（定价页数据档一行写全）</li><li>AI Chat Connectors：让 ChatGPT / Claude / Cursor 直接读写你的 object（定价页 Pro 行）</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>个人知识管理：研究者、写作者、终身学习者（官方对比页 Best For 原话）</li><li>团队与协作：官方明确不做（whats-not-next：Collaboration & Team plans — on hold）</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>公开 REST API 2.0 + TypeScript SDK（Pro 档），第三方可以读写成对象</li><li>没有插件市场：whats-not-next 明写 Plugins 不在计划内，扩展性只能走 API</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>AI · 未来就绪度</h3>
+    <span class="pill">人 ↔ AI 任务分工</span>
+  </div>
+  <p class="section-intro">今天这个产品在 AI 整合光谱上的位置，以及未来 12–24 个月会被推向哪里。</p>
+
+  <div class="ai-meter">
+    <div class="ai-stage active"><div class="lvl">Level 1</div><div class="name">辅助 · Assistive</div></div>
+    <div class="ai-stage "><div class="lvl">Level 2</div><div class="name">嵌入 · Embedded</div></div>
+    <div class="ai-stage "><div class="lvl">Level 3</div><div class="name">自主 · Agentic</div></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>当前 AI 使用状况</h4>
+      <p>AI 全部锁在 Pro 及以上。能力面（官方文档）：Explore 里的 AI Chat、划词 AI 面板（翻译/重写/摘要）、自动打标签、自动归集、属性自动填充、图片分析（含 OCR 与手写）、/Ask AI、AI 生成查询。官方立场写得很克制：whats-next 说 AI 应该 stay assistive，grounded in your notes，never in the way of your own thinking。实测（燃冰）：免费版确实摸不到 AI，墙只在 AI 与任务/探索模块触发；不用 AI 时数据不会共享给模型供应商（文档原文），实测时也看到了这条强隐私提示。</p>
+    </div>
+    <div class="info-card">
+      <h4>12–24 个月内可 Agent 化的环节</h4>
+      <ul>
+        <li>未上线（我的判断）：把属性自动填充升级成「读完脏材料后提议一套 object 结构，等你确认」——现在它是填已有字段，不是提议结构</li>
+        <li>未上线（我的判断）：让 Connectors 从「建改单个 object」升级成「批量重构整个空间」（API 2.0 已具备读的基础）</li>
+        <li>未上线（我的判断）：结构体检——告诉用户哪些对象缺关键字段，导致 AI 读不懂。这是它唯一能不做模型、只做结构的位置</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>更深层 AI 机会</h4>
+      <ul>
+        <li>（我的判断）它最该做的不是更强的 AI，而是把「字段设计」变成可复用资产：书、会议、客户、项目的标准属性集。实测（燃冰）的判断就是「这套结构值得学，可以喂给自己的 AI」——说明用户已经把它当 schema 供应商，只差官方把这件事产品化</li>
+        <li>（我的判断）把 API 2.0 + Connectors 做成 agent 的记忆后端：agent 写日志、写结论、写待办都进对象层，人负责确认。这是它从「笔记软件」变成「基础设施」的唯一路径</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>被 AI 颠覆的战略风险</h4>
+      <p>（我的判断）真正的威胁不是竞品做 AI，而是通用 agent 自己长出对象模型。当 ChatGPT / Claude 能维护你的个人知识图谱，用户就不再为「对象页长什么样」付第二份订阅——它现在替 agent 做的那层清洗工作，正是 agent 迟早自己会做的</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方不披露活跃、付费转化与流失，下面三张卡是可核实数字 + 明确标注的推断，不用假精度。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>周活跃 space 数 [推断]</h5>
+      <p>推断依据：它的价值只在「每天打开写一点」时发生（每日笔记是唯一日频入口）；官网只露出 5 万活跃知识工作者这个大数，没有日活/周活口径</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>Pro 付费订阅数 [推断]</h5>
+      <p>推断依据：官方说自己是 fully independent、团队 7 人（whats-next 原文），收入结构里 Pro 是主梁；按 $9.99/月 反推，团队规模与订阅量互相约束</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>AI 额度消耗与 Plus 加购率 [推断]</h5>
+      <p>推断依据：Plus 加购（HK$66.67/月，年付）是它唯一的二次变现杠杆，定价页专门写了 top-up 与 auto top-up，说明这项已经被当成收入线在设计</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>每日笔记创建数 [推断]</h5>
+      <p>推断依据：每日笔记是核心循环的入口，也是它和 Obsidian/Notion 最不一样的地方；这个数的趋势比 object 总数更能说明产品有没有被用起来</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>移动端崩溃与同步失败率 [推断]</h5>
+      <p>推断依据：App Store 实采 40 条里 1-3 星占多数，落点全在分享面板坏数月、同步要重启、iPad 布局，「Desktop is Lifechanging, iOS is Barely Functional」是标题级原话——这条体验崩了，桌面端做得再好也会被差评拖住</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>迁移失败率</h5>
+      <p>实测（燃冰）判断：最大短板是用户把旧内容搬进来时类型对不上。这类失败在后台大概率只被记成「导入成功」，因为对象确实建出来了，只是字段是空的</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">搬家时类型对不上</span><span class="sev">高</span></div>
+      <div class="body">实测（燃冰）：它的对象类型是它定义的，你的旧笔记没有这些字段，所以「搬进来」不等于「用起来」。这是它「开箱即用」承诺的反面：对新用户开箱，对老用户不通用。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">移动端不是同一个产品</span><span class="sev">高 · High</span></div>
+      <div class="body">App Store 3★ 标题原话「Desktop is Lifechanging, iOS is Barely Functional」；同批评论里还有「share from an app via sharesheet 已经坏了几个月」「同步要重启 App」「iPad 上不能建 object」。而 capture 恰恰是移动端唯一的用途。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">想定制就不合适</span><span class="sev">中</span></div>
+      <div class="body">实测（燃冰）原话：如果用户想定制一些东西，它不合适。没有插件、没有高级自动化与公式（whats-not-next 明列），所以重度用户的天花板很低——它不是给 tinkerer 的。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">免费版零 AI，与招牌不符</span><span class="sev">中 · Medium</span></div>
+      <div class="body">定价表可核实：Basic 档 AI 一行是 Not included。外部讨论里它常被当成「AI 笔记」，第一次想用 AI 就是付费墙。这不是设计缺陷，但它是预期管理问题——文案卖的是 studio，用户听到的是 AI。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">只列有公开依据的风险；概率与严重度是我的判断，不做量化。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>移动端体验断层拖住口碑</strong></td><td>产品</td><td class="sev-med">中（判断）</td><td>App Store 40 条中 1-3 星占多数，落点集中在分享面板、同步、iPad 布局</td><td>把移动端当 capture 专用件做，只保「3 秒记下」一条硬指标（我的建议）</td></tr>
+      <tr><td><strong>隐私叙事有结构性缺口</strong></td><td>合规</td><td class="sev-med">中（判断）</td><td>whats-not-next 明写不做端到端加密；用 AI 时部分数据共享给模型供应商（官方文档原文）</td><td>把「不用 AI 就不共享」做成可见开关与年检报告，用透明换信任（我的建议）</td></tr>
+      <tr><td><strong>通用 agent 自己长出对象层</strong></td><td>竞争</td><td class="sev-high">中高（判断）</td><td>ChatGPT / Claude / Cursor 已可通过 Connectors 直接建改它的对象（定价页原文），通道反向也成立</td><td>抢做 schema 与写入协议的事实标准，从「界面」退到「底座」（我的建议）</td></tr>
+      <tr><td><strong>单一订阅价 + 7 人团队的天花板</strong></td><td>市场</td><td class="sev-med">中（判断）</td><td>自述团队 7 人、完全独立自营；Pro 单一价格档，5 万活跃 × $9.99 的规模上限可见</td><td>把 Plus 加购做成真正的第二收入线，或对 API/团队外的企业场景开放（我的建议）</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>迁移即服务</h5>
+      <div class="desc">（我的判断）它的公开短板就是「搬进来之后类型对不上」。做一次性迁移 + 类型映射（把 Notion/Obsidian 的旧结构映射到它的对象类型），成本极低、需求确定，而且这些人已经证明愿意付学费。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>把字段设计做成可复用资产</h5>
+      <div class="desc">（我的判断）它的对象类型是一套现成的 schema：书、人、会议、项目。实测（燃冰）的直接反应是「这套结构值得学，我要让我的 AI 用它」。官方把它当默认值，对外却是零文档化的资产——做成模板包、行业版本（投研/咨询/医生），是它不必写代码就能开的新收入口。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>结构体检</h5>
+      <div class="desc">（我的判断）用户不知道自己哪些对象 AI 读不懂。做一个「缺字段 / 缺链接 / 缺上下文」的检查清单，把它从「好看的笔记」推向「可被 agent 使用的知识库」。这件事不依赖模型能力，只依赖它已有的对象模型。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>从「笔记软件」变成「agent 的结构化记忆层」</h5>
+      <div class="desc">（我的判断）它真正的差异化不是 AI，是它已经替 agent 做完的那层清洗：人、书、会议、项目都被抽成了带字段的对象。押注应该是把这个结构变成 agent 可读写的默认 schema（API 2.0 + Connectors 已经在路上），而不是追着模型能力做功能。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>让它的对象规范成为个人 AI 的默认结构</h5>
+      <div class="desc">（我的判断）如果 agent 记账、记人、记项目都按它的字段来写，那 Capacities 就从「一个 App」变成「个人 AI 的 schema 层」——类比不是 Notion，是数据库的连接器。它的 7 人团队做不了模型，但做得了标准；一旦标准被采用，迁移方向就反过来了。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>开箱结构与对象模型：不用搭、一打开就有类型，实测 1 分钟出第一篇</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>移动端（capture 断裂）与迁移（类型对不上）；外加「想定制就不合适」这道天花板</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>它的护城河是「别人的系统你不想要」这件事，不是技术。对象模型好抄，让用户相信「这次不用再搭了」不好抄——但这也意味着它挡不住通用 agent 从上游吃掉对象层。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">先给一个探测结果，因为它是结论的一部分。2026-11-11 逐个打开路径：<strong>/compare</strong>、<strong>/compare/obsidian</strong>、<strong>/compare/evernote</strong>、<strong>/compare/notion</strong>、<strong>/compare/tana</strong>、<strong>/compare/heptabase</strong>、<strong>/compare/anytype</strong> 全部 200；而 <strong>/vs</strong>、<strong>/alternatives</strong>、<strong>/switch</strong> 全部 404。</p>
+<p class="section-intro">也就是说，它把「打谁」写进了 URL 结构里：六个竞品是它自己点名要打的，其余打法（against / vs / switch 这类常见换用词）它一个都没建。这件事本身就是判断依据——它只做「存量迁移者的比较」，不做「泛替代品」。<strong>我的判断</strong>：对比页的读者不是正在选工具的人，而是已经有一库笔记、正在找理由搬家的人。</p>
+<table class="risk-table">
+<thead><tr><th>谁</th><th>抢的是哪一段</th><th>它更近的地方</th></tr></thead>
+<tbody>
+<tr><td><strong>Notion</strong></td><td>团队知识库与协作</td><td>多人、权限、企业采购（它明确不抢）</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>本地文件与自由度</td><td>数据所有权、插件生态（它明确不做）</td></tr>
+<tr><td><strong>Evernote</strong></td><td>上一代的收集习惯</td><td>存量用户与剪藏，迁移意愿最高</td></tr>
+<tr><td><strong>Tana</strong></td><td>supertag 的工作流型笔记</td><td>重流程用户的查询能力</td></tr>
+<tr><td><strong>Heptabase</strong></td><td>白板式学习与研究</td><td>可视化思考，适合研究者</td></tr>
+<tr><td><strong>Anytype</strong></td><td>本地加密的对象空间</td><td>隐私叙事与 P2P</td></tr>
+</tbody>
+</table>
+<p class="section-intro">PH 的 Similar Products 给的是另一套名单（Obsidian、Craft.do、Bear、Reflect、Tana）——<strong>用户视角的相似不等于官方视角的对手</strong>：官方挑的是「能被打成配置负担重」的对手，用户挑的是「看起来一样轻」的工具。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">四个对比维度看底座，一句话一家：</p>
+<table class="risk-table">
+<thead><tr><th>产品</th><th>底座选择</th><th>锁住了什么</th><th>锁死了什么</th></tr></thead>
+<tbody>
+<tr><td><strong>Capacities</strong></td><td>云端对象存储 + 全内建功能 + 无插件</td><td>开箱一致性与速度</td><td>隐私叙事、长尾扩展（无 E2EE、无插件）</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>本地 Markdown 文件 + 社区插件</td><td>可迁移、可被 agent 直接读写</td><td>开箱即用（一切要自己搭）</td></tr>
+<tr><td><strong>Notion</strong></td><td>云端块 + 数据库</td><td>团队协作与权限</td><td>个人场景的配置成本</td></tr>
+<tr><td><strong>Tana</strong></td><td>supertag 大纲 + 查询</td><td>重流程工作流</td><td>学习曲线最陡</td></tr>
+<tr><td><strong>Anytype</strong></td><td>本地优先 + P2P + E2E + 开源</td><td>隐私与所有权</td><td>同步稳定性与生态速度</td></tr>
+</tbody>
+</table>
+<p class="section-intro"><strong>我的判断</strong>：Capacities 的底座选择是「用不做换一致性」。它放弃了三个可扩展性入口（插件、E2EE、协作），换来的是「打开就知道干什么」。这不是能力不足，是刻意的取舍——whats-not-next 把这三件事都写成了公开立场。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">三条我认为可以直接拿走的做法，都不需要重写代码：</p>
+<p class="section-intro"><strong>1. 官方对比页 + 官方「不做什么」页，是零成本的信任与 GEO 资产。</strong>它两件事都做了：六个 /compare 页吃长尾搜索，/whats-not-next 把「我们不做什么」写成公开清单。后者尤其少见——它把路线外的东西变成承诺，同时替用户做完了筛选。任何 to-C 工具都能抄这一套。</p>
+<p class="section-intro"><strong>2. 它的公开短板就是生意：迁移时的类型映射。</strong>实测（燃冰）的最大感受是「搬进来类型对不上」。做一次性迁移服务（Notion / Obsidian → 它的对象类型），吃到的是意愿最强的一批用户。</p>
+<p class="section-intro"><strong>3. 它的字段设计本身就是资产。</strong>书、人、会议、项目这四类对象的属性集，是现成的 schema。实测时的直接反应是「这套结构值得学，喂给自己的 AI」。官方把它当内部默认值，对外零文档化——这是一个没被产品化的机会。</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">钱从哪来：从「买了三四个笔记软件、还没找到系统」的知识工作者兜里出。这批人付费意愿已被验证（他们为上一款工具付过费），痛点是配置疲劳，不是功能缺失。</p>
+<p class="section-intro">凭什么拿到：<strong>对比页吃意图最靠近付费的长尾搜索</strong>（capacities vs obsidian / evernote / notion）＋ Reddit / Discord 的口碑（官网自述 1 万+ 社区成员）＋ PH 三次发布长期挂 4.8 分。它没有投广告的证据，全部是搜索与口碑。</p>
+<p class="section-intro">变现三层：Basic（免费）→ Pro / Believer（订阅，官网对比页口径 $9.99/月 年付）→ Plus（AI 额度加购，HK$66.67/月 年付，可再买 top-up）。<strong>最脆的一根梁是「AI 在付费墙后」</strong>：它对外被当成 AI 笔记，免费版却零 AI，第一次想用 AI 就是转化点——这是转化率最高、也最容易流失的一刻。</p>
+<p class="section-intro"><strong>我的判断</strong>：这套结构里真正聪明的是「整理白送、调用收钱」。容量和对象数量做到无限，把抱怨最多的维度从免费档拿掉；收钱的两层都只在「用起来之后」才有感觉。缺点是无法靠免费版建立「它很智能」的预期。</p>
+</section>
+
+<section id="s20">
+  <div class="section-head">
+    <span class="num">20</span>
+    <h3>官方「不做」清单与替代路径</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">/whats-not-next（2026-11 可访问）把不做的事写成了公开清单，原文归类如下：平板手写、公式与高级自动化、闪卡与间隔重复、RTL 语言、<strong>协作与团队版（on hold）</strong>、对象继承、<strong>端到端加密</strong>、终身订阅、<strong>插件</strong>。这份清单的价值在于：它不是「暂缺」，是「路线外」，用户不必等。</p>
+<p class="section-intro">替代路径（离开它怎么走）：导出侧三个档位都支持 Markdown / CSV（定价页原文 Import and export to Markdown, CSV, and more，全档含），所以搬走不靠它批准；API 2.0 与 TypeScript SDK（Pro）让对象可以批量取出。想回去 Obsidian 的人拿得到 md，想去 Notion 的人拿得到表格。</p>
+<p class="section-intro"><strong>我的判断</strong>：不做 E2EE 与不做插件，是同一个取舍的两面——它们都会拖慢一致性与速度。这个取舍在「个人 + 云端 + AI」的组合里是合理的；但它同时意味着，凡把隐私当第一需求的用户，注定流向 Anytype 或 Obsidian，这不是产品体验能挽回的部分。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://capacities.io/" target="_blank" rel="noopener">官网首页</a></li>
+    <li><a href="https://capacities.io/why-capacities" target="_blank" rel="noopener">官网 why 页（Stop building your system）</a></li>
+    <li><a href="https://capacities.io/pricing" target="_blank" rel="noopener">定价页（Basic / Pro / Believer / Plus，港区 2026-11 采集）</a></li>
+    <li><a href="https://capacities.io/compare" target="_blank" rel="noopener">官方对比页目录</a></li>
+    <li><a href="https://capacities.io/compare/obsidian" target="_blank" rel="noopener">官方对比：vs Obsidian</a></li>
+    <li><a href="https://capacities.io/compare/evernote" target="_blank" rel="noopener">官方对比：vs Evernote</a></li>
+    <li><a href="https://capacities.io/compare/notion" target="_blank" rel="noopener">官方对比：vs Notion</a></li>
+    <li><a href="https://capacities.io/compare/tana" target="_blank" rel="noopener">官方对比：vs Tana</a></li>
+    <li><a href="https://capacities.io/compare/heptabase" target="_blank" rel="noopener">官方对比：vs Heptabase</a></li>
+    <li><a href="https://capacities.io/compare/anytype" target="_blank" rel="noopener">官方对比：vs Anytype</a></li>
+    <li><a href="https://capacities.io/whats-next" target="_blank" rel="noopener">What's next（2026-09-08，AI 立场与团队规模）</a></li>
+    <li><a href="https://capacities.io/whats-not-next" target="_blank" rel="noopener">What's not next（官方不做清单）</a></li>
+    <li><a href="https://docs.capacities.io/" target="_blank" rel="noopener">官方文档（AI 能力与导入指南）</a></li>
+    <li><a href="https://www.producthunt.com/products/capacities" target="_blank" rel="noopener">Product Hunt（4.8 分，实采 66 条评论）</a></li>
+    <li><a href="https://www.g2.com/products/capacities/reviews" target="_blank" rel="noopener">G2（仅 1 条评论，样本不足）</a></li>
+    <li><a href="https://apps.apple.com/app/id1670188548" target="_blank" rel="noopener">App Store（4.28 / 116 评分，实采 40 条，版本 1.72.13）</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

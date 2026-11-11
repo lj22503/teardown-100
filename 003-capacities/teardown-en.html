@@ -1,0 +1,1125 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Teardown · Capacities — Principal PM Analysis</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="Report tools">
+  <div class="lang-tools" role="group" aria-label="Language">
+    <a href="teardown-en.html" class="lang-btn active" aria-label="English version">EN</a>
+    <a href="teardown-zh.html" class="lang-btn " aria-label="中文版本">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">Export MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">Export PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 Product Teardown</div>
+
+<div class="meta-strip">
+  <span>Product Teardown · Principal PM Analysis</span>
+  <span class="dot"></span>
+  <span>Generated 2026-11-11</span>
+  <span class="dot"></span>
+  <span>Product: Capacities</span>
+</div>
+
+<h1>Capacities<span class="tag">It does not sell note-taking. It sells: you don't have to spend three months building the system first.</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">Category</div><div class="value">Object-based personal knowledge management · structure out of the box</div></div>
+  <div class="cell"><div class="label">Users</div><div class="value">The official why page shows two numbers: 50,000+ active knowledge workers and 10,000+ Discord community members. Product Hunt 4.8 (the site badge claims 198 reviews; the product page itself carries 66 collected reviews — the two counts disagree). App Store 4.28 / 116 ratings. G2 has exactly 1 review, too small a sample to use.</div></div>
+  <div class="cell"><div class="label">Model</div><div class="value">Software given away, money charged on retrieval and review</div></div>
+  <div class="cell"><div class="label">Stage</div><div class="value">Growth stage (three Product Hunt launches: 30 May 2023, 12 Jul 2023, 25 Jul 2024 for mobile; App Store build 1.72.13 updated 9 Nov 2026)</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">Inside</span>
+  <ol>
+    <li><a href="#tldr">Verdict · TL;DR</a></li>
+    <li><a href="#metrics">Key Signals</a></li>
+    <li><a href="#s1">1. Product Snapshot</a></li>
+    <li><a href="#gallery">· Product Tour</a></li>
+    <li><a href="#s2">2. Users & JTBD</a></li>
+    <li><a href="#s3">3. Core Product Loop</a></li>
+    <li><a href="#s4">4. Architecture & UX System</a></li>
+    <li><a href="#s5">5. Design Language & Craft</a></li>
+    <li><a href="#s6">6. Value Delivery & UX Quality</a></li>
+    <li><a href="#s7">7. Business Model</a></li>
+    <li><a href="#s8">8. Competitor Landscape</a></li>
+    <li><a href="#s9">9. Growth Strategy</a></li>
+    <li><a href="#s10">10. AI / Future Readiness</a></li>
+    <li><a href="#s11">11. Metrics They Optimize For</a></li>
+    <li><a href="#s12">12. Friction & Weaknesses</a></li>
+    <li><a href="#s13">13. Risk Matrix</a></li>
+    <li><a href="#s14">14. Opportunities & Redesign</a></li>
+    <li><a href="#s15">15. Final PM Verdict</a></li>
+      <li><a href="#s16">16. Competitive map</a></li>
+    <li><a href="#s17">17. Competitor technical stack</a></li>
+    <li><a href="#s18">18. Transferable opportunities</a></li>
+    <li><a href="#s19">19. Traffic and monetisation</a></li>
+    <li><a href="#s20">20. The official will-not-build list and the exit path</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>Assumptions:</strong> Three inputs. (1) Verifiable public material: homepage, why page, pricing page, whats-next (8 Sep 2026), whats-not-next, six official comparison pages (obsidian / evernote / tana / heptabase / anytype / notion), 66 Product Hunt reviews, 1 G2 review, 40 App Store reviews. (2) First-hand testing: a 20-minute hands-on session on 11 Nov 2026, written up as 2026-11-11 Capacities 真实体验 — onboarding, object creation, the AI paywall and time-to-first-note all come from there. (3) My judgement, always marked [inferred] or (my read).
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM Verdict</div>
+    <h2>Notion sells freedom, Obsidian sells ownership, Capacities sells not having to build anything — and the price is that it decides what your structure looks like.</h2>
+    <div class="sub">Verifiable: the company publishes a list of things it will not build (no team plans, no plugins, no end-to-end encryption) and puts its competitive targets in the URL (/compare six rivals all return 200; /vs, /alternatives and /switch all return 404). Hands-on: onboarding guidance is built into the signup flow, first note in one minute, nothing blocked the way. But every AI feature sits behind Pro — the free tier gives you structure, not intelligence.</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · Strategic strength</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">If you only read three things —</div>
+  <ul>
+    <li><strong>It treats configuration cost as the enemy</strong> — The why page opens with “Stop building your system. Start using it.” and spends the rest of the page attacking Notion database-building and Obsidian plugin maintenance</li>
+    <li><strong>It charges for retrieval, not for tidying</strong> — Free gets unlimited objects, unlimited custom types and sync everywhere; AI, queries, tasks, calendar and semantic search all sit behind Pro</li>
+    <li><strong>It already did the agent's dirty work</strong> — Hands-on read: people, books, meetings and projects are already cleaned into typed objects with fields — exactly the input layer a personal agent is missing</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">Time to value</div>
+    <div class="big">1 <small>min</small></div>
+    <div class="desc">Hands-on: one minute from opening the site to the first real note, because onboarding sits inside signup; download and install were not measured</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Core loop frequency [inferred]</div>
+    <div class="big">Daily</div>
+    <div class="desc">Basis: the daily note is the only daily entry point; the object graph grows passively</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Moat score [my rating]</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">Object model 7, out-of-the-box structure 7, AI 4, ecosystem 2, portability 4, weighted 6. A judgement, not a measurement</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>Product Snapshot</h3>
+    <span class="pill">What it really is</span>
+  </div>
+  <p class="section-intro">Beyond the marketing description — what this product actually is as a system.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">The site calls it “The studio for your mind — a place for all your information”. In the product that means notes are not files: they are objects with a type, properties and a place. Upload a PDF and it lands with the other PDFs; add a meeting and it already knows about dates and attendees.</div>
+      <h4>Core user promise</h4>
+      <p>The why page promises three things: structure is built in, every day gets a page as your inbox, and every link is bidirectional. In plain words: usable today, no system design required.</p>
+    </div>
+    <div class="info-card">
+      <h4>Category & positioning</h4>
+      <p>One counter-intuitive fact: neither the homepage, the pricing page nor whats-next files it under AI tools — whats-next actually says “AI in Capacities should stay assistive”. Yet the paywall sits precisely on AI: free has no AI assistant, Pro does. So its real position is: take Notion and Obsidian's installed base by removing setup cost, then monetise a second time through AI credits.</p>
+      <h4 style="margin-top:14px;">Assumptions</h4>
+      <ul>
+        <li>App Store figures come from the iTunes lookup endpoint (verified 11 Nov 2026: 4.2845 average, 116 ratings, version 1.72.13); the 40 reviews come from the iTunes review RSS feed, not an official chart</li>
+        <li>The hands-on session was run on 11 Nov 2026. The dirty-material boundary (feeding it an 8,000-character document to see whether it fails fluently) was not tested, so this report draws no conclusion about it</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 PRODUCT TOUR (screenshots) -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>Product Tour</h3>
+    <span class="pill">Screenshots from the product</span>
+  </div>
+  <p class="section-intro">A visual pass through the surfaces we'll analyze next. Images sourced live from the product's public marketing pages.</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1200&q_75/landing-page-screenshots/art-deco-hero.jpg" alt="The hero image: knowledge management shot as a gallery, not a feature table" loading="lazy"/><figcaption><span class="fig-num">Fig.01</span>The hero image: knowledge management shot as a gallery, not a feature table</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/book-properties.jpg" alt="A book object: author, status and rating are fields — the moat candidate is in this screenshot" loading="lazy"/><figcaption><span class="fig-num">Fig.02</span>A book object: author, status and rating are fields — the moat candidate is in this screenshot</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/daily-note-graph-view.jpg" alt="Daily note plus graph: what you write today attaches itself to the network — that is the core loop" loading="lazy"/><figcaption><span class="fig-num">Fig.03</span>Daily note plus graph: what you write today attaches itself to the network — that is the core loop</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/landing-page-screenshots/inbox-for-thoughts.jpg" alt="Today is the inbox: fragments land in the daily note and get promoted to objects later" loading="lazy"/><figcaption><span class="fig-num">Fig.04</span>Today is the inbox: fragments land in the daily note and get promoted to objects later</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/w_1792&f_webp&q_95/research/backlinks-mentions.jpeg" alt="Backlinks and unlinked mentions — the pitch is structuring by how you think, not how you file" loading="lazy"/><figcaption><span class="fig-num">Fig.05</span>Backlinks and unlinked mentions — the pitch is structuring by how you think, not how you file</figcaption></figure>
+    <figure class="shot"><img src="https://capacities.io/_ipx/f_webp&q_80&s_1200x800/team/team-wide-2.jpg" alt="The team describes itself as seven people, fully independent (whats-next, 8 Sep 2026)" loading="lazy"/><figcaption><span class="fig-num">Fig.06</span>The team describes itself as seven people, fully independent (whats-next, 8 Sep 2026)</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>Target Users & Jobs-to-be-Done</h3>
+    <span class="pill">Who + why</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Primary user segments</h4>
+      <ul>
+        <li><strong>Knowledge workers on their third or fourth note app</strong> — The migration chain in the reviews is explicit: Evernote → Notion → Roam → Obsidian → Capacities. These users are not short of tools; they ran out of patience for building systems. Hands-on: five obvious surfaces — books, projects, people, daily notes, ideas — and you know what to do immediately.</li>
+        <li><strong>Researchers, writers and lifelong learners (mostly solo)</strong> — The comparison pages list Best For: researchers / writers / lifelong learners, which in the product means reading notes, meetings, projects and contacts. Hands-on: typing the book title Deep Work auto-filled the structured metadata — no manual entry.</li>
+        <li><strong>Solo users who want clean context to feed an AI</strong> — Pro includes AI Chat Connectors (ChatGPT / Claude / Cursor can create and edit objects directly) and a REST API 2.0. The hands-on conclusion was that the field design itself is worth copying as a structured sample for a personal agent. Note that this segment has to be able to pay: free gets no AI.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Trigger & context</h4>
+      <p><strong>Trigger moment:</strong> Two moments: after migrating notes from one app to another yet again; or on starting to use AI and realising the notes vault cannot be fed to a model at all</p>
+      <p><strong>Frequency:</strong> Capture and review are daily (the daily note); the object graph accumulates passively</p>
+      <p><strong>Context:</strong> Reading notes, meeting notes, project tracking, contact management, idea fragments, a context library for an AI</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done</h4>
+    <div class="jtbd-row">
+      <div class="who">Functional</div>
+      <div class="job">Turn everything read, seen and discussed into typed things that can be found later <br><em>"When ___, I want to ___, so I can ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Emotional</div>
+      <div class="job">Stop being the project manager of your own note system — configuration and upkeep are invisible labour <br><em>"I want to feel ___ / avoid feeling ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Social</div>
+      <div class="job">Look like someone with a system, not someone with a screen full of apps <br><em>"I want others to see me as ___."</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>Core Product Loop</h3>
+    <span class="pill">System dynamics</span>
+  </div>
+  <p class="section-intro">The engine — how a single user session compounds into retention and, if lucky, growth.</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">Trigger</div>
+      <div class="what">Trigger</div>
+      <div class="why">A book to read today, a meeting to attend, an idea that arrives</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Action</div>
+      <div class="what">Action</div>
+      <div class="why">Drop the fragment into today's note, or create an object (book / meeting / person) and fill a few fields</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Reward</div>
+      <div class="what">Reward</div>
+      <div class="why">Open that person or that book and today's writing is already under it; backlinks have grown by themselves</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Return</div>
+      <div class="what">Return</div>
+      <div class="why">Tomorrow's daily note is empty, but the network is thicker — and the longer it accumulates, the less you want to leave (and the harder it becomes)</div>
+    </div>
+  </div>
+  <div class="loop-note">"What the loop teaches is that structure is written, not designed. The real product is therefore not the editor but the default values: type first, content second."</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Acquisition loop</h4>
+      <p>Channel mix is not disclosed. Three verifiable channels: (1) six comparison pages harvesting long-tail search intent such as capacities vs obsidian / evernote / notion, which sit closest to purchase; (2) the why page speaking directly to Notion and Obsidian users about wasted database-building; (3) three Product Hunt launches holding a 4.8 rating.</p>
+    </div>
+    <div class="info-card">
+      <h4>Activation · Aha moment</h4>
+      <p>The company bets on the aha of a PDF filing itself with the other PDFs. The aha that actually fired in testing was different: type a book title and the fields fill themselves — the first time no manual structured data was needed.</p>
+    </div>
+    <div class="info-card">
+      <h4>Retention drivers</h4>
+      <ul>
+        <li>The object graph thickens over time: open one person and every related context is there, so switching tools means abandoning the network</li>
+        <li>The daily-note habit is its steadiest retention driver (reviews repeatedly describe brain-dumping first and organising later)</li>
+        <li>Import and export to Markdown and CSV are included on all three tiers (pricing page), so lock-in is habit and graph, not data captivity</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Virality / network effects</h4>
+      <p>Weak but shaped: view-only sharing is on the free tier, so sharing is a natural outlet; what actually travels is screenshots of someone's object page. There is no referral programme.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>Product Architecture & UX System</h3>
+    <span class="pill">Surfaces + entities</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">Key product surfaces</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Daily note (Today)</span><div class="desc">Default home and inbox: today's input lands here, next to the calendar</div></div>
+    <div class="surface"><span class="name">Object page (book / person / meeting / project)</span><div class="desc">The real home of the product: properties, body, backlinks, related objects — one thing stored once</div></div>
+    <div class="surface"><span class="name">Spaces</span><div class="desc">Personal and work separation; unlimited even on the free tier</div></div>
+    <div class="surface"><span class="name">Queries and collections</span><div class="desc">Pro feature: reorganise objects by type, tag or semantics — the review layer</div></div>
+    <div class="surface"><span class="name">Graph and backlinks</span><div class="desc">Draws the network; emotional value for humans, a retrieval surface for AI</div></div>
+    <div class="surface"><span class="name">AI panel and Explore chat</span><div class="desc">Pro features: translate/summarise a selection, auto-fill properties, image OCR, cross-library chat</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">Core entities · what the system is built around</h4>
+  <div class="entity-row">
+    <span class="entity">Object (anything with a type)</span>
+    <span class="entity">Object type (custom type plus properties)</span>
+    <span class="entity">Daily note (one page per day)</span>
+    <span class="entity">Space</span>
+    <span class="entity">Collection / query</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>IA logic</h4>
+      <p>There are no folders and no database for you to design. Layer one is what kind of thing this is; layer two is which properties it has; layer three is what it links to. All three are pre-built and the user only fills them in — the fundamental difference from Notion (design your own database) and Obsidian (design your own folders).</p>
+    </div>
+    <div class="info-card">
+      <h4>Navigation & interaction model</h4>
+      <p>Two gestures cover the main path: @ to reference an object, / to insert a block. Learn those and the product is open; fail to learn them and you are still not stuck, because onboarding sits inside signup. Hands-on: there was never a moment of wondering where to click next.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>Design Language & Craft Signals</h3>
+    <span class="pill">What craft actually means</span>
+  </div>
+  <p class="section-intro">Every craft decision points at one thing: reverse the order of configure-then-use. You get a working structure first, and configuration becomes a by-product of using it.</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">Object types with inherited properties</span><div class="body">Define a type once and every object of that type shares its properties; add a field to the type and existing objects get it too. This is the core move against Notion, where every database needs its own design</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">Backlinks on by default</span><div class="body">No plugin, no query to write: mention something and a link appears under it. The comparison page puts it plainly — Backlinks by default, no query to write</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">The daily note as inbox</span><div class="body">It removes the where-should-this-go decision from the entry point: today's writing lands on today's page and is promoted to an object later. WhatsApp, Telegram and email can all feed it</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">Pre-seeded examples and in-flow onboarding</span><div class="body">Every type ships with default examples and the docs teach inside the product. Hands-on: instructions were embedded in the signup flow, which is why the first note took one minute</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">Everything built in, no plugins</span><div class="body">Whiteboards, queries, calendar, tasks and AI are all first-party (whats-not-next states plugins are not planned). The cost is that long-tail needs are nobody's job; the gain is consistency and speed</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>Value Delivery & UX Quality</h3>
+    <span class="pill">Feel of the product</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">Time-to-value</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Time to value: 1 minute (hands-on)</span></div>
+  <div class="ux-bar"><span class="lbl">Cognitive load</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">Cognitive load: low (hands-on, nothing blocked)</span></div>
+  <div class="ux-bar"><span class="lbl">Delight density</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Delight: medium-high (hands-on, metadata filled itself)</span></div>
+  <div class="ux-bar"><span class="lbl">Trust signals</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Trust: no AI means no data sharing (docs)</span></div>
+  <div class="ux-bar"><span class="lbl">Struggle risk</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">Learning curve: low; migration is the hard part</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>Key delight moments</h4>
+      <ul>
+        <li>Hands-on: typing the title Deep Work auto-filled the structured metadata — the closest the product comes to feeling intelligent, and it happens inside the free flow</li>
+        <li>Hands-on: signup itself is the onboarding. No docs, no tutorial hunting</li>
+        <li>The free tier gets unlimited objects, unlimited custom types, sync everywhere, import/export and view-only sharing (pricing page, all three tiers) — tidying is given away outright</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Where users likely struggle</h4>
+      <ul>
+        <li>Hands-on: bringing existing content in runs into type mismatch — the object types are its own, and your old notes have none of those fields</li>
+        <li>No AI on the free tier: the Basic row on the pricing table says AI not included. Anyone arriving because of the AI pitch hits the wall the first time they want to use it</li>
+        <li>Hands-on read, in the tester's own words: if you want to customise things, this is not the tool. Freedom has been traded away by design, not by omission</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>Business Model & Monetization</h3>
+    <span class="pill">How it makes money</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">Revenue model</span><h5>Free core + Pro subscription + AI add-on (Plus)</h5><p>Pricing page (Hong Kong region, captured Nov 2026): Basic free forever; Pro HK$77.99/month and Believer HK$98.99/month at monthly billing, with 16% off annually; Plus, an add-on at HK$66.67/month billed annually, buys a much larger AI budget with top-ups available. The official comparison pages use a single USD figure: Pro at $9.99/month billed annually. Believer differs by supporting the team and early access to new features, not by more capability.</p></div>
+    <div class="biz-card"><span class="tag">Free ↔ Paid boundary</span><h5>The boundary: intelligence and review</h5><p>Free is structure plus storage: unlimited objects, spaces and custom types, sync everywhere, offline, import/export, view-only sharing, capture from WhatsApp / Telegram / email. Pro is retrieval plus review: AI assistant, smart queries, tasks, calendar integration, semantic search, version history, unlinked mentions, whiteboards, Readwise / Kindle import, public API, image and PDF analysis. (Source: the three-tier comparison on the pricing page.)</p></div>
+    <div class="biz-card"><span class="tag">Monetization entry points</span><h5>Give tidying away, charge for retrieval</h5><p>Unlike peers that meter storage or object counts, it makes capacity unlimited — the thing users complain about most. Both paid layers only feel necessary after use: AI (let it read for me) and queries/calendar/tasks (let it schedule for me). The upside is that free users never run out of room to work; the downside is a gap between the AI note-taking pitch and the free experience.</p></div>
+    <div class="biz-card"><span class="tag">UX ↔ Monetization alignment</span><h5>Mostly aligned, with one structural tension</h5><p>Aligned: the free tier does not cripple the core promise (structure, sync, export), and the thicker the graph the more reason to upgrade. Two tensions: (1) AI is the loudest claim yet sits entirely behind the paywall, so the first attempt always hits it; (2) the company states it will not build end-to-end encryption, and using AI shares data with model providers (docs) — a paying individual has to accept both at once.</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>Competitor Landscape</h3>
+    <span class="pill">Positioning matrix</span>
+  </div>
+  <p class="section-intro">The comparison below is my judgement, not a score or a measurement. The AI column rates first-party capability, not community plugins.</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Capacities</th>
+          <th>Obsidian</th>
+          <th>Notion</th>
+          <th>Tana</th>
+          <th>Anytype</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Data ownership</th><td class="own">Low (cloud, no E2EE)</td><td>Very high (local Markdown)</td><td>Low (cloud)</td><td>Low (cloud)</td><td>Very high (local encryption + P2P)</td></tr>
+        <tr><th>Structure out of the box</th><td class="own">Very high (nothing to build)</td><td>None (build it yourself)</td><td>Medium (design your databases)</td><td>Medium-high (supertags still to learn)</td><td>Medium (types exist, you configure them)</td></tr>
+        <tr><th>First-party AI</th><td class="own">Medium (all behind Pro)</td><td>None built in (plugins only)</td><td>High (Notion AI)</td><td>Medium (AI, workflow-oriented)</td><td>Low</td></tr>
+        <tr><th>Learning curve</th><td class="own">Low (1 minute in testing)</td><td>High (slow)</td><td>Medium</td><td>Highest</td><td>Medium-high</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>Where the product wins:</strong> Structure out of the box and time to first value. It is the only thing it dares put in a slogan: Stop building your system. Testing confirmed it — onboarding sits inside signup, the first note took a minute, and there was never a where-do-I-click moment.</div>
+  <div class="comp-verdict warn"><strong>Where rivals are catching up:</strong> Ownership and freedom. Anytype and Obsidian make “the files are yours” the default; Obsidian's ecosystem is what Capacities structurally gave up (its own comparison page cites 2,700+ community plugins, while the Obsidian community site counted 10,194 in Nov 2026 — comparison-page numbers age, which is itself a signal). Team collaboration went to Notion, and it does not intend to compete there.</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>Growth Strategy</h3>
+    <span class="pill">Explicit or inferred</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Likely acquisition channels</h4>
+      <ul>
+        <li>Six official comparison pages harvesting long-tail search (/compare/obsidian, evernote, notion, tana, heptabase, anytype all return 200)</li>
+        <li>Reddit and Discord word of mouth (the site claims 10,000+ community members) — the why page quotes r/capacitiesapp users verbatim</li>
+        <li>Three Product Hunt launches (30 May 2023, 12 Jul 2023, 25 Jul 2024) holding a 4.8 rating</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Primary growth loops</h4>
+      <ul>
+        <li><strong>Migrants become new users</strong> — Comparison pages plus migration guides in the docs (Obsidian import guide, switching guide). It deliberately serves people arriving from elsewhere — the shortest path to payment, because they have already paid tuition once.</li>
+        <li><strong>Community produces templates and screenshots</strong> — A 10,000-person Discord and a subreddit; the artefact that spreads is “this is what my object page looks like”. With no plugin marketplace, the ecosystem travels as templates and screenshots rather than code.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">Expansion vectors</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>Horizontal</h5><ul><li>Clients everywhere: web, Mac, Windows, Linux, iOS, Android (all listed in one line on the pricing page)</li><li>AI Chat Connectors: ChatGPT / Claude / Cursor read and write your objects (Pro row on the pricing page)</li></ul></div>
+    <div class="growth-col"><h5>Vertical</h5><ul><li>Personal knowledge management: researchers, writers, lifelong learners (the comparison pages' Best For)</li><li>Teams and collaboration: explicitly out of scope (whats-not-next: Collaboration and Team plans are on hold)</li></ul></div>
+    <div class="growth-col"><h5>Platform</h5><ul><li>Public REST API 2.0 with a TypeScript SDK on Pro — third parties can read and write objects</li><li>No plugin marketplace: whats-not-next rules plugins out, so extensibility goes through the API only</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>AI / Future Readiness</h3>
+    <span class="pill">Human ↔ AI task split</span>
+  </div>
+  <p class="section-intro">Where the product sits today on the AI-integration spectrum, and where the next 12–24 months push it.</p>
+
+  <div class="ai-meter">
+    <div class="ai-stage active"><div class="lvl">Level 1</div><div class="name">Assistive</div></div>
+    <div class="ai-stage "><div class="lvl">Level 2</div><div class="name">Embedded</div></div>
+    <div class="ai-stage "><div class="lvl">Level 3</div><div class="name">Autonomous / Agentic</div></div>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Current AI usage</h4>
+      <p>All AI sits at Pro and above. Capability surface (docs): AI Chat inside Explore, a selection AI panel (translate / rewrite / summarise), auto-tagging, auto-collection, property auto-fill, image analysis including OCR and handwriting, /Ask AI, and AI-generated queries. The stated position is restrained: whats-next says AI should stay assistive, grounded in your notes and never in the way of your own thinking. Hands-on: the free tier genuinely has no AI, and the wall fires on AI and on tasks/Explore; without AI, data is not shared with model providers (docs), and that privacy notice was visible during testing.</p>
+    </div>
+    <div class="info-card">
+      <h4>What could become agentic in 12–24 months</h4>
+      <ul>
+        <li>Not shipped (my read): upgrade property auto-fill into proposing a whole object structure after reading messy material — today it fills existing fields, it does not propose structure</li>
+        <li>Not shipped (my read): let Connectors go from creating and editing a single object to restructuring a whole space in bulk (API 2.0 already provides the read foundation)</li>
+        <li>Not shipped (my read): a structure audit that flags objects missing the fields an AI needs. It is the one position that needs no model of its own, only its object model</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Deeper AI opportunities</h4>
+      <ul>
+        <li>(my read) What it should build is not a stronger AI but a reusable asset: standard property sets for books, meetings, clients and projects. The hands-on reaction was that the structure itself is worth learning and feeding to one's own AI — users already treat it as a schema supplier; the company just has not productised it</li>
+        <li>(my read) Turn API 2.0 and Connectors into an agent's memory backend: agents write logs, conclusions and to-dos into the object layer and the human confirms. That is the only path from note app to infrastructure</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Strategic AI-disruption risk</h4>
+      <p>(my read) The threat is not a rival adding AI but a general-purpose agent growing its own object model. Once ChatGPT or Claude maintains your personal knowledge graph, nobody pays a second subscription for the shape of an object page — the cleaning layer it does for agents today is exactly what agents will do themselves</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>What Metrics They Actually Optimize For</h3>
+    <span class="pill">[Inferred] north-star + guardrails</span>
+  </div>
+  <p class="section-intro">The company discloses neither activity nor conversion. The three cards below combine verifiable numbers with explicitly marked inference — no fake precision.</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">North Star</span>
+      <h5>Weekly active spaces [inferred]</h5>
+      <p>Basis: its value only exists when you open it and write a little each day (the daily note is the only daily-frequency entry point); the site publishes one big number, 50,000+ active knowledge workers, with no DAU/WAU definition</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 1</span>
+      <h5>Paid Pro subscriptions [inferred]</h5>
+      <p>Basis: the company calls itself fully independent with a team of seven (whats-next), so Pro is the main beam; at $9.99/month, team size and subscriber count constrain each other</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 2</span>
+      <h5>AI credits consumed and Plus attach rate [inferred]</h5>
+      <p>Basis: Plus (HK$66.67/month annual) is its only second-order monetisation lever, and the pricing page documents top-ups and auto top-up — evidence it is being designed as a revenue line</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 3</span>
+      <h5>Daily notes created [inferred]</h5>
+      <p>Basis: the daily note is the core loop's entry point and the clearest divergence from Obsidian and Notion; its trend says more about adoption than total object count</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">Guardrail</span>
+      <h5>Mobile crash and sync-failure rate [inferred]</h5>
+      <p>Basis: of 40 sampled App Store reviews most are 1-3 stars, landing on a sharesheet broken for months, syncing that needs an app restart and broken iPad layout — “Desktop is Lifechanging, iOS is Barely Functional” is a review title. If capture breaks, desktop excellence cannot outrun the rating</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">Blindspot</span>
+      <h5>Migration failure rate</h5>
+      <p>Hands-on read: the biggest weakness is type mismatch when importing existing content. Internally such failures are most likely logged as a successful import, because the objects were created — they are simply empty of fields</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>Friction & Weaknesses</h3>
+    <span class="pill">Critical PM lens</span>
+  </div>
+  <p class="section-intro">Explicit and opinionated. Where the system leaks, breaks, or over-designs.</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">Types do not match when you move in</span><span class="sev">高 · High</span></div>
+      <div class="body">Hands-on: the object types are its own and your old notes carry none of those fields, so importing is not the same as using. It is the flip side of the out-of-the-box promise: a clean start for new users, no path for existing libraries.</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">Mobile is a different product</span><span class="sev">高 · High</span></div>
+      <div class="body">A 3-star review is literally titled “Desktop is Lifechanging, iOS is Barely Functional”; the same batch reports a sharesheet broken for many months, syncing that requires restarting the app, and no object creation on iPad. Capture is the only thing mobile is for.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Customisation is out of scope</span><span class="sev">中 · Medium</span></div>
+      <div class="body">Hands-on, in the tester's words: if you want to customise things, it is not for you. No plugins, no formulas or advanced automation (whats-not-next lists both), so the ceiling for power users is low — this is not a tinkerer's tool.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Zero AI on free contradicts the pitch</span><span class="sev">中 · Medium</span></div>
+      <div class="body">Verifiable on the pricing table: the Basic row says AI not included. Externally it is often filed as an AI note app, so the first attempt to use AI meets a paywall. Not a design flaw, but a positioning gap: the copy sells a studio, users hear AI.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>Risk Matrix</h3>
+    <span class="pill">Severity × Likelihood</span>
+  </div>
+  <p class="section-intro">Only risks with public evidence are listed; severity and likelihood are my judgement, not quantified.</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>Risk</th><th>Category</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Mobile gap drags the reputation</strong></td><td>Product</td><td class="sev-med">Medium (my read)</td><td>Of 40 App Store reviews most are 1-3 stars, clustered on the sharesheet, sync and iPad layout</td><td>Treat mobile as a capture-only component with a single hard target: under three seconds to record (my suggestion)</td></tr>
+      <tr><td><strong>A structural gap in the privacy story</strong></td><td>Compliance</td><td class="sev-med">Medium (my read)</td><td>whats-not-next states no end-to-end encryption; using AI shares part of the data with model providers (docs)</td><td>Make “no AI, no sharing” a visible switch plus an annual transparency report (my suggestion)</td></tr>
+      <tr><td><strong>General-purpose agents grow their own object layer</strong></td><td>Competition</td><td class="sev-high">Medium-high (my read)</td><td>ChatGPT / Claude / Cursor can already create and edit its objects through Connectors (pricing page); the channel works in both directions</td><td>Race to be the de facto schema and write protocol — retreat from interface to substrate (my suggestion)</td></tr>
+      <tr><td><strong>One subscription price and a seven-person team</strong></td><td>Market</td><td class="sev-med">Medium (my read)</td><td>Self-described team of seven, fully independent; a single Pro price tier caps the visible scale at 50,000 active users × $9.99</td><td>Make Plus a real second revenue line, or open API and non-team enterprise scenarios (my suggestion)</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>Opportunities & Redesign Ideas</h3>
+    <span class="pill">Actionable PM thinking</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">Improvement · 1</div>
+      <h5>Migration as a service</h5>
+      <div class="desc">(my read) Its public weakness is type mismatch after import. A one-off migration plus type mapping — translating old Notion or Obsidian structures into its object types — is cheap to build, certain in demand, and aimed at people who have already shown willingness to pay tuition.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 2</div>
+      <h5>Field design as a reusable asset</h5>
+      <div class="desc">(my read) Its object types are a ready-made schema: book, person, meeting, project. The hands-on reaction was immediate — this structure is worth learning and giving to an AI. The company treats it as an internal default and ships it undocumented; template packs and vertical editions (investment research, consulting, clinicians) are a revenue line that needs no new engineering.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 3</div>
+      <h5>A structure audit</h5>
+      <div class="desc">(my read) Users do not know which objects an AI cannot read. A checklist of missing fields, missing links and missing context would move it from pretty notes to an agent-readable knowledge base — and it depends on the object model, not on model capability.</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">Strategic shift</div>
+      <h5>From note app to the structured memory layer for agents</h5>
+      <div class="desc">(my read) Its real differentiation is not AI but the cleaning it has already done: people, books, meetings and projects abstracted into typed objects with fields. The bet should be making that structure the default schema agents read and write (API 2.0 and Connectors are already there), not chasing model capability feature by feature.</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 Moonshot</div>
+      <h5>Make its object spec the default structure of personal AI</h5>
+      <div class="desc">(my read) If agents write contacts, books and projects using its fields, Capacities stops being an app and becomes the schema layer of personal AI — the analogy is not Notion but a database driver. A team of seven cannot build models, but it can build a standard; once adopted, the migration arrow points the other way.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>Final PM Verdict</h3>
+    <span class="pill">Synthesis</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>Why it wins</h5>
+      <p>Structure out of the box and the object model: nothing to build, types on day one, first note in a minute</p>
+    </div>
+    <div class="final-col break">
+      <h5>Where it breaks</h5>
+      <p>Mobile (capture is broken) and migration (types do not match), plus the customisation ceiling</p>
+    </div>
+    <div class="final-col moat">
+      <h5>Long-term moat</h5>
+      <p>The moat is the feeling that nobody wants someone else's system — not the technology. The object model is copyable; convincing users that this time they will not have to build anything is not. The same logic means it cannot stop general-purpose agents from eating the object layer from above.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>Competitive map</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Start with a probe result, because the probe is part of the conclusion. Paths opened one by one on 11 Nov 2026: <strong>/compare</strong>, <strong>/compare/obsidian</strong>, <strong>/compare/evernote</strong>, <strong>/compare/notion</strong>, <strong>/compare/tana</strong>, <strong>/compare/heptabase</strong> and <strong>/compare/anytype</strong> all return 200; <strong>/vs</strong>, <strong>/alternatives</strong> and <strong>/switch</strong> all return 404.</p>
+<p class="section-intro">In other words, it writes its targets into the URL structure: six named rivals, and none of the usual alternative framings. That is itself evidence — it only builds comparison pages for people migrating off something, never for people shopping around. <strong>My read</strong>: the reader of those pages is not choosing a tool, they already own a library and are looking for a reason to move.</p>
+<table class="risk-table">
+<thead><tr><th>Who</th><th>Which slice they take</th><th>Where they sit closer</th></tr></thead>
+<tbody>
+<tr><td><strong>Notion</strong></td><td>Team wikis and collaboration</td><td>Multiplayer, permissions, enterprise procurement (explicitly not contested)</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>Local files and freedom</td><td>Ownership, plugin ecosystem (explicitly not built)</td></tr>
+<tr><td><strong>Evernote</strong></td><td>Last-generation collecting habits</td><td>Installed base, highest migration intent</td></tr>
+<tr><td><strong>Tana</strong></td><td>Supertag workflow notes</td><td>Query power for process-heavy users</td></tr>
+<tr><td><strong>Heptabase</strong></td><td>Whiteboard learning and research</td><td>Visual thinking, researcher fit</td></tr>
+<tr><td><strong>Anytype</strong></td><td>Locally encrypted object spaces</td><td>Privacy narrative and P2P</td></tr>
+</tbody>
+</table>
+<p class="section-intro">Product Hunt's Similar Products offers a different list (Obsidian, Craft.do, Bear, Reflect, Tana) — <strong>similarity from the user's side is not rivalry from the company's side</strong>. The company picks rivals it can frame as configuration burden; users pick tools that look equally light.</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>Competitor technical stack</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Four dimensions, one line each:</p>
+<table class="risk-table">
+<thead><tr><th>Product</th><th>Stack choice</th><th>What it locks in</th><th>What it locks out</th></tr></thead>
+<tbody>
+<tr><td><strong>Capacities</strong></td><td>Cloud object store + everything first-party + no plugins</td><td>Out-of-the-box consistency and speed</td><td>Privacy narrative and long-tail extension (no E2EE, no plugins)</td></tr>
+<tr><td><strong>Obsidian</strong></td><td>Local Markdown files + community plugins</td><td>Portability, direct agent read/write</td><td>Usability on day one (you build everything)</td></tr>
+<tr><td><strong>Notion</strong></td><td>Cloud blocks + databases</td><td>Team collaboration and permissions</td><td>Configuration cost for solo users</td></tr>
+<tr><td><strong>Tana</strong></td><td>Supertag outlines + queries</td><td>Process-heavy workflows</td><td>The steepest learning curve</td></tr>
+<tr><td><strong>Anytype</strong></td><td>Local-first + P2P + E2E + open source</td><td>Privacy and ownership</td><td>Sync reliability and ecosystem speed</td></tr>
+</tbody>
+</table>
+<p class="section-intro"><strong>My read</strong>: Capacities chose consistency by refusing things. It gives up three extensibility doors (plugins, E2EE, collaboration) in exchange for opening the app and knowing what to do. This is a deliberate trade, not a capability gap — whats-not-next publishes all three as positions.</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>Transferable opportunities</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Three practices worth taking, none of which requires rewriting code:</p>
+<p class="section-intro"><strong>1. Official comparison pages plus an official will-not-build page are free trust and GEO assets.</strong> It does both: six /compare pages harvest long-tail search, and /whats-not-next publishes what it will never ship. The latter is rare — it turns out-of-scope items into promises and does the user's screening for them. Any consumer tool can copy this.</p>
+<p class="section-intro"><strong>2. Its public weakness is a business: type mapping on migration.</strong> The strongest hands-on impression was that importing runs into type mismatch. A one-off migration service (Notion / Obsidian structures into its object types) serves the highest-intent users available.</p>
+<p class="section-intro"><strong>3. Its field design is an asset in itself.</strong> The property sets for books, people, meetings and projects are a ready-made schema. The hands-on reaction was that the structure is worth learning and feeding to one's own AI. The company treats it as an internal default and documents it nowhere — an unproductised opportunity.</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>Traffic and monetisation</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Where the money comes from: knowledge workers on their third or fourth note app who still have not found a system. Their willingness to pay is already proven — they paid for the previous tool. The pain is configuration fatigue, not missing features.</p>
+<p class="section-intro">How it reaches them: <strong>comparison pages harvesting the search intents closest to purchase</strong> (capacities vs obsidian / evernote / notion), Reddit and Discord word of mouth (the site claims 10,000+ community members), and three Product Hunt launches holding 4.8. There is no evidence of paid advertising — this is search and reputation.</p>
+<p class="section-intro">Three monetisation layers: Basic (free) → Pro / Believer (subscription, $9.99/month billed annually per the comparison pages) → Plus (AI credit add-on at HK$66.67/month billed annually, with top-ups). <strong>The most fragile beam is AI behind the paywall</strong>: the market files it as an AI note app, the free tier has none, so the first attempt at AI is both the highest-conversion and highest-churn moment.</p>
+<p class="section-intro"><strong>My read</strong>: the clever part is giving tidying away and charging for retrieval. Capacity and object counts are unlimited, removing the most-complained-about dimension from the free tier, while both paid layers only feel necessary after use. The cost is that the free tier cannot establish the expectation that it is intelligent.</p>
+</section>
+
+<section id="s20">
+  <div class="section-head">
+    <span class="num">20</span>
+    <h3>The official will-not-build list and the exit path</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">/whats-not-next (live Nov 2026) publishes the refusals: tablet handwriting, formulas and advanced automation, flashcards and spaced repetition, RTL languages, <strong>collaboration and team plans (on hold)</strong>, object inheritance, <strong>end-to-end encryption</strong>, lifetime subscriptions and <strong>plugins</strong>. The value of the list is that these are out of scope rather than pending — users need not wait.</p>
+<p class="section-intro">The exit path: export supports Markdown and CSV on all three tiers (pricing page: Import and export to Markdown, CSV, and more — included on all), so leaving does not require permission; API 2.0 and the TypeScript SDK on Pro let objects be pulled out in bulk. Anyone returning to Obsidian gets Markdown; anyone moving to Notion gets tables.</p>
+<p class="section-intro"><strong>My read</strong>: refusing E2EE and refusing plugins are two sides of one trade — both would slow down consistency and speed. That trade is sensible for personal, cloud, AI-assisted use; but it also means anyone who puts privacy first is destined for Anytype or Obsidian, and no amount of interface polish wins them back.</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>Sources：</strong>Every factual claim comes from the public pages below; first-hand observations come from the hands-on test.
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://capacities.io/" target="_blank" rel="noopener">Homepage</a></li>
+    <li><a href="https://capacities.io/why-capacities" target="_blank" rel="noopener">Why page (Stop building your system)</a></li>
+    <li><a href="https://capacities.io/pricing" target="_blank" rel="noopener">Pricing (Basic / Pro / Believer / Plus, HK region, captured Nov 2026)</a></li>
+    <li><a href="https://capacities.io/compare" target="_blank" rel="noopener">Official comparison index</a></li>
+    <li><a href="https://capacities.io/compare/obsidian" target="_blank" rel="noopener">Official comparison: vs Obsidian</a></li>
+    <li><a href="https://capacities.io/compare/evernote" target="_blank" rel="noopener">Official comparison: vs Evernote</a></li>
+    <li><a href="https://capacities.io/compare/notion" target="_blank" rel="noopener">Official comparison: vs Notion</a></li>
+    <li><a href="https://capacities.io/compare/tana" target="_blank" rel="noopener">Official comparison: vs Tana</a></li>
+    <li><a href="https://capacities.io/compare/heptabase" target="_blank" rel="noopener">Official comparison: vs Heptabase</a></li>
+    <li><a href="https://capacities.io/compare/anytype" target="_blank" rel="noopener">Official comparison: vs Anytype</a></li>
+    <li><a href="https://capacities.io/whats-next" target="_blank" rel="noopener">What's next (8 Sep 2026: AI stance, team size)</a></li>
+    <li><a href="https://capacities.io/whats-not-next" target="_blank" rel="noopener">What's not next (the official will-not-build list)</a></li>
+    <li><a href="https://docs.capacities.io/" target="_blank" rel="noopener">Docs (AI capabilities, import guides)</a></li>
+    <li><a href="https://www.producthunt.com/products/capacities" target="_blank" rel="noopener">Product Hunt (4.8, 66 collected reviews)</a></li>
+    <li><a href="https://www.g2.com/products/capacities/reviews" target="_blank" rel="noopener">G2 (1 review only, sample too small)</a></li>
+    <li><a href="https://apps.apple.com/app/id1670188548" target="_blank" rel="noopener">App Store (4.28 / 116 ratings, 40 collected, build 1.72.13)</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 100 AI Product Teardowns.</div>
+      <div class="brand-sub">— Product Teardown · Principal PM Analysis</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>
