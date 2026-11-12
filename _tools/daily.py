@@ -105,6 +105,12 @@ def cmd_collect(args):
         if rc != 0 or "WROTE" not in out:
             fail("采集失败（%s）：%s" % (src, (out[:500] + " … " + out[-300:])))
 
+    # 统一命名：<slug>.md 改成 _raw.md，选题器只认 _raw.md
+    slug_md = os.path.join(d, row["slug"] + ".md")
+    raw_md = os.path.join(d, "_raw.md")
+    if os.path.exists(slug_md) and not os.path.exists(raw_md):
+        os.replace(slug_md, raw_md)
+
     got = sorted(os.listdir(d))
     if not any("评论" in x for x in got):
         fail("评论文件没生成，目录里只有：" + ", ".join(got))
