@@ -94,7 +94,7 @@ def cmd_collect(args):
         s = re.sub(r'taskSpace\([^)]*\)', 'taskSpace("marvis-daily")', s)
         s = re.sub(r'const SLUG = "[^"]*";', 'const SLUG = "%s";' % row["slug"], s)
         s = re.sub(r'const NAME = "[^"]*";', 'const NAME = "%s";' % row["name"].replace('"', ""), s)
-        s = re.sub(r'const OUT = "[^"]*";', 'const OUT = r"%s";' % d.replace("\\", "/"), s)
+        s = re.sub(r'const OUT = "[^"]*";', 'const OUT = "%s";' % d.replace("\\", "/"), s)
         if tag == "product":
             s = re.sub(r'const URLS = \[[\s\S]*?\];',
                        "const URLS = [\n" + "".join('  "%s",\n' % u for u in urls) + "];", s)
@@ -103,7 +103,7 @@ def cmd_collect(args):
         uri = "file:///" + dst.replace("\\", "/").replace(" ", "%20")
         rc, out = run(["ego-browser", "nodejs", "-e", 'await import("%s")' % uri])
         if rc != 0 or "WROTE" not in out:
-            fail("采集失败（%s）：%s" % (src, out[-300:]))
+            fail("采集失败（%s）：%s" % (src, (out[:500] + " … " + out[-300:])))
 
     got = sorted(os.listdir(d))
     if not any("评论" in x for x in got):

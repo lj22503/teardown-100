@@ -94,3 +94,5 @@ python _tools\daily.py commit <no>
 ## 一句话总结
 
 **判断交给脚本（next / build / commit），动脑只做一件事（写卡和文案），体验交给老板。**
+
+| `Error: Unexpected string` / `ModuleLoader` | 生成器写坏脚本（语法错误） | 停下报给老板修生成器，**不许自己改脚本重试** |
