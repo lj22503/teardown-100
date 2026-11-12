@@ -117,6 +117,50 @@ def cmd_collect(args):
     emit({"ok": True, "step": "collect", "dir": os.path.basename(d), "files": got})
 
 
+# ---------- exp（检查并搬运实测） ----------
+VAULT = r"D:\ObsidianVault\03-Resources\product sense\01-拆解"
+
+
+def find_experience(no, slug, name):
+    """在两个位置找实测：_实测表\\<no>-<slug>.md，或 01-拆解 下含产品名的真实体验.md"""
+    cands = []
+    p1 = os.path.join(VAULT, "_实测表", "%03d-%s.md" % (int(no), slug))
+    if os.path.exists(p1):
+        cands.append(p1)
+    if os.path.isdir(VAULT):
+        for f in os.listdir(VAULT):
+            if f.endswith(".md") and (name.split()[0].lower() in f.lower()) and ("真实体验" in f or "实测" in f):
+                cands.append(os.path.join(VAULT, f))
+    best = None
+    for p in cands:
+        try:
+            txt = open(p, encoding="utf-8").read()
+        except Exception:
+            continue
+        filled = txt.count("|  |") < 5 or "我填" in txt
+        size = len(txt)
+        if size > 2500 and filled:
+            if best is None or size > os.path.getsize(best):
+                best = p
+    return best
+
+
+def cmd_exp(args):
+    row = queue_row(args.no)
+    if not row:
+        fail("队列里没有第 %s 号" % args.no)
+    d = dir_of(args.no, row["slug"])
+    os.makedirs(d, exist_ok=True)
+    src = find_experience(args.no, row["slug"], row["name"])
+    if not src:
+        emit({"ok": False, "step": "exp", "found": False,
+              "message": "没找到 %s 的实测。请到 Obsidian 的 01-拆解\\_实测表\\%03d-%s.md 里填 20 分钟实测" % (row["name"], int(args.no), row["slug"])})
+        sys.exit(2)
+    dst = os.path.join(d, "实测.md")
+    shutil.copyfile(src, dst)
+    emit({"ok": True, "step": "exp", "found": True, "source": src, "copied_to": os.path.basename(dst), "bytes": os.path.getsize(dst)})
+
+
 # ---------- build ----------
 def cmd_build(args):
     row = queue_row(args.no)
@@ -158,6 +202,7 @@ def main():
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("next").set_defaults(fn=cmd_next)
     c = sub.add_parser("collect"); c.add_argument("no"); c.add_argument("--site"); c.add_argument("--pricing"); c.set_defaults(fn=cmd_collect)
+    e = sub.add_parser("exp"); e.add_argument("no"); e.set_defaults(fn=cmd_exp)
     b = sub.add_parser("build"); b.add_argument("no"); b.set_defaults(fn=cmd_build)
     m = sub.add_parser("commit"); m.add_argument("no"); m.set_defaults(fn=cmd_commit)
     args = ap.parse_args()

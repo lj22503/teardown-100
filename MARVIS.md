@@ -33,13 +33,21 @@ python _tools\daily.py collect <no> --site <官网> --pricing <定价页>
 
 成功会输出 `RESULT={"ok": true, "step": "collect", ...}`，目录里会出现 `_raw.md`、`<slug>-评论.md`、`<slug>-G2评论.md`。
 
-### 第 3 步 · 停下来，等人工实测
+### 第 3 步 · 抢实测（不要自己翻目录）
 
-采集完先别往下走，回复一句：
+采集完先跑这一条：
 
-> 第 N 篇 <产品> 素材齐了，请在 Obsidian 的 03-Resources\product sense\01-拆解\ 写 20 分钟实测，写完回我一句。
+```
+python _tools\daily.py exp <no>
+```
+
+- 输出 `found: true` → 实测已找到，并已自动复制成 `<dir>\实测.md`，继续第 4 步
+- 输出 `found: false`（退出码 2）→ 停下，把输出里那句 message 原样回给老板，等补实测
 
 **没有实测就不许写体验结论，不许编用时、不许编评分。**
+
+实测只有一处：`D:\ObsidianVault\03-Resources\product sense\01-拆解\_实测表\NNN-slug.md`。
+**不要按文件名猜，一律用这条命令。**
 
 ### 第 4 步 · 写卡与文案（这是唯一需要你动脑的部分）
 
