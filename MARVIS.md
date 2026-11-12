@@ -46,7 +46,7 @@ python _tools\daily.py exp <no>
 
 **没有实测就不许写体验结论，不许编用时、不许编评分。**
 
-实测只有一处：`D:\ObsidianVault\03-Resources\product sense\01-拆解\_实测表\NNN-slug.md`。
+实测只有一处：`D:\ObsidianVault\03-Resources\product sense\01-拆解\NNN-slug.md`（跟卡片同目录，平铺）。
 **不要按文件名猜，一律用这条命令。**
 
 ### 第 4 步 · 写卡与文案（这是唯一需要你动脑的部分）

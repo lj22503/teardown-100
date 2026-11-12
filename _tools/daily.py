@@ -124,7 +124,7 @@ VAULT = r"D:\ObsidianVault\03-Resources\product sense\01-拆解"
 def find_experience(no, slug, name):
     """在两个位置找实测：_实测表\\<no>-<slug>.md，或 01-拆解 下含产品名的真实体验.md"""
     cands = []
-    p1 = os.path.join(VAULT, "_实测表", "%03d-%s.md" % (int(no), slug))
+    p1 = os.path.join(VAULT, "%03d-%s.md" % (int(no), slug))
     if os.path.exists(p1):
         cands.append(p1)
     if os.path.isdir(VAULT):
