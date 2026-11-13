@@ -156,7 +156,7 @@ def cmd_exp(args):
     src = find_experience(args.no, row["slug"], row["name"])
     if not src:
         emit({"ok": False, "step": "exp", "found": False,
-              "message": "没找到 %s 的实测。请到 Obsidian 的 01-拆解\\_实测表\\%03d-%s.md 里填 20 分钟实测" % (row["name"], int(args.no), row["slug"])})
+              "message": "没找到 %s 的实测。请到 Obsidian 的 01-拆解\\%03d-%s.md 里填 20 分钟实测" % (row["name"], int(args.no), row["slug"])})
         sys.exit(2)
     dst = os.path.join(d, "实测.md")
     shutil.copyfile(src, dst)
