@@ -137,9 +137,11 @@ def find_experience(no, slug, name):
             txt = open(p, encoding="utf-8").read()
         except Exception:
             continue
-        filled = txt.count("|  |") < 5 or "我填" in txt
+        # 判定是否真的填过：数"相邻两个空格子"的数量。模板有 12 处，填完的通常 0-2 处
+        blanks = len(re.findall(r"\|\s*\|\s*\|", txt))
+        filled = blanks <= 4
         size = len(txt)
-        if size > 2500 and filled:
+        if size > 1500 and filled:
             if best is None or size > os.path.getsize(best):
                 best = p
     return best

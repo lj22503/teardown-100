@@ -104,3 +104,4 @@ python _tools\daily.py commit <no>
 **判断交给脚本（next / build / commit），动脑只做一件事（写卡和文案），体验交给老板。**
 
 | `Error: Unexpected string` / `ModuleLoader` | 生成器写坏脚本（语法错误） | 停下报给老板修生成器，**不许自己改脚本重试** |
+| 实测表 frontmatter 被改 | 有人把 `状态: 已完成` 写上了，但正文全空 | **实测表只读**，不许改它的 frontmatter；填不填由老板决定 |
