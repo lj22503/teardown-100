@@ -1,101 +1,101 @@
-﻿no,slug,name,tagline,category,url
-1,notion,Notion,The all-in-one workspace,notes-documents,https://www.producthunt.com/products/notion
-2,obsidian,Obsidian,A versatile writing app tailored to your thinking,notes-documents,https://www.producthunt.com/products/obsidian
-3,capacities,Capacities,A studio for your mind,notes-documents,https://www.producthunt.com/products/capacities
-4,reflect-notes,Reflect,Fast networked note-taking,notes-documents,https://www.producthunt.com/products/reflect-notes
-5,hynote-ai,HyNote AI,Free local transcription that is 100% Private,notes-documents,https://www.producthunt.com/products/hynote-ai
-6,craft-do,Craft.do,"Your space for notes, tasks, and big ideas",notes-documents,https://www.producthunt.com/products/craft-do
-7,bear,Bear,"a beautiful, simple Markdown note-taking app",notes-documents,https://www.producthunt.com/products/bear
-8,paste,Paste,"A better way to copy and paste on Mac, iPhone, and iPad",notes-documents,https://www.producthunt.com/products/paste
-9,voicenotes,Voicenotes,AI note-taker that's truly intelligent,notes-documents,https://www.producthunt.com/products/voicenotes
-10,readwise,Readwise,"Resurfacing your best highlights from Kindle, iBooks & more",notes-documents,https://www.producthunt.com/products/readwise
-11,claude,Claude by Anthropic,A family of foundational AI models,ai-chatbots,https://www.producthunt.com/products/claude
-12,chatgpt,ChatGPT by OpenAI,Get answers. Find inspiration. Be more productive.,ai-chatbots,https://www.producthunt.com/products/chatgpt
-13,gemini-6,Gemini,Google's answer to GPT-4,ai-chatbots,https://www.producthunt.com/products/gemini-6
-14,stori-ai-beta,STORI,AI building your inbound channels,ai-chatbots,https://www.producthunt.com/products/stori-ai-beta
-15,monica-3,Monica,Your AI assistant on all websites.,ai-chatbots,https://www.producthunt.com/products/monica-3
-16,ioni,IONI,AI Agents for Food and Beverage Compliance and Operations,ai-chatbots,https://www.producthunt.com/products/ioni
-17,mindos,Me.bot,Your second brain that enhances your memory & creativity,ai-chatbots,https://www.producthunt.com/products/mindos
-18,yourgpt,YourGPT,"AI Agent platform for Support, Sales & Operations.",ai-chatbots,https://www.producthunt.com/products/yourgpt
-19,openai,OpenAI,APIs and tools for building AI products,llms,https://www.producthunt.com/products/openai
-20,midjourney,Midjourney,Create AI generated images from a text prompt,llms,https://www.producthunt.com/products/midjourney
-21,n8n-io,n8n,Workflow automation for technical people,llms,https://www.producthunt.com/products/n8n-io
-22,llama-3,Llama,Meta's open-source family of LLMs,llms,https://www.producthunt.com/products/llama-3
-23,perplexity-ai,Perplexity,Where Knowledge Begins,search,https://www.producthunt.com/products/perplexity-ai
-24,rewind-2,Limitless,Preserve conversations and ask your personalized AI anything,search,https://www.producthunt.com/products/rewind-2
-25,findr-5,Cortex,"Let your AI search all your workspace apps, at once",search,https://www.producthunt.com/products/findr-5
-26,klu-2,Klu,Internal search engine powered by AI.,search,https://www.producthunt.com/products/klu-2
-27,fabric-6,Fabric,The AI workspace that thinks with you,search,https://www.producthunt.com/products/fabric-6
-28,clay,Mesh,"The best way to discover, organize, and deepen relationships",search,https://www.producthunt.com/products/clay
-29,magnific,Magnific,"One AI platform for image, video, and audio. 1M+ subscribers",ai-generative-media,https://www.producthunt.com/products/magnific
-30,recraft-ai,Recraft,Graphic design research lab,ai-generative-media,https://www.producthunt.com/products/recraft-ai
-31,replicate-2,Image Object Removal API,Remove unwanted objects from images in seconds,ai-generative-media,https://www.producthunt.com/products/replicate-2
-32,synthesia,Synthesia,Create AI videos from text in minutes,ai-generative-media,https://www.producthunt.com/products/synthesia
-33,kling-ai-4,KLING AI,Next-Generation Al Creative Studio,ai-generative-media,https://www.producthunt.com/products/kling-ai-4
-34,runwayml,RunwayML,Create impossible video,ai-generative-media,https://www.producthunt.com/products/runwayml
-35,suno-ai,Suno.ai,Make any song you can imagine,ai-generative-media,https://www.producthunt.com/products/suno-ai
-36,bg-app,Photoroom,The full AI visual solution for e‑commerce,ai-generative-media,https://www.producthunt.com/products/bg-app
-37,gamma-3,Gamma,A new medium for presenting ideas. Powered by AI.,ai-presentation-software,https://www.producthunt.com/products/gamma-3
-38,pitch,Pitch,Create slides that win,ai-presentation-software,https://www.producthunt.com/products/pitch
-39,chronicle-6,Chronicle,Stunning presentations with AI. No design skills required.,ai-presentation-software,https://www.producthunt.com/products/chronicle-6
-40,beautiful-ai,Beautiful.ai,Create beautiful presentations 10x faster,ai-presentation-software,https://www.producthunt.com/products/beautiful-ai
-41,premast-templates,Premast,Changing the way everyone create a presentation!,ai-presentation-software,https://www.producthunt.com/products/premast-templates
-42,funblocks-aiflow,FunBlocks AIFlow,"Work, Learn, Explore with AI-powered Whiteboard and MindMap",ai-presentation-software,https://www.producthunt.com/products/funblocks-aiflow
-43,updf-2,UPDF,"Al chat with PDF, edit, annotate, convert PDFs, and do more.",ai-presentation-software,https://www.producthunt.com/products/updf-2
-44,cedric,Cedric AI,"The AI presents slides, attends meetings and does the work",ai-presentation-software,https://www.producthunt.com/products/cedric
-45,cursor,Cursor,AI coding agent,ai-coding-agents,https://www.producthunt.com/products/cursor
-46,claude-code,Claude Code,Anthropic’s deep-context AI coder,ai-coding-agents,https://www.producthunt.com/products/claude-code
-47,lovable,Lovable,The world's first AI Fullstack Engineer,ai-coding-agents,https://www.producthunt.com/products/lovable
-48,codex-3-0-by-openai,Codex 3.0 by OpenAI,"Codex can now build, test & debug on autopilot",ai-coding-agents,https://www.producthunt.com/products/codex-3-0-by-openai
-49,warp,Warp,The open-source ADE,ai-coding-agents,https://www.producthunt.com/products/warp
-50,jetbrains,JetBrains,A suite of intelligent development tools,ai-code-editors,https://www.producthunt.com/products/jetbrains
-51,softr,Softr,Build custom business apps powered by AI and no-code.,vibe-coding,https://www.producthunt.com/products/softr
-52,windsurf,Windsurf,"The first agentic IDE. Tomorrow's editor, today.",ai-coding-agents,https://www.producthunt.com/products/windsurf
-53,v0,v0 by Vercel,Full stack vibe coding platform. Created by Vercel.,ai-coding-agents,https://www.producthunt.com/products/v0
-54,zed,Zed,The Fastest AI Code Editor,ai-code-editors,https://www.producthunt.com/products/zed
-55,opencode,opencode,"Your terminal's AI agent, with any model you want",ai-coding-agents,https://www.producthunt.com/products/opencode
-56,kilocode,Kilo Code,The open-source agentic engineering platform,ai-coding-agents,https://www.producthunt.com/products/kilocode
-57,bolt-new,bolt.new,"Prompt, run, edit, and deploy full-stack web apps",ai-coding-agents,https://www.producthunt.com/products/bolt-new
-58,fathom,Fathom,AI notetaking that is out of this world.,ai-meeting-notetakers,https://www.producthunt.com/products/fathom
-59,elevenlabs,ElevenLabs,Create natural AI voices instantly in any language,ai-voice-agents,https://www.producthunt.com/products/elevenlabs
-60,fin,Fin,Perfect customer experiences made possible,ai-voice-agents,https://www.producthunt.com/products/fin
-61,deepgram,Deepgram,Voice AI platform for developers.,ai-voice-agents,https://www.producthunt.com/products/deepgram
-62,granola,Granola,The AI notepad for people in back-to-back meetings,ai-meeting-notetakers,https://www.producthunt.com/products/granola
-63,superpowered-me,Superpowered,The AI copilot for your meetings,ai-meeting-notetakers,https://www.producthunt.com/products/superpowered-me
-64,whisper-by-openai-1,Whisper by OpenAI,A neural net for speech recognition,ai-voice-agents,https://www.producthunt.com/products/whisper-by-openai-1
-65,krisp,Krisp,Voice AI for Meetings,ai-meeting-notetakers,https://www.producthunt.com/products/krisp
-66,tl-dv,tl;dv,Catch up on meetings in minutes,ai-meeting-notetakers,https://www.producthunt.com/products/tl-dv
-67,fireflies-ai,Fireflies.ai 👔,"Automatically record, search, and collaborate your meetings.",ai-meeting-notetakers,https://www.producthunt.com/products/fireflies-ai
-68,framer,Framer,The AI design agent for every step from idea to launch,ai-agents,https://www.producthunt.com/products/framer
-69,jira,Jira,"Any agent, any model, one team.",ai-agents,https://www.producthunt.com/products/jira
-70,taskade,Taskade,One prompt. One app. One living workspace for teams.,no-code-ai-agent-builder,https://www.producthunt.com/products/taskade
-71,make-4,Make,AI automation you can visually build and orchestrate.,ai-agents,https://www.producthunt.com/products/make-4
-72,relay-app,Relay.app,Build an AI team that works for you,no-code-ai-agent-builder,https://www.producthunt.com/products/relay-app
-73,happycapy,Happycapy,"The agent-native computer, for the rest of us",ai-agents,https://www.producthunt.com/products/happycapy
-74,supademo,Supademo,"Beautiful AI interactive demos, screen recs, and demo agents",ai-agents,https://www.producthunt.com/products/supademo
-75,databutton,Riff.ai,Build Apps for Work with AI,no-code-ai-agent-builder,https://www.producthunt.com/products/databutton
-76,pickaxe,Pickaxe,"Build agents for anything, Sell them to anyone",no-code-ai-agent-builder,https://www.producthunt.com/products/pickaxe
-77,betterclaw,BetterClaw,"Deploy AI Agent, 60 seconds & $0 forever",no-code-ai-agent-builder,https://www.producthunt.com/products/betterclaw
-78,kimi-ai-assistant,Kimi,Your AI assistant for everyday use,ai-agents,https://www.producthunt.com/products/kimi-ai-assistant
-79,composio,Composio,Your agent acts. We'll handle the rest.,ai-agents,https://www.producthunt.com/products/composio
-80,hex,Hex,Powerful agentic analytics platform for data teams,ai-agents,https://www.producthunt.com/products/hex
-81,fellow-app,Fellow.ai,The Most Secure AI Meeting Assistant,ai-chief-of-staff,https://www.producthunt.com/products/fellow-app
-82,magicpatterns,Magic Patterns,Design your product ideas with AI.,ai-designer,https://www.producthunt.com/products/magicpatterns
-83,pally,Pally - One text away from done.,Your personal assistant over text.,ai-chief-of-staff,https://www.producthunt.com/products/pally
-84,kombai,Kombai,Your AI Design Engineer,ai-designer,https://www.producthunt.com/products/kombai
-85,markopolo-ai,Markopolo AI,Reach 30–40% more customers with personal outreach at scale,ai-sdr,https://www.producthunt.com/products/markopolo-ai
-86,uizard,Uizard,"App, web, & UI design made easy - powered by AI",ai-designer,https://www.producthunt.com/products/uizard
-87,anima-app,Anima App,UX Design Agent | Design to Code,ai-designer,https://www.producthunt.com/products/anima-app
-88,builder-io,Builder.io,"The first AI agent for product, design, and code",ai-designer,https://www.producthunt.com/products/builder-io
-89,veltrix-ai,Veltrix AI,"AI finance copilot for cash flow, margins, and growth",ai-data-scientist,https://www.producthunt.com/products/veltrix-ai
-90,littlebird,Littlebird,The AI assistant that already knows your work,ai-chief-of-staff,https://www.producthunt.com/products/littlebird
-91,neeva,Neeva,Search powered by AI. Get answers. Not ads.,predictive-ai,https://www.producthunt.com/products/neeva
-92,wope,Wope,New Generation of Marketing Suite,predictive-ai,https://www.producthunt.com/products/wope
-93,hume-2,Hume AI,AI that understands and optimizes for human expression,predictive-ai,https://www.producthunt.com/products/hume-2
-94,merlin-chatgpt-powered-browser-cmd-g,Merlin - ChatGPT powered chrome extension (Cmd+M),OpenAI powered browser launcher - product by Foyer,prompt-engineering-tools,https://www.producthunt.com/products/merlin-chatgpt-powered-browser-cmd-g
-95,poe,Poe,"Fast, helpful AI chat from Quora",prompt-engineering-tools,https://www.producthunt.com/products/poe
-96,langchain,Langchain,LangChain’s suite of products supports AI development,ai-infrastructure,https://www.producthunt.com/products/langchain
-97,hugging-face,Hugging Face,The AI community building the future.,ai-infrastructure,https://www.producthunt.com/products/hugging-face
-98,hubspot,HubSpot,Grow better with HubSpot,ai-sales-tools,https://www.producthunt.com/products/hubspot
-99,nvstly-social-investing,NVSTly: Social Investing,"Track, share, or copy trades. Find top traders, or compete!",investing,https://www.producthunt.com/products/nvstly-social-investing
-100,jeeva-ai,Jeeva AI,"Superhuman sales, powered by Agentic AI",ai-sales-tools,https://www.producthunt.com/products/jeeva-ai
+﻿no,slug,name,tagline,category,url,tier,reviews
+1,notion,Notion,The all-in-one workspace,notes-documents,https://www.producthunt.com/products/notion,,
+2,obsidian,Obsidian,A versatile writing app tailored to your thinking,notes-documents,https://www.producthunt.com/products/obsidian,,
+3,capacities,Capacities,A studio for your mind,notes-documents,https://www.producthunt.com/products/capacities,,
+4,reflect-notes,Reflect,Fast networked note-taking,notes-documents,https://www.producthunt.com/products/reflect-notes,,
+5,hynote-ai,HyNote AI,Free local transcription that is 100% Private,notes-documents,https://www.producthunt.com/products/hynote-ai,,
+6,claude,Claude by Anthropic,A family of foundational AI models,ai-chatbots,https://www.producthunt.com/products/claude,头部,1100
+7,v0,v0 by Vercel,Full stack vibe coding platform. Created by Vercel.,ai-coding-agents,https://www.producthunt.com/products/v0,腰部,60
+8,stagecaptions-io,stagecaptions.io,Real-time captioning software for live events,ai-presentation-software,https://www.producthunt.com/products/stagecaptions-io,长尾,1
+9,fathom,Fathom,AI notetaking that is out of this world.,ai-meeting-notetakers,https://www.producthunt.com/products/fathom,头部,316
+10,suno-ai,Suno.ai,Make any song you can imagine,ai-generative-media,https://www.producthunt.com/products/suno-ai,腰部,19
+11,play-ht,Play,Making AI speak better than humans.,ai-voice-agents,https://www.producthunt.com/products/play-ht,长尾,4
+12,framer,Framer,The AI design agent for every step from idea to launch,ai-agents,https://www.producthunt.com/products/framer,头部,266
+13,findr-5,Cortex,Let your AI search all your workspace apps， at once,search,https://www.producthunt.com/products/findr-5,头部,41
+14,receiptor-ai,Receiptor AI,Bookkeeping on Autopilot with AI,accounting,https://www.producthunt.com/products/receiptor-ai,腰部,7
+15,myways-ai,Zeko AI,Making it Easy,hiring-software,https://www.producthunt.com/products/myways-ai,腰部,15
+16,genie-ai,Genie AI,Your AI Legal Assistant,legal-services,https://www.producthunt.com/products/genie-ai,头部,17
+17,daily,Daily.co,Real-time voice， video， and AI for developers,video-conferencing,https://www.producthunt.com/products/daily,头部,18
+18,typeahead,Typeahead,AI autocomplete for every app on your Mac,writing-assistants,https://www.producthunt.com/products/typeahead,长尾,7
+19,meshy,Meshy,Create stunning 3D models with AI,3d-animation,https://www.producthunt.com/products/meshy,腰部,22
+20,artlist,Artlist,AI video， image， voice， and music creation， plus 2M+ assets,music-generation,https://www.producthunt.com/products/artlist,长尾,1
+21,ai-image-upscaler-by-upscale-media,AI Image Upscaler by Upscale.media,Increase image resolution up to 4x with our free AI tool,photo-editing,https://www.producthunt.com/products/ai-image-upscaler-by-upscale-media,头部,67
+22,wondercraft-ai,Wondercraft,#1 AI audio platform for podcasts,podcasting,https://www.producthunt.com/products/wondercraft-ai,腰部,16
+23,told-2,Told,Ai product tours and in-app surveys,user-research,https://www.producthunt.com/products/told-2,腰部,5
+24,peony-0-5,Peony,AI-Native Data Room with Advanced Q&A & Enterprise Security,e-signature,https://www.producthunt.com/products/peony-0-5,头部,6
+25,x-design,Zawa (formerly X-Design),Your Creative AI Agent for Branding,ai-designer,https://www.producthunt.com/products/x-design,腰部,6
+26,data-explorer,Data Explorer,Build analytics for your teams and users,ai-data-scientist,https://www.producthunt.com/products/data-explorer,长尾,0
+27,markopolo-ai,Markopolo AI,Reach 30–40% more customers with personal outreach at scale,ai-sdr,https://www.producthunt.com/products/markopolo-ai,头部,12
+28,lemlist,lemlist,The cold outreach tool that helps you get replies,ai-sales-tools,https://www.producthunt.com/products/lemlist,腰部,22
+29,the-drive-ai-2,The Drive AI,The AI agent that does the work on your files,ai-chief-of-staff,https://www.producthunt.com/products/the-drive-ai-2,长尾,1
+30,taskade,Taskade,One prompt. One app. One living workspace for teams.,no-code-ai-agent-builder,https://www.producthunt.com/products/taskade,头部,109
+31,ween-ai,Ween.ai,The AI platform that turns qualitative data into insights,predictive-ai,https://www.producthunt.com/products/ween-ai,腰部,8
+32,replymind,ReplyMind,Generate valuable replies on LinkedIn， X & PH.,prompt-engineering-tools,https://www.producthunt.com/products/replymind,长尾,5
+33,jetbrains,JetBrains,A suite of intelligent development tools,ai-code-editors,https://www.producthunt.com/products/jetbrains,头部,75
+34,scoutflo,Scoutflo,AI SRE platform to investigate incidents & fix in production,vibe-coding,https://www.producthunt.com/products/scoutflo,腰部,10
+35,ragie-audio-video,Ragie,Fully Managed RAG-as-a-Service for Developers,ai-engineer,https://www.producthunt.com/products/ragie-audio-video,长尾,1
+36,pitchleague-ai,PitchLeague.ai,Your personal AI pitch deck coach,investing,https://www.producthunt.com/products/pitchleague-ai,头部,7
+37,yourgpt,YourGPT,AI Agent platform for Support， Sales & Operations.,ai-chatbots,https://www.producthunt.com/products/yourgpt,腰部,30
+38,augment-code,Augment Code,Augment Code – Developer AI for real work,ai-coding-agents,https://www.producthunt.com/products/augment-code,长尾,10
+39,gamma-3,Gamma,A new medium for presenting ideas. Powered by AI.,ai-presentation-software,https://www.producthunt.com/products/gamma-3,头部,78
+40,fireflies-ai,Fireflies.ai 👔,Automatically record， search， and collaborate your meetings.,ai-meeting-notetakers,https://www.producthunt.com/products/fireflies-ai,腰部,32
+41,stable-diffusion-xl,Stable Diffusion XL,Richer images & jaw-dropping aesthetics from shorter prompts,ai-generative-media,https://www.producthunt.com/products/stable-diffusion-xl,长尾,8
+42,elevenlabs,ElevenLabs,Create natural AI voices instantly in any language,ai-voice-agents,https://www.producthunt.com/products/elevenlabs,头部,231
+43,supademo,Supademo,Beautiful AI interactive demos， screen recs， and demo agents,ai-agents,https://www.producthunt.com/products/supademo,腰部,30
+44,movie-deep-search-by-ai-keytalk,Movie Deep Search by AI Keytalk,Recommendation AI that knows every movie ever created,search,https://www.producthunt.com/products/movie-deep-search-by-ai-keytalk,腰部,24
+45,fortune-finance-accounting,Fortune,An AI-powered accountant,accounting,https://www.producthunt.com/products/fortune-finance-accounting,长尾,6
+46,final-round-ai,Final Round AI,A Superpower for Interviewees,hiring-software,https://www.producthunt.com/products/final-round-ai,头部,72
+47,ai-lawyer,AI Lawyer,No more pricey consultations， wait times and legal jargon,legal-services,https://www.producthunt.com/products/ai-lawyer,腰部,5
+48,writesonic-2,Writesonic,Generative engine optimization (GEO) platform with actions,writing-assistants,https://www.producthunt.com/products/writesonic-2,头部,53
+49,mubert,Mubert,Worldwide copyright-protected AI-generated music via API,music-generation,https://www.producthunt.com/products/mubert,头部,16
+50,microsoft-designer,Microsoft Designer,Design and edit anything you can imagine with AI,photo-editing,https://www.producthunt.com/products/microsoft-designer,腰部,16
+51,podsqueeze,Podsqueeze,User friendly AI Podcast Content Writer,podcasting,https://www.producthunt.com/products/podsqueeze,长尾,5
+52,dovetail,Dovetail,The AI-first customer insights hub,user-research,https://www.producthunt.com/products/dovetail,头部,13
+53,viva,Vivago,Skip the prompting. Produce consistently compelling videos.,ai-designer,https://www.producthunt.com/products/viva,长尾,3
+54,veltrix-ai,Veltrix AI,AI finance copilot for cash flow， margins， and growth,ai-data-scientist,https://www.producthunt.com/products/veltrix-ai,头部,11
+55,causo,Causo,Palantir for GTM. Find the right customers and investors.,ai-sdr,https://www.producthunt.com/products/causo,腰部,2
+56,draftboard,Draftboard,Warm (intros) > cold (outbound),ai-sales-tools,https://www.producthunt.com/products/draftboard,长尾,4
+57,fellow-app,Fellow.ai,The Most Secure AI Meeting Assistant,ai-chief-of-staff,https://www.producthunt.com/products/fellow-app,头部,17
+58,wordware,Wordware,web-hosted IDE for building AI agents,no-code-ai-agent-builder,https://www.producthunt.com/products/wordware,腰部,7
+59,postgresml,PostgresML,You know Postgres. Now you know machine learning.,predictive-ai,https://www.producthunt.com/products/postgresml,长尾,2
+60,merlin-chatgpt-powered-browser-cmd-g,Merlin - ChatGPT powered chrome extension (Cmd+M),OpenAI powered browser launcher - product by Foyer,prompt-engineering-tools,https://www.producthunt.com/products/merlin-chatgpt-powered-browser-cmd-g,头部,16
+61,kiro,Kiro,Agentic development for prototype to production,ai-code-editors,https://www.producthunt.com/products/kiro,腰部,12
+62,bob-s-workshop,Bob's Workshop,Your AI team that learns， thinks， and builds with you,vibe-coding,https://www.producthunt.com/products/bob-s-workshop,长尾,2
+63,youware,YouWare,World's first vibe coding community,ai-engineer,https://www.producthunt.com/products/youware,头部,9
+64,grok-ai-assistant,Grok AI assistant,Elon Musk's response to chatGPT 🤖,ai-chatbots,https://www.producthunt.com/products/grok-ai-assistant,长尾,10
+65,cursor,Cursor,AI coding agent,ai-coding-agents,https://www.producthunt.com/products/cursor,头部,982
+66,cedric,Cedric AI,The AI presents slides， attends meetings and does the work,ai-presentation-software,https://www.producthunt.com/products/cedric,腰部,4
+67,circleback-3,Circleback,AI-powered meeting notes and automations,ai-meeting-notetakers,https://www.producthunt.com/products/circleback-3,长尾,9
+68,midjourney,Midjourney,Create AI generated images from a text prompt,ai-generative-media,https://www.producthunt.com/products/midjourney,头部,81
+69,vapi,Vapi,Voice AI for developers,ai-voice-agents,https://www.producthunt.com/products/vapi,腰部,25
+70,hex,Hex,Powerful agentic analytics platform for data teams,ai-agents,https://www.producthunt.com/products/hex,长尾,11
+71,exa-ai,exa.ai,Search API for AI applications,search,https://www.producthunt.com/products/exa-ai,长尾,21
+72,fiskl,FISKL AI Accounting,AI-Native Accounting & Financial Management,accounting,https://www.producthunt.com/products/fiskl,头部,16
+73,pensieve-ai,Pensieve AI,Chat with， ask Qs to any PDF document， powered by ChatGPTᵀᴹ,legal-services,https://www.producthunt.com/products/pensieve-ai,长尾,2
+74,heyday-2,Heyday,AI Copilot for your own research， notes/docs & conversations,writing-assistants,https://www.producthunt.com/products/heyday-2,腰部,16
+75,spline,Spline,Best 3D platform for the agentic era,3d-animation,https://www.producthunt.com/products/spline,头部,32
+76,splash-pro,Splash Pro,AI powered music at the speed of a text prompt,music-generation,https://www.producthunt.com/products/splash-pro,腰部,2
+77,leonardo-ai,Leonardo AI,Create Art， Images & Video | Leonardo AI,photo-editing,https://www.producthunt.com/products/leonardo-ai,长尾,4
+78,podwise-ai,Podwise AI,Unleash the power of podcasts,podcasting,https://www.producthunt.com/products/podwise-ai,头部,22
+79,magicpatterns,Magic Patterns,Design your product ideas with AI.,ai-designer,https://www.producthunt.com/products/magicpatterns,头部,17
+80,fabi-ai,Fabi.ai,The AI Business Intelligence platform,ai-data-scientist,https://www.producthunt.com/products/fabi-ai,腰部,1
+81,researchfly,ResearchFly,Hire a research assistant for $50/mo,ai-sdr,https://www.producthunt.com/products/researchfly,长尾,1
+82,hubspot,HubSpot,Grow better with HubSpot,ai-sales-tools,https://www.producthunt.com/products/hubspot,头部,80
+83,easy-peasy-ai,Easy-Peasy.AI,All-in-one AI: employees， agents， images， video and voice,ai-chief-of-staff,https://www.producthunt.com/products/easy-peasy-ai,腰部,4
+84,instruct-2,Instruct,The most capable way to automate your work.,no-code-ai-agent-builder,https://www.producthunt.com/products/instruct-2,长尾,2
+85,groq-chat,Groq Chat,An LPU inference engine,predictive-ai,https://www.producthunt.com/products/groq-chat,头部,54
+86,camel-agi,Camel AGI,Communicative Agents on GPT,prompt-engineering-tools,https://www.producthunt.com/products/camel-agi,腰部,8
+87,android-studio-panda-4,Android Studio Panda 4,AI agent IDE for Android with planning and edit prediction,ai-code-editors,https://www.producthunt.com/products/android-studio-panda-4,长尾,6
+88,softr,Softr,Build custom business apps powered by AI and no-code.,vibe-coding,https://www.producthunt.com/products/softr,头部,68
+89,rupt,Rupt,Know which users and agents you can trust,ai-engineer,https://www.producthunt.com/products/rupt,腰部,3
+90,chatgpt,ChatGPT by OpenAI,Get answers. Find inspiration. Be more productive.,ai-chatbots,https://www.producthunt.com/products/chatgpt,补充,762
+91,claude-code,Claude Code,Anthropic’s deep-context AI coder,ai-coding-agents,https://www.producthunt.com/products/claude-code,补充,857
+92,pitch,Pitch,Create slides that win,ai-presentation-software,https://www.producthunt.com/products/pitch,补充,38
+93,rewind-2,Limitless,Preserve conversations and ask your personalized AI anything,ai-meeting-notetakers,https://www.producthunt.com/products/rewind-2,补充,75
+94,magnific,Magnific,One AI platform for image， video， and audio. 1M+ subscribers,ai-generative-media,https://www.producthunt.com/products/magnific,补充,42
+95,fin,Fin,Perfect customer experiences made possible,ai-voice-agents,https://www.producthunt.com/products/fin,补充,93
+96,kombai,Kombai,Your AI Design Engineer,ai-designer,https://www.producthunt.com/products/kombai,补充,12
+97,basedash,Basedash: AI data analyst,AI-native Business Intelligence Platform,ai-data-scientist,https://www.producthunt.com/products/basedash,补充,9
+98,revscale,Revscale - Outbound AI Agent,Autonomous AI SDR for multi-channel outbound and follow-up,ai-sdr,https://www.producthunt.com/products/revscale,补充,6
+99,pally,Pally - One text away from done.,Your personal assistant over text.,ai-chief-of-staff,https://www.producthunt.com/products/pally,补充,16
+100,relay-app,Relay.app,Build an AI team that works for you,no-code-ai-agent-builder,https://www.producthunt.com/products/relay-app,补充,43

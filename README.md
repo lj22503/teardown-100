@@ -13,16 +13,16 @@
 
 |  |  |  |  |  |  |  |  |  |  |
 |---|---|---|---|---|---|---|---|---|---|
-| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ⬜ Craft.do | ⬜ Bear | ⬜ Paste | ⬜ Voicenotes | ⬜ Readwise |
-| ⬜ Claude by Anthropic | ⬜ ChatGPT by OpenAI | ⬜ Gemini | ⬜ STORI | ⬜ Monica | ⬜ IONI | ⬜ Me.bot | ⬜ YourGPT | ⬜ OpenAI | ⬜ Midjourney |
-| ⬜ n8n | ⬜ Llama | ⬜ Perplexity | ⬜ Limitless | ⬜ Cortex | ⬜ Klu | ⬜ Fabric | ⬜ Mesh | ⬜ Magnific | ⬜ Recraft |
-| ⬜ Image Object Removal API | ⬜ Synthesia | ⬜ KLING AI | ⬜ RunwayML | ⬜ Suno.ai | ⬜ Photoroom | ⬜ Gamma | ⬜ Pitch | ⬜ Chronicle | ⬜ Beautiful.ai |
-| ⬜ Premast | ⬜ FunBlocks AIFlow | ⬜ UPDF | ⬜ Cedric AI | ⬜ Cursor | ⬜ Claude Code | ⬜ Lovable | ⬜ Codex 3.0 by OpenAI | ⬜ Warp | ⬜ JetBrains |
-| ⬜ Softr | ⬜ Windsurf | ⬜ v0 by Vercel | ⬜ Zed | ⬜ opencode | ⬜ Kilo Code | ⬜ bolt.new | ⬜ Fathom | ⬜ ElevenLabs | ⬜ Fin |
-| ⬜ Deepgram | ⬜ Granola | ⬜ Superpowered | ⬜ Whisper by OpenAI | ⬜ Krisp | ⬜ tl;dv | ⬜ Fireflies.ai 👔 | ⬜ Framer | ⬜ Jira | ⬜ Taskade |
-| ⬜ Make | ⬜ Relay.app | ⬜ Happycapy | ⬜ Supademo | ⬜ Riff.ai | ⬜ Pickaxe | ⬜ BetterClaw | ⬜ Kimi | ⬜ Composio | ⬜ Hex |
-| ⬜ Fellow.ai | ⬜ Magic Patterns | ⬜ Pally - One text away from done. | ⬜ Kombai | ⬜ Markopolo AI | ⬜ Uizard | ⬜ Anima App | ⬜ Builder.io | ⬜ Veltrix AI | ⬜ Littlebird |
-| ⬜ Neeva | ⬜ Wope | ⬜ Hume AI | ⬜ Merlin - ChatGPT powered chrome extension (Cmd+M) | ⬜ Poe | ⬜ Langchain | ⬜ Hugging Face | ⬜ HubSpot | ⬜ NVSTly: Social Investing | ⬜ Jeeva AI |
+| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ⬜ Claude by Anthropic | ⬜ v0 by Vercel | ⬜ stagecaptions.io | ⬜ Fathom | ⬜ Suno.ai |
+| ⬜ Play | ⬜ Framer | ⬜ Cortex | ⬜ Receiptor AI | ⬜ Zeko AI | ⬜ Genie AI | ⬜ Daily.co | ⬜ Typeahead | ⬜ Meshy | ⬜ Artlist |
+| ⬜ AI Image Upscaler by Upscale.media | ⬜ Wondercraft | ⬜ Told | ⬜ Peony | ⬜ Zawa (formerly X-Design) | ⬜ Data Explorer | ⬜ Markopolo AI | ⬜ lemlist | ⬜ The Drive AI | ⬜ Taskade |
+| ⬜ Ween.ai | ⬜ ReplyMind | ⬜ JetBrains | ⬜ Scoutflo | ⬜ Ragie | ⬜ PitchLeague.ai | ⬜ YourGPT | ⬜ Augment Code | ⬜ Gamma | ⬜ Fireflies.ai 👔 |
+| ⬜ Stable Diffusion XL | ⬜ ElevenLabs | ⬜ Supademo | ⬜ Movie Deep Search by AI Keytalk | ⬜ Fortune | ⬜ Final Round AI | ⬜ AI Lawyer | ⬜ Writesonic | ⬜ Mubert | ⬜ Microsoft Designer |
+| ⬜ Podsqueeze | ⬜ Dovetail | ⬜ Vivago | ⬜ Veltrix AI | ⬜ Causo | ⬜ Draftboard | ⬜ Fellow.ai | ⬜ Wordware | ⬜ PostgresML | ⬜ Merlin - ChatGPT powered chrome extension (Cmd+M) |
+| ⬜ Kiro | ⬜ Bob's Workshop | ⬜ YouWare | ⬜ Grok AI assistant | ⬜ Cursor | ⬜ Cedric AI | ⬜ Circleback | ⬜ Midjourney | ⬜ Vapi | ⬜ Hex |
+| ⬜ exa.ai | ⬜ FISKL AI Accounting | ⬜ Pensieve AI | ⬜ Heyday | ⬜ Spline | ⬜ Splash Pro | ⬜ Leonardo AI | ⬜ Podwise AI | ⬜ Magic Patterns | ⬜ Fabi.ai |
+| ⬜ ResearchFly | ⬜ HubSpot | ⬜ Easy-Peasy.AI | ⬜ Instruct | ⬜ Groq Chat | ⬜ Camel AGI | ⬜ Android Studio Panda 4 | ⬜ Softr | ⬜ Rupt | ⬜ ChatGPT by OpenAI |
+| ⬜ Claude Code | ⬜ Pitch | ⬜ Limitless | ⬜ Magnific | ⬜ Fin | ⬜ Kombai | ⬜ Basedash: AI data analyst | ⬜ Revscale - Outbound AI Agent | ⬜ Pally - One text away from done. | ⬜ Relay.app |
 
 ---
 

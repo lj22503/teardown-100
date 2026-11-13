@@ -1,20 +1,15 @@
 ---
-type: 产品拆解
-产品: HyNote AI
-slug: hynote-ai
-队列号: 005
-分类: notes-documents · AI 笔记与转录
-系列: AI产品Sense · 第 5 篇
-拆解日期: 2026-11-13
-材料版本: 官网 hynote.ai 2026-11 版（首页 + 定价页）· PH 产品页 4.8/39 条评论 · PH 五次发布记录 · App Store / Google Play 商店条目 · G2 采集失败 0 条
-实测状态: 已实测（2026-11-13，20 分钟，署名「实测（燃冰）」；T2 边界未做，本卡不给结论）
-状态: 已完成
-tags:
-  - product-sense
-  - hynote
-  - ai-notetaker
-  - transcription
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: 1c835e55ba3b06878e6538b2edadf703_48abdd0fdf0b11f1bc42525400638852
+    ReservedCode1: ur8U4V690Dyununl8O/fBGnCbdfU83vnk8uQFP3zWeFH8hgYsiGn6nhZ9cP2bsH/0wsPWE5slzgDzXXkTiQm+8jZD78SqGDVvRHIe1CNwhMuEUgDjavweeYaxBU8FKV7pFXUSxvWFJQK+Y9oa2xgfiZZal2lGw+vo70fLSCi0YWEPyTwDVsq/Mtr7MU=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: 1c835e55ba3b06878e6538b2edadf703_48abdd0fdf0b11f1bc42525400638852
+    ReservedCode2: ur8U4V690Dyununl8O/fBGnCbdfU83vnk8uQFP3zWeFH8hgYsiGn6nhZ9cP2bsH/0wsPWE5slzgDzXXkTiQm+8jZD78SqGDVvRHIe1CNwhMuEUgDjavweeYaxBU8FKV7pFXUSxvWFJQK+Y9oa2xgfiZZal2lGw+vo70fLSCi0YWEPyTwDVsq/Mtr7MU=
 ---
+
+
 
 # 005 · HyNote AI
 
@@ -116,3 +111,4 @@ tags:
 
 ---
 以上内容对应memory_id为：memory_0e8cd7d9a1f04bcbb0b9c2a1b6cb01f9
+*（内容由AI生成，仅供参考）*
