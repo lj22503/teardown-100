@@ -5,97 +5,97 @@
 4,reflect-notes,Reflect,Fast networked note-taking,notes-documents,https://www.producthunt.com/products/reflect-notes,,,中间态,人工名单
 5,hynote-ai,HyNote AI,Free local transcription that is 100% Private,notes-documents,https://www.producthunt.com/products/hynote-ai,,,中间态,人工名单
 6,claude,Claude by Anthropic,A family of foundational AI models,ai-chatbots,https://www.producthunt.com/products/claude,头部,1100,原生,人工名单
-7,v0,v0 by Vercel,Full stack vibe coding platform. Created by Vercel.,ai-coding-agents,https://www.producthunt.com/products/v0,腰部,60,原生,品类规则（AI 品类）
-8,stagecaptions-io,stagecaptions.io,Real-time captioning software for live events,ai-presentation-software,https://www.producthunt.com/products/stagecaptions-io,长尾,1,待判,品类规则（行业/工具类，需拔电测试）
-9,fathom,Fathom,AI notetaking that is out of this world.,ai-meeting-notetakers,https://www.producthunt.com/products/fathom,头部,316,原生,人工名单
-10,suno-ai,Suno.ai,Make any song you can imagine,ai-generative-media,https://www.producthunt.com/products/suno-ai,腰部,19,原生,人工名单
-11,play-ht,Play,Making AI speak better than humans.,ai-voice-agents,https://www.producthunt.com/products/play-ht,长尾,4,原生,人工名单
-12,framer,Framer,The AI design agent for every step from idea to launch,ai-agents,https://www.producthunt.com/products/framer,头部,266,中间态,人工名单
-13,findr-5,Cortex,Let your AI search all your workspace apps， at once,search,https://www.producthunt.com/products/findr-5,头部,41,原生,品类规则（AI 品类）
-14,receiptor-ai,Receiptor AI,Bookkeeping on Autopilot with AI,accounting,https://www.producthunt.com/products/receiptor-ai,腰部,7,待判,品类规则（行业/工具类，需拔电测试）
-15,myways-ai,Zeko AI,Making it Easy,hiring-software,https://www.producthunt.com/products/myways-ai,腰部,15,待判,品类规则（行业/工具类，需拔电测试）
-16,genie-ai,Genie AI,Your AI Legal Assistant,legal-services,https://www.producthunt.com/products/genie-ai,头部,17,待判,品类规则（行业/工具类，需拔电测试）
-17,daily,Daily.co,Real-time voice， video， and AI for developers,video-conferencing,https://www.producthunt.com/products/daily,头部,18,待判,品类规则（行业/工具类，需拔电测试）
-18,typeahead,Typeahead,AI autocomplete for every app on your Mac,writing-assistants,https://www.producthunt.com/products/typeahead,长尾,7,中间态,人工名单
-19,meshy,Meshy,Create stunning 3D models with AI,3d-animation,https://www.producthunt.com/products/meshy,腰部,22,原生,人工名单
-20,artlist,Artlist,AI video， image， voice， and music creation， plus 2M+ assets,music-generation,https://www.producthunt.com/products/artlist,长尾,1,原生,人工名单
-21,ai-image-upscaler-by-upscale-media,AI Image Upscaler by Upscale.media,Increase image resolution up to 4x with our free AI tool,photo-editing,https://www.producthunt.com/products/ai-image-upscaler-by-upscale-media,头部,67,待判,品类规则（行业/工具类，需拔电测试）
-22,wondercraft-ai,Wondercraft,#1 AI audio platform for podcasts,podcasting,https://www.producthunt.com/products/wondercraft-ai,腰部,16,待判,品类规则（行业/工具类，需拔电测试）
-23,told-2,Told,Ai product tours and in-app surveys,user-research,https://www.producthunt.com/products/told-2,腰部,5,待判,品类规则（行业/工具类，需拔电测试）
-24,peony-0-5,Peony,AI-Native Data Room with Advanced Q&A & Enterprise Security,e-signature,https://www.producthunt.com/products/peony-0-5,头部,6,待判,品类规则（行业/工具类，需拔电测试）
-25,x-design,Zawa (formerly X-Design),Your Creative AI Agent for Branding,ai-designer,https://www.producthunt.com/products/x-design,腰部,6,待判,品类规则（行业/工具类，需拔电测试）
-26,data-explorer,Data Explorer,Build analytics for your teams and users,ai-data-scientist,https://www.producthunt.com/products/data-explorer,长尾,0,原生,品类规则（AI 品类）
-27,markopolo-ai,Markopolo AI,Reach 30–40% more customers with personal outreach at scale,ai-sdr,https://www.producthunt.com/products/markopolo-ai,头部,12,待判,品类规则（行业/工具类，需拔电测试）
-28,lemlist,lemlist,The cold outreach tool that helps you get replies,ai-sales-tools,https://www.producthunt.com/products/lemlist,腰部,22,待判,品类规则（行业/工具类，需拔电测试）
-29,the-drive-ai-2,The Drive AI,The AI agent that does the work on your files,ai-chief-of-staff,https://www.producthunt.com/products/the-drive-ai-2,长尾,1,待判,品类规则（行业/工具类，需拔电测试）
-30,taskade,Taskade,One prompt. One app. One living workspace for teams.,no-code-ai-agent-builder,https://www.producthunt.com/products/taskade,头部,109,原生,人工名单
-31,ween-ai,Ween.ai,The AI platform that turns qualitative data into insights,predictive-ai,https://www.producthunt.com/products/ween-ai,腰部,8,原生,品类规则（AI 品类）
-32,replymind,ReplyMind,Generate valuable replies on LinkedIn， X & PH.,prompt-engineering-tools,https://www.producthunt.com/products/replymind,长尾,5,待判,品类规则（行业/工具类，需拔电测试）
-33,jetbrains,JetBrains,A suite of intelligent development tools,ai-code-editors,https://www.producthunt.com/products/jetbrains,头部,75,原生,品类规则（AI 品类）
-34,scoutflo,Scoutflo,AI SRE platform to investigate incidents & fix in production,vibe-coding,https://www.producthunt.com/products/scoutflo,腰部,10,原生,品类规则（AI 品类）
-35,ragie-audio-video,Ragie,Fully Managed RAG-as-a-Service for Developers,ai-engineer,https://www.producthunt.com/products/ragie-audio-video,长尾,1,待判,品类规则（行业/工具类，需拔电测试）
-36,pitchleague-ai,PitchLeague.ai,Your personal AI pitch deck coach,investing,https://www.producthunt.com/products/pitchleague-ai,头部,7,中间态,人工名单
-37,yourgpt,YourGPT,AI Agent platform for Support， Sales & Operations.,ai-chatbots,https://www.producthunt.com/products/yourgpt,腰部,30,原生,品类规则（AI 品类）
-38,augment-code,Augment Code,Augment Code – Developer AI for real work,ai-coding-agents,https://www.producthunt.com/products/augment-code,长尾,10,原生,品类规则（AI 品类）
-39,gamma-3,Gamma,A new medium for presenting ideas. Powered by AI.,ai-presentation-software,https://www.producthunt.com/products/gamma-3,头部,78,中间态,人工名单
-40,fireflies-ai,Fireflies.ai 👔,Automatically record， search， and collaborate your meetings.,ai-meeting-notetakers,https://www.producthunt.com/products/fireflies-ai,腰部,32,原生,人工名单
-41,stable-diffusion-xl,Stable Diffusion XL,Richer images & jaw-dropping aesthetics from shorter prompts,ai-generative-media,https://www.producthunt.com/products/stable-diffusion-xl,长尾,8,原生,品类规则（AI 品类）
-42,elevenlabs,ElevenLabs,Create natural AI voices instantly in any language,ai-voice-agents,https://www.producthunt.com/products/elevenlabs,头部,231,原生,人工名单
-43,supademo,Supademo,Beautiful AI interactive demos， screen recs， and demo agents,ai-agents,https://www.producthunt.com/products/supademo,腰部,30,原生,品类规则（AI 品类）
-44,movie-deep-search-by-ai-keytalk,Movie Deep Search by AI Keytalk,Recommendation AI that knows every movie ever created,search,https://www.producthunt.com/products/movie-deep-search-by-ai-keytalk,腰部,24,原生,品类规则（AI 品类）
-45,fortune-finance-accounting,Fortune,An AI-powered accountant,accounting,https://www.producthunt.com/products/fortune-finance-accounting,长尾,6,待判,品类规则（行业/工具类，需拔电测试）
-46,final-round-ai,Final Round AI,A Superpower for Interviewees,hiring-software,https://www.producthunt.com/products/final-round-ai,头部,72,待判,品类规则（行业/工具类，需拔电测试）
-47,ai-lawyer,AI Lawyer,No more pricey consultations， wait times and legal jargon,legal-services,https://www.producthunt.com/products/ai-lawyer,腰部,5,待判,品类规则（行业/工具类，需拔电测试）
-48,writesonic-2,Writesonic,Generative engine optimization (GEO) platform with actions,writing-assistants,https://www.producthunt.com/products/writesonic-2,头部,53,待判,品类规则（行业/工具类，需拔电测试）
-49,mubert,Mubert,Worldwide copyright-protected AI-generated music via API,music-generation,https://www.producthunt.com/products/mubert,头部,16,待判,品类规则（行业/工具类，需拔电测试）
-50,microsoft-designer,Microsoft Designer,Design and edit anything you can imagine with AI,photo-editing,https://www.producthunt.com/products/microsoft-designer,腰部,16,待判,品类规则（行业/工具类，需拔电测试）
-51,podsqueeze,Podsqueeze,User friendly AI Podcast Content Writer,podcasting,https://www.producthunt.com/products/podsqueeze,长尾,5,待判,品类规则（行业/工具类，需拔电测试）
-52,dovetail,Dovetail,The AI-first customer insights hub,user-research,https://www.producthunt.com/products/dovetail,头部,13,待判,品类规则（行业/工具类，需拔电测试）
-53,viva,Vivago,Skip the prompting. Produce consistently compelling videos.,ai-designer,https://www.producthunt.com/products/viva,长尾,3,待判,品类规则（行业/工具类，需拔电测试）
-54,veltrix-ai,Veltrix AI,AI finance copilot for cash flow， margins， and growth,ai-data-scientist,https://www.producthunt.com/products/veltrix-ai,头部,11,原生,品类规则（AI 品类）
-55,causo,Causo,Palantir for GTM. Find the right customers and investors.,ai-sdr,https://www.producthunt.com/products/causo,腰部,2,待判,品类规则（行业/工具类，需拔电测试）
-56,draftboard,Draftboard,Warm (intros) > cold (outbound),ai-sales-tools,https://www.producthunt.com/products/draftboard,长尾,4,待判,品类规则（行业/工具类，需拔电测试）
-57,fellow-app,Fellow.ai,The Most Secure AI Meeting Assistant,ai-chief-of-staff,https://www.producthunt.com/products/fellow-app,头部,17,待判,品类规则（行业/工具类，需拔电测试）
-58,wordware,Wordware,web-hosted IDE for building AI agents,no-code-ai-agent-builder,https://www.producthunt.com/products/wordware,腰部,7,待判,品类规则（行业/工具类，需拔电测试）
-59,postgresml,PostgresML,You know Postgres. Now you know machine learning.,predictive-ai,https://www.producthunt.com/products/postgresml,长尾,2,原生,品类规则（AI 品类）
+7,cursor,Cursor,AI coding agent,ai-coding-agents,https://www.producthunt.com/products/cursor,头部,982,原生,人工名单
+8,framer,Framer,The AI design agent for every step from idea to launch,ai-agents,https://www.producthunt.com/products/framer,头部,266,中间态,人工名单
+9,figma,Figma,The collaborative interface design tool,productivity,https://www.producthunt.com/products/figma,补·嵌入,1600,嵌入,传统工具，AI 属后加能力
+10,fathom,Fathom,AI notetaking that is out of this world.,ai-meeting-notetakers,https://www.producthunt.com/products/fathom,头部,316,原生,人工名单
+11,elevenlabs,ElevenLabs,Create natural AI voices instantly in any language,ai-voice-agents,https://www.producthunt.com/products/elevenlabs,头部,231,原生,人工名单
+12,gamma-3,Gamma,A new medium for presenting ideas. Powered by AI.,ai-presentation-software,https://www.producthunt.com/products/gamma-3,头部,78,中间态,人工名单
+13,slack,Slack,Team communication and collaboration platform,productivity,https://www.producthunt.com/products/slack,补·嵌入,1000,嵌入,传统工具，AI 属后加能力
+14,taskade,Taskade,One prompt. One app. One living workspace for teams.,no-code-ai-agent-builder,https://www.producthunt.com/products/taskade,头部,109,原生,人工名单
+15,midjourney,Midjourney,Create AI generated images from a text prompt,ai-generative-media,https://www.producthunt.com/products/midjourney,头部,81,原生,人工名单
+16,relay-app,Relay.app,Build an AI team that works for you,no-code-ai-agent-builder,https://www.producthunt.com/products/relay-app,补充,43,中间态,工作流自动化+AI
+17,gmail,Gmail,World's #1 free email service.,productivity,https://www.producthunt.com/products/gmail,补·嵌入,535,嵌入,传统工具，AI 属后加能力
+18,jetbrains,JetBrains,A suite of intelligent development tools,ai-code-editors,https://www.producthunt.com/products/jetbrains,头部,75,原生,品类规则（AI 品类）
+19,final-round-ai,Final Round AI,A Superpower for Interviewees,hiring-software,https://www.producthunt.com/products/final-round-ai,头部,72,原生,面试辅助 AI
+20,pitch,Pitch,Create slides that win,ai-presentation-software,https://www.producthunt.com/products/pitch,补充,38,中间态,人工名单
+21,canva,Canva,Amazingly simple graphic design,productivity,https://www.producthunt.com/products/canva,补·嵌入,514,嵌入,传统工具，AI 属后加能力
+22,softr,Softr,Build custom business apps powered by AI and no-code.,vibe-coding,https://www.producthunt.com/products/softr,头部,68,原生,品类规则（AI 品类）
+23,ai-image-upscaler-by-upscale-media,AI Image Upscaler by Upscale.media,Increase image resolution up to 4x with our free AI tool,photo-editing,https://www.producthunt.com/products/ai-image-upscaler-by-upscale-media,头部,67,原生,tagline 以 AI 为核心动作（兜底规则）
+24,spline,Spline,Best 3D platform for the agentic era,3d-animation,https://www.producthunt.com/products/spline,头部,32,中间态,3D 设计平台早存在，AI 是增强
+25,linear,Linear,The product development system for teams and agents.,project-management,https://www.producthunt.com/products/linear,补·嵌入,470,嵌入,传统工具，AI 属后加能力
+26,v0,v0 by Vercel,Full stack vibe coding platform. Created by Vercel.,ai-coding-agents,https://www.producthunt.com/products/v0,腰部,60,原生,品类规则（AI 品类）
+27,groq-chat,Groq Chat,An LPU inference engine,predictive-ai,https://www.producthunt.com/products/groq-chat,头部,54,原生,品类规则（AI 品类）
+28,microsoft-designer,Microsoft Designer,Design and edit anything you can imagine with AI,photo-editing,https://www.producthunt.com/products/microsoft-designer,腰部,16,中间态,设计模板+AI，拔电后仍是设计工具
+29,google-chrome,Google Chrome,A more simple， secure， and faster web browser than ever,productivity,https://www.producthunt.com/products/google-chrome,补·嵌入,457,嵌入,传统工具，AI 属后加能力
+30,writesonic-2,Writesonic,Generative engine optimization (GEO) platform with actions,writing-assistants,https://www.producthunt.com/products/writesonic-2,头部,53,原生,tagline 以 AI 为核心动作（兜底规则）
+31,findr-5,Cortex,Let your AI search all your workspace apps， at once,search,https://www.producthunt.com/products/findr-5,头部,41,原生,品类规则（AI 品类）
+32,dovetail,Dovetail,The AI-first customer insights hub,user-research,https://www.producthunt.com/products/dovetail,头部,13,中间态,定性分析工具+AI，原本就存在
+33,resend,Resend,Email for developers,productivity,https://www.producthunt.com/products/resend,补·嵌入,269,嵌入,传统工具，AI 属后加能力
+34,fireflies-ai,Fireflies.ai 👔,Automatically record， search， and collaborate your meetings.,ai-meeting-notetakers,https://www.producthunt.com/products/fireflies-ai,腰部,32,原生,人工名单
+35,yourgpt,YourGPT,AI Agent platform for Support， Sales & Operations.,ai-chatbots,https://www.producthunt.com/products/yourgpt,腰部,30,原生,品类规则（AI 品类）
+36,youware,YouWare,World's first vibe coding community,ai-engineer,https://www.producthunt.com/products/youware,头部,9,中间态,社区+AI，社群先存在
+37,arc-browser,Arc,A new web browser with a ton of personality,productivity,https://www.producthunt.com/products/arc-browser,补·嵌入,238,嵌入,传统工具，AI 属后加能力
+38,supademo,Supademo,Beautiful AI interactive demos， screen recs， and demo agents,ai-agents,https://www.producthunt.com/products/supademo,腰部,30,原生,品类规则（AI 品类）
+39,vapi,Vapi,Voice AI for developers,ai-voice-agents,https://www.producthunt.com/products/vapi,腰部,25,原生,人工名单
+40,typeahead,Typeahead,AI autocomplete for every app on your Mac,writing-assistants,https://www.producthunt.com/products/typeahead,长尾,7,中间态,人工名单
+41,screen-studio,Screen Studio,Beautiful screen recordings， in minutes.,productivity,https://www.producthunt.com/products/screen-studio,补·嵌入,194,嵌入,传统工具，AI 属后加能力
+42,movie-deep-search-by-ai-keytalk,Movie Deep Search by AI Keytalk,Recommendation AI that knows every movie ever created,search,https://www.producthunt.com/products/movie-deep-search-by-ai-keytalk,腰部,24,原生,品类规则（AI 品类）
+43,meshy,Meshy,Create stunning 3D models with AI,3d-animation,https://www.producthunt.com/products/meshy,腰部,22,原生,人工名单
+44,pitchleague-ai,PitchLeague.ai,Your personal AI pitch deck coach,investing,https://www.producthunt.com/products/pitchleague-ai,头部,7,中间态,人工名单
+45,jira,Jira,Any agent， any model， one team.,project-management,https://www.producthunt.com/products/jira,补·嵌入,167,嵌入,传统工具，AI 属后加能力
+46,podwise-ai,Podwise AI,Unleash the power of podcasts,podcasting,https://www.producthunt.com/products/podwise-ai,头部,22,原生,AI 播客摘要
+47,exa-ai,exa.ai,Search API for AI applications,search,https://www.producthunt.com/products/exa-ai,长尾,21,原生,品类规则（AI 品类）
+48,wordware,Wordware,web-hosted IDE for building AI agents,no-code-ai-agent-builder,https://www.producthunt.com/products/wordware,腰部,7,中间态,IDE 是产品，AI 是内容
+49,raycast,Raycast,Your shortcut to everything,productivity,https://www.producthunt.com/products/raycast,补·嵌入,163,嵌入,传统工具，AI 属后加能力
+50,suno-ai,Suno.ai,Make any song you can imagine,ai-generative-media,https://www.producthunt.com/products/suno-ai,腰部,19,原生,人工名单
+51,daily,Daily.co,Real-time voice， video， and AI for developers,video-conferencing,https://www.producthunt.com/products/daily,头部,18,原生,tagline 以 AI 为核心动作（兜底规则）
+52,rupt,Rupt,Know which users and agents you can trust,ai-engineer,https://www.producthunt.com/products/rupt,腰部,3,中间态,信任判断层，AI 是场景
+53,loom,Loom,Easily record and share videos,productivity,https://www.producthunt.com/products/loom,补·嵌入,161,嵌入,传统工具，AI 属后加能力
+54,genie-ai,Genie AI,Your AI Legal Assistant,legal-services,https://www.producthunt.com/products/genie-ai,头部,17,原生,AI 法律助手，拔电后无产品
+55,fellow-app,Fellow.ai,The Most Secure AI Meeting Assistant,ai-chief-of-staff,https://www.producthunt.com/products/fellow-app,头部,17,原生,tagline 以 AI 为核心动作（兜底规则）
+56,causo,Causo,Palantir for GTM. Find the right customers and investors.,ai-sdr,https://www.producthunt.com/products/causo,腰部,2,中间态,GTM 数据平台+AI
+57,hubspot,HubSpot,Grow better with HubSpot,ai-sales-tools,https://www.producthunt.com/products/hubspot,头部,80,嵌入,人工名单
+58,wondercraft-ai,Wondercraft,#1 AI audio platform for podcasts,podcasting,https://www.producthunt.com/products/wondercraft-ai,腰部,16,原生,tagline 以 AI 为核心动作（兜底规则）
+59,mubert,Mubert,Worldwide copyright-protected AI-generated music via API,music-generation,https://www.producthunt.com/products/mubert,头部,16,原生,AI 生成音乐 API
 60,merlin-chatgpt-powered-browser-cmd-g,Merlin - ChatGPT powered chrome extension (Cmd+M),OpenAI powered browser launcher - product by Foyer,prompt-engineering-tools,https://www.producthunt.com/products/merlin-chatgpt-powered-browser-cmd-g,头部,16,原生,人工名单
-61,kiro,Kiro,Agentic development for prototype to production,ai-code-editors,https://www.producthunt.com/products/kiro,腰部,12,原生,品类规则（AI 品类）
-62,bob-s-workshop,Bob's Workshop,Your AI team that learns， thinks， and builds with you,vibe-coding,https://www.producthunt.com/products/bob-s-workshop,长尾,2,原生,品类规则（AI 品类）
-63,youware,YouWare,World's first vibe coding community,ai-engineer,https://www.producthunt.com/products/youware,头部,9,待判,品类规则（行业/工具类，需拔电测试）
-64,grok-ai-assistant,Grok AI assistant,Elon Musk's response to chatGPT 🤖,ai-chatbots,https://www.producthunt.com/products/grok-ai-assistant,长尾,10,原生,人工名单
-65,cursor,Cursor,AI coding agent,ai-coding-agents,https://www.producthunt.com/products/cursor,头部,982,原生,人工名单
-66,cedric,Cedric AI,The AI presents slides， attends meetings and does the work,ai-presentation-software,https://www.producthunt.com/products/cedric,腰部,4,待判,品类规则（行业/工具类，需拔电测试）
-67,circleback-3,Circleback,AI-powered meeting notes and automations,ai-meeting-notetakers,https://www.producthunt.com/products/circleback-3,长尾,9,待判,品类规则（行业/工具类，需拔电测试）
-68,midjourney,Midjourney,Create AI generated images from a text prompt,ai-generative-media,https://www.producthunt.com/products/midjourney,头部,81,原生,人工名单
-69,vapi,Vapi,Voice AI for developers,ai-voice-agents,https://www.producthunt.com/products/vapi,腰部,25,原生,人工名单
-70,hex,Hex,Powerful agentic analytics platform for data teams,ai-agents,https://www.producthunt.com/products/hex,长尾,11,原生,人工名单
-71,exa-ai,exa.ai,Search API for AI applications,search,https://www.producthunt.com/products/exa-ai,长尾,21,原生,品类规则（AI 品类）
-72,fiskl,FISKL AI Accounting,AI-Native Accounting & Financial Management,accounting,https://www.producthunt.com/products/fiskl,头部,16,待判,品类规则（行业/工具类，需拔电测试）
-73,pensieve-ai,Pensieve AI,Chat with， ask Qs to any PDF document， powered by ChatGPTᵀᴹ,legal-services,https://www.producthunt.com/products/pensieve-ai,长尾,2,待判,品类规则（行业/工具类，需拔电测试）
-74,heyday-2,Heyday,AI Copilot for your own research， notes/docs & conversations,writing-assistants,https://www.producthunt.com/products/heyday-2,腰部,16,待判,品类规则（行业/工具类，需拔电测试）
-75,spline,Spline,Best 3D platform for the agentic era,3d-animation,https://www.producthunt.com/products/spline,头部,32,待判,品类规则（行业/工具类，需拔电测试）
-76,splash-pro,Splash Pro,AI powered music at the speed of a text prompt,music-generation,https://www.producthunt.com/products/splash-pro,腰部,2,待判,品类规则（行业/工具类，需拔电测试）
-77,leonardo-ai,Leonardo AI,Create Art， Images & Video | Leonardo AI,photo-editing,https://www.producthunt.com/products/leonardo-ai,长尾,4,待判,品类规则（行业/工具类，需拔电测试）
-78,podwise-ai,Podwise AI,Unleash the power of podcasts,podcasting,https://www.producthunt.com/products/podwise-ai,头部,22,待判,品类规则（行业/工具类，需拔电测试）
-79,magicpatterns,Magic Patterns,Design your product ideas with AI.,ai-designer,https://www.producthunt.com/products/magicpatterns,头部,17,待判,品类规则（行业/工具类，需拔电测试）
-80,fabi-ai,Fabi.ai,The AI Business Intelligence platform,ai-data-scientist,https://www.producthunt.com/products/fabi-ai,腰部,1,原生,品类规则（AI 品类）
-81,researchfly,ResearchFly,Hire a research assistant for $50/mo,ai-sdr,https://www.producthunt.com/products/researchfly,长尾,1,待判,品类规则（行业/工具类，需拔电测试）
-82,hubspot,HubSpot,Grow better with HubSpot,ai-sales-tools,https://www.producthunt.com/products/hubspot,头部,80,嵌入,人工名单
-83,easy-peasy-ai,Easy-Peasy.AI,All-in-one AI: employees， agents， images， video and voice,ai-chief-of-staff,https://www.producthunt.com/products/easy-peasy-ai,腰部,4,待判,品类规则（行业/工具类，需拔电测试）
-84,instruct-2,Instruct,The most capable way to automate your work.,no-code-ai-agent-builder,https://www.producthunt.com/products/instruct-2,长尾,2,待判,品类规则（行业/工具类，需拔电测试）
-85,groq-chat,Groq Chat,An LPU inference engine,predictive-ai,https://www.producthunt.com/products/groq-chat,头部,54,原生,品类规则（AI 品类）
-86,camel-agi,Camel AGI,Communicative Agents on GPT,prompt-engineering-tools,https://www.producthunt.com/products/camel-agi,腰部,8,待判,品类规则（行业/工具类，需拔电测试）
-87,android-studio-panda-4,Android Studio Panda 4,AI agent IDE for Android with planning and edit prediction,ai-code-editors,https://www.producthunt.com/products/android-studio-panda-4,长尾,6,原生,品类规则（AI 品类）
-88,softr,Softr,Build custom business apps powered by AI and no-code.,vibe-coding,https://www.producthunt.com/products/softr,头部,68,原生,品类规则（AI 品类）
-89,rupt,Rupt,Know which users and agents you can trust,ai-engineer,https://www.producthunt.com/products/rupt,腰部,3,待判,品类规则（行业/工具类，需拔电测试）
-90,chatgpt,ChatGPT by OpenAI,Get answers. Find inspiration. Be more productive.,ai-chatbots,https://www.producthunt.com/products/chatgpt,补充,762,原生,人工名单
-91,claude-code,Claude Code,Anthropic’s deep-context AI coder,ai-coding-agents,https://www.producthunt.com/products/claude-code,补充,857,原生,人工名单
-92,pitch,Pitch,Create slides that win,ai-presentation-software,https://www.producthunt.com/products/pitch,补充,38,中间态,人工名单
-93,rewind-2,Limitless,Preserve conversations and ask your personalized AI anything,ai-meeting-notetakers,https://www.producthunt.com/products/rewind-2,补充,75,待判,品类规则（行业/工具类，需拔电测试）
-94,magnific,Magnific,One AI platform for image， video， and audio. 1M+ subscribers,ai-generative-media,https://www.producthunt.com/products/magnific,补充,42,原生,人工名单
-95,fin,Fin,Perfect customer experiences made possible,ai-voice-agents,https://www.producthunt.com/products/fin,补充,93,原生,品类规则（AI 品类）
-96,kombai,Kombai,Your AI Design Engineer,ai-designer,https://www.producthunt.com/products/kombai,补充,12,待判,品类规则（行业/工具类，需拔电测试）
-97,basedash,Basedash: AI data analyst,AI-native Business Intelligence Platform,ai-data-scientist,https://www.producthunt.com/products/basedash,补充,9,原生,品类规则（AI 品类）
-98,revscale,Revscale - Outbound AI Agent,Autonomous AI SDR for multi-channel outbound and follow-up,ai-sdr,https://www.producthunt.com/products/revscale,补充,6,待判,品类规则（行业/工具类，需拔电测试）
-99,pally,Pally - One text away from done.,Your personal assistant over text.,ai-chief-of-staff,https://www.producthunt.com/products/pally,补充,16,原生,人工名单
-100,relay-app,Relay.app,Build an AI team that works for you,no-code-ai-agent-builder,https://www.producthunt.com/products/relay-app,补充,43,待判,品类规则（行业/工具类，需拔电测试）
+61,lemlist,lemlist,The cold outreach tool that helps you get replies,ai-sales-tools,https://www.producthunt.com/products/lemlist,腰部,22,嵌入,冷邮件工具先存在，AI 是辅助
+62,fiskl,FISKL AI Accounting,AI-Native Accounting & Financial Management,accounting,https://www.producthunt.com/products/fiskl,头部,16,原生,tagline 以 AI 为核心动作（兜底规则）
+63,heyday-2,Heyday,AI Copilot for your own research， notes/docs & conversations,writing-assistants,https://www.producthunt.com/products/heyday-2,腰部,16,原生,tagline 以 AI 为核心动作（兜底规则）
+64,markopolo-ai,Markopolo AI,Reach 30–40% more customers with personal outreach at scale,ai-sdr,https://www.producthunt.com/products/markopolo-ai,头部,12,原生,AI 营销自动化
+65,magicpatterns,Magic Patterns,Design your product ideas with AI.,ai-designer,https://www.producthunt.com/products/magicpatterns,头部,17,嵌入,tagline 未见 AI（兜底规则）
+66,kiro,Kiro,Agentic development for prototype to production,ai-code-editors,https://www.producthunt.com/products/kiro,腰部,12,原生,品类规则（AI 品类）
+67,veltrix-ai,Veltrix AI,AI finance copilot for cash flow， margins， and growth,ai-data-scientist,https://www.producthunt.com/products/veltrix-ai,头部,11,原生,品类规则（AI 品类）
+68,hex,Hex,Powerful agentic analytics platform for data teams,ai-agents,https://www.producthunt.com/products/hex,长尾,11,原生,人工名单
+69,myways-ai,Zeko AI,Making it Easy,hiring-software,https://www.producthunt.com/products/myways-ai,腰部,15,嵌入,tagline 未见 AI（兜底规则）
+70,scoutflo,Scoutflo,AI SRE platform to investigate incidents & fix in production,vibe-coding,https://www.producthunt.com/products/scoutflo,腰部,10,原生,品类规则（AI 品类）
+71,augment-code,Augment Code,Augment Code – Developer AI for real work,ai-coding-agents,https://www.producthunt.com/products/augment-code,长尾,10,原生,品类规则（AI 品类）
+72,grok-ai-assistant,Grok AI assistant,Elon Musk's response to chatGPT 🤖,ai-chatbots,https://www.producthunt.com/products/grok-ai-assistant,长尾,10,原生,人工名单
+73,draftboard,Draftboard,Warm (intros) > cold (outbound),ai-sales-tools,https://www.producthunt.com/products/draftboard,长尾,4,嵌入,人脉引荐，AI 不是核心
+74,circleback-3,Circleback,AI-powered meeting notes and automations,ai-meeting-notetakers,https://www.producthunt.com/products/circleback-3,长尾,9,原生,tagline 以 AI 为核心动作（兜底规则）
+75,ween-ai,Ween.ai,The AI platform that turns qualitative data into insights,predictive-ai,https://www.producthunt.com/products/ween-ai,腰部,8,原生,品类规则（AI 品类）
+76,stable-diffusion-xl,Stable Diffusion XL,Richer images & jaw-dropping aesthetics from shorter prompts,ai-generative-media,https://www.producthunt.com/products/stable-diffusion-xl,长尾,8,原生,品类规则（AI 品类）
+77,viva,Vivago,Skip the prompting. Produce consistently compelling videos.,ai-designer,https://www.producthunt.com/products/viva,长尾,3,嵌入,tagline 未见 AI（兜底规则）
+78,camel-agi,Camel AGI,Communicative Agents on GPT,prompt-engineering-tools,https://www.producthunt.com/products/camel-agi,腰部,8,原生,GPT 上的 agent 框架
+79,receiptor-ai,Receiptor AI,Bookkeeping on Autopilot with AI,accounting,https://www.producthunt.com/products/receiptor-ai,腰部,7,原生,自动做账，拔电后没有产品
+80,peony-0-5,Peony,AI-Native Data Room with Advanced Q&A & Enterprise Security,e-signature,https://www.producthunt.com/products/peony-0-5,头部,6,原生,tagline 以 AI 为核心动作（兜底规则）
+81,instruct-2,Instruct,The most capable way to automate your work.,no-code-ai-agent-builder,https://www.producthunt.com/products/instruct-2,长尾,2,嵌入,tagline 未见 AI（兜底规则）
+82,x-design,Zawa (formerly X-Design),Your Creative AI Agent for Branding,ai-designer,https://www.producthunt.com/products/x-design,腰部,6,原生,tagline 以 AI 为核心动作（兜底规则）
+83,fortune-finance-accounting,Fortune,An AI-powered accountant,accounting,https://www.producthunt.com/products/fortune-finance-accounting,长尾,6,原生,tagline 以 AI 为核心动作（兜底规则）
+84,android-studio-panda-4,Android Studio Panda 4,AI agent IDE for Android with planning and edit prediction,ai-code-editors,https://www.producthunt.com/products/android-studio-panda-4,长尾,6,原生,品类规则（AI 品类）
+85,ragie-audio-video,Ragie,Fully Managed RAG-as-a-Service for Developers,ai-engineer,https://www.producthunt.com/products/ragie-audio-video,长尾,1,嵌入,tagline 未见 AI（兜底规则）
+86,told-2,Told,Ai product tours and in-app surveys,user-research,https://www.producthunt.com/products/told-2,腰部,5,原生,tagline 以 AI 为核心动作（兜底规则）
+87,replymind,ReplyMind,Generate valuable replies on LinkedIn， X & PH.,prompt-engineering-tools,https://www.producthunt.com/products/replymind,长尾,5,原生,AI 生成回复
+88,ai-lawyer,AI Lawyer,No more pricey consultations， wait times and legal jargon,legal-services,https://www.producthunt.com/products/ai-lawyer,腰部,5,原生,AI 法律问答
+89,podsqueeze,Podsqueeze,User friendly AI Podcast Content Writer,podcasting,https://www.producthunt.com/products/podsqueeze,长尾,5,原生,AI 播客内容生成
+90,play-ht,Play,Making AI speak better than humans.,ai-voice-agents,https://www.producthunt.com/products/play-ht,长尾,4,原生,人工名单
+91,cedric,Cedric AI,The AI presents slides， attends meetings and does the work,ai-presentation-software,https://www.producthunt.com/products/cedric,腰部,4,原生,tagline 以 AI 为核心动作（兜底规则）
+92,leonardo-ai,Leonardo AI,Create Art， Images & Video | Leonardo AI,photo-editing,https://www.producthunt.com/products/leonardo-ai,长尾,4,原生,AI 图像生成
+93,postgresml,PostgresML,You know Postgres. Now you know machine learning.,predictive-ai,https://www.producthunt.com/products/postgresml,长尾,2,原生,品类规则（AI 品类）
+94,bob-s-workshop,Bob's Workshop,Your AI team that learns， thinks， and builds with you,vibe-coding,https://www.producthunt.com/products/bob-s-workshop,长尾,2,原生,品类规则（AI 品类）
+95,pensieve-ai,Pensieve AI,Chat with， ask Qs to any PDF document， powered by ChatGPTᵀᴹ,legal-services,https://www.producthunt.com/products/pensieve-ai,长尾,2,原生,与 PDF 对话
+96,splash-pro,Splash Pro,AI powered music at the speed of a text prompt,music-generation,https://www.producthunt.com/products/splash-pro,腰部,2,原生,AI 音乐生成
+97,stagecaptions-io,stagecaptions.io,Real-time captioning software for live events,ai-presentation-software,https://www.producthunt.com/products/stagecaptions-io,长尾,1,原生,实时字幕靠 ASR，拔电后产品消失
+98,artlist,Artlist,AI video， image， voice， and music creation， plus 2M+ assets,music-generation,https://www.producthunt.com/products/artlist,长尾,1,原生,人工名单
+99,the-drive-ai-2,The Drive AI,The AI agent that does the work on your files,ai-chief-of-staff,https://www.producthunt.com/products/the-drive-ai-2,长尾,1,原生,tagline 以 AI 为核心动作（兜底规则）
+100,data-explorer,Data Explorer,Build analytics for your teams and users,ai-data-scientist,https://www.producthunt.com/products/data-explorer,长尾,0,原生,品类规则（AI 品类）
