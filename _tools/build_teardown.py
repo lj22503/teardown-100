@@ -107,7 +107,23 @@ def build(dirname):
     if not os.path.exists(cf):
         raise SystemExit("缺少 content.json: " + cf)
     c = json.load(open(cf, encoding="utf-8"))
+
+    # 从队列里取 AI 类型（原生 / 中间态 / 嵌入），不信 content.json 里手填的标记
+    ai_type, ai_reason = "待判", ""
+    try:
+        import csv as _csv
+        _no = int(os.path.basename(d)[:3])
+        for _r in _csv.DictReader(open(os.path.join(ROOT, "_data", "queue.csv"), encoding="utf-8-sig")):
+            if _r.get("no") and int(_r["no"]) == _no:
+                ai_type = _r.get("ai_type") or "待判"
+                ai_reason = _r.get("ai_reason") or ""
+                break
+    except Exception:
+        pass
     out = []
+    _type_map = {"原生": ("NATIVE", "拔电测试：拿走 AI，产品消失 → AI 原生"),
+                 "中间态": ("HYBRID", "拔电测试：拿走 AI，产品残废（能看不能用）→ AI 中间态"),
+                 "嵌入": ("EMBEDDED2", "拔电测试：拿走 AI，产品照常卖 → AI 嵌入")}
     for lang in ("zh", "en"):
         tpl_path = os.path.join(TOOLS, "template-%s.html" % lang)
         tpl = open(tpl_path, encoding="utf-8").read()
@@ -116,6 +132,13 @@ def build(dirname):
         c[lang]["LANG_EN_HREF"] = "teardown-en.html"
         c[lang]["ACTIVE_IF_ZH"] = "active" if lang == "zh" else ""
         c[lang]["ACTIVE_IF_EN"] = "active" if lang == "en" else ""
+        for _k in ("NATIVE", "HYBRID", "EMBEDDED2"):
+            c[lang]["ACTIVE_IF_" + _k] = ""
+        _key, _text = _type_map.get(ai_type, ("", ""))
+        if _key:
+            c[lang]["ACTIVE_IF_" + _key] = "active"
+        c[lang]["AI_TYPE_REASON"] = ("本片判为 **%s**。%s。（依据：%s）" % (ai_type, _text, ai_reason)) if lang == "zh" else \
+            ("Classified as **%s**. %s (basis: %s)" % (ai_type, _text, ai_reason))
         html = fill(tpl, c[lang])
         html = clean(html, lang, c)
         html = append_sections(html, lang, c)
