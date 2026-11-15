@@ -13,7 +13,7 @@
 
 |  |  |  |  |  |  |  |  |  |  |
 |---|---|---|---|---|---|---|---|---|---|
-| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ⬜ Claude by Anthropic | ⬜ Cursor | ⬜ Framer | ⬜ Figma | ⬜ Fathom |
+| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | 🟡 Claude by Anthropic | ⬜ Cursor | ⬜ Framer | ⬜ Figma | ⬜ Fathom |
 | ⬜ ElevenLabs | ⬜ Gamma | ⬜ Slack | ⬜ Taskade | ⬜ Midjourney | ⬜ Relay.app | ⬜ Gmail | ⬜ JetBrains | ⬜ Final Round AI | ⬜ Pitch |
 | ⬜ Canva | ⬜ Softr | ⬜ AI Image Upscaler by Upscale.media | ⬜ Spline | ⬜ Linear | ⬜ v0 by Vercel | ⬜ Groq Chat | ⬜ Microsoft Designer | ⬜ Google Chrome | ⬜ Writesonic |
 | ⬜ Cortex | ⬜ Dovetail | ⬜ Resend | ⬜ Fireflies.ai 👔 | ⬜ YourGPT | ⬜ YouWare | ⬜ Arc | ⬜ Supademo | ⬜ Vapi | ⬜ Typeahead |

@@ -86,10 +86,22 @@ def cmd_collect(args):
     if args.pricing:
         urls.append(args.pricing)
 
+    # 每步产物名，已存在就跳过（断点续跑）
+    done_file = {
+        "collect-product.mjs": lambda: "_raw.md" if os.path.exists(os.path.join(d, "_raw.md")) else (row["slug"] + ".md"),
+        "collect-ph-reviews.mjs": lambda: row["slug"] + "-评论.md",
+        "collect-g2-reviews.mjs": lambda: row["slug"] + "-G2评论.md",
+    }
+
     for src, (_, tag) in mapping.items():
         p = os.path.join(lib, src)
         if not os.path.exists(p):
             fail("缺采集器 %s，先补" % src)
+        exist = os.path.join(d, done_file[src]())
+        if os.path.exists(exist) and os.path.getsize(exist) > 200:
+            print("SKIP %s（已有 %s）" % (src, os.path.basename(exist)))
+            continue
+        print("RUN  %s …" % src)
         s = open(p, encoding="utf-8").read()
         s = re.sub(r'taskSpace\([^)]*\)', 'taskSpace("marvis-daily")', s)
         s = re.sub(r'const SLUG = "[^"]*";', 'const SLUG = "%s";' % row["slug"], s)
