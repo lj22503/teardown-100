@@ -137,6 +137,18 @@ def build(dirname):
         _key, _text = _type_map.get(ai_type, ("", ""))
         if _key:
             c[lang]["ACTIVE_IF_" + _key] = "active"
+        _six_missing = [k for k in ("SIX_1", "SIX_2", "SIX_3", "SIX_4", "SIX_5", "SIX_6")
+                        if not str(c[lang].get(k, "")).strip()]
+        if _six_missing:
+            c[lang]["SIX_INTRO"] = ("本篇按旧框架（八维+九字段）完成，应用层六维从第 007 篇起开始填。"
+                                    if lang == "zh" else
+                                    "This piece used the older framework; the six-dim review starts from entry 007.")
+            for _k in _six_missing:
+                c[lang][_k] = "—"
+        else:
+            c[lang]["SIX_INTRO"] = ("六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。"
+                                    if lang == "zh" else
+                                    "Six dimensions are the main framework: the first three are about value, the last three about trust and switching cost.")
         c[lang]["AI_TYPE_REASON"] = ("本片判为 **%s**。%s。（依据：%s）" % (ai_type, _text, ai_reason)) if lang == "zh" else \
             ("Classified as **%s**. %s (basis: %s)" % (ai_type, _text, ai_reason))
         html = fill(tpl, c[lang])
