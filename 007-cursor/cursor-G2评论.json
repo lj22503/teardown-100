@@ -1,0 +1,109 @@
+{
+ "slug": "cursor",
+ "name": "Cursor",
+ "dist": [
+  "5 star80%",
+  "4 star16%",
+  "3 star1%",
+  "2 star0%",
+  "1 star1%"
+ ],
+ "overall": [
+  "4.6",
+  "333"
+ ],
+ "lowRated": [
+  {
+   "rating": null,
+   "title": "",
+   "like": "Didn't use it at all. I just signed up for a 1 hour hackathon",
+   "dislike": "I've signed up for a monthly acc for a trial run on a hackathon of sorts, with a code given by the organizer.\n\nI've used Cursor for just that 1 hour - and now saw I was charge monthly for the last 4 months.\n\nI have not recieved any email telling me I'm about to move on from trial to paid.\n\nI saw a bunch of threads here about how Cursor refunds in such cases like many other companies, but they refused to. I talked to a human being."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I don't anymore. I used to like lots till they charged me without me choosing on demand services",
+   "dislike": "I had previously disabled Cursor's on-demand usage because I did not want additional pay-as-you-go charges.\n\nAfter upgrading to the $60/month Pro+ plan, I discovered a $200 on-demand limit on my account and received an additional $77.88 invoice.\n\nI asked Cursor Support when on-demand had been enabled, when the limit was created and what action authorised it. They told me their tools cannot provide that information, but they still refused to cancel or refund the charge.\n\nThey also told me on-demand cannot enable itself and must be explicitly activated.\n\nI had disabled it, did not knowingly re-enable it, and they cannot show me when or how it was enabled.\n\nI'm cancelling Pro+ and moving elsewhere. I would personally look at Claude, ChatGPT, GitHub Copilot, Windsurf or another alternative ins"
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "Cursor's Cloud Agent can automate complex development tasks and reduce manual work. That was the main reason I upgraded to Ultra.",
+   "dislike": "I paid €108.39 to upgrade to Ultra, but my FULL weekly allowance was exhausted in about ONE DAY, mostly using a Grok Medium Cloud Agent.\n\nSupport claimed the usage was correct but couldn't provide a verifiable calculation of the weekly limit.\n\nI cancelled and requested a refund, but still have no decision as of November 4.\n\n**Extremely disappointing transparency and customer support for such an expensive plan.**"
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "Cursor is good if you have enough coding knowledge. The initial setup process was easy.",
+   "dislike": "Cursor is very expensive and did not follow my instructions when starting to build my code in the cloud. Additionally, it consumes too many tokens when trying to make adjustments, and it doesn't have a button to download work from the cloud. I ended up spending £18.45 for a disastrous result with Cursor, while with Gemini I only spent £4.79 to get a good result. I no longer use Cursor because I didn't like the tool."
+  },
+  {
+   "rating": "1",
+   "title": "",
+   "like": "I use Cursor for coding HTML apps and Android/iOS apps, including Whisper translation apps. I like that it's really clean and pro. It offers a large range of models. I like the model composer because it's fast. The initial setup was easy and fast.",
+   "dislike": "I don't like that you hit your monthly limits in an hour. The rate limits are a big issue, and I think increasing them would really help. Also, even though Cursor is popular, I felt that Antigravity was better."
+  },
+  {
+   "rating": "2",
+   "title": "",
+   "like": "It allows me to quickly fix and generate code and files",
+   "dislike": "Obscenely high cost for decent models, especially after it switched from the request-based billing to the token-based billing"
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "easy to switch between models and the default todo list created",
+   "dislike": "the limit plan and how fast the limit is finished"
+  },
+  {
+   "rating": "3",
+   "title": "",
+   "like": "I like Cursor.sh because it allows me to use different models, which helps me choose the right tool for the right job. I also like the different planning modes; it's a pretty robust feature set. The initial setup was very easy.",
+   "dislike": "The pricing model is not nearly as competitive as using something like Claude. Because its API pay per token is just as prohibitively expensive to use the Frontier models."
+  },
+  {
+   "rating": "3",
+   "title": "",
+   "like": "Cursor has the best context window among any AI IDE. All the VS code extensions and settings work in cursor so very easy to switch if you’re already using VS code.",
+   "dislike": "No transparent pricing. In pro plan the access to claude models are very limited, you will hit limit in no time. No controls for setting token limitations which eventually cost you more in “pay as you go” plan."
+  },
+  {
+   "rating": "3",
+   "title": "",
+   "like": "It is a very helpful tool and enables me to be more efficient around coding.",
+   "dislike": "The only thing i dislike is that somehow it lacks context somehow and it starts to make mistakes."
+  }
+ ],
+ "default": [
+  {
+   "rating": "4",
+   "title": "",
+   "like": "I mainly use Cursor for web development, especially for creating interactive UIs. I like that it helps me find errors and is more flexible and accurate compared to a developer. One of the things I really like about Cursor is its multiple AI integrations, like GPT, Claude, and Gemini. These integrations have many models, with Claude's latest Opus 4.6 being optimized for coding and professional tasks, which greatly helps in web development, particularly in UI design. Additionally, I found that setting up Cursor was really easy, completing it in just 2 minutes.",
+   "dislike": "I think their plans are very expensive compared to other IDEs, and they give very less free credits to users. They should reduce their pricing and increase the free limit for users."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "The best part about Cursor is that, when I’m vibe coding, I can use different AI models depending on what I need. For example, I can put the chat in Ask mode, which means it isn’t coding anything—it just answers my questions and gives explanations. The part I like most is when I switch to MCP and have Cursor AI take control in real time while it codes. That gives really good feedback to the AI, and I don’t need to copy and paste big chunks of data. It’s honestly the best.",
+   "dislike": "Overall, the only issue I’ve noticed is that it feels like the credit gets used up too quickly."
+  },
+  {
+   "rating": "4",
+   "title": "",
+   "like": "Agent mode handles multi-file changes on a real codebase without losing the thread — it maintains my production Astro + Tailwind blog and its studio tooling. Codebase context is strong; it finds the relevant scripts on its own. It is also good at writing the boring safety code — idempotency guards, dry-run modes, audits — when asked properly.",
+   "dislike": "It will happily generate a lot of code fast, so review discipline is on you. It is occasionally confident about repo facts it has not checked, so claims need verifying against the actual files. Usage-based pricing can spike during heavy agent sessions."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "One of the best tools for agentic coding. It not only has its own AI models, like Grok/Composer, but also integrates with other models such as Opus/Sonnet and GPT. Performance is very strong, and I like having both a fast mode and a standard mode depending on what I’m doing. The ROI feels insane for what you get. Having Cursor model usage alongside other model usage also feels superb.\n\nThe UI is really cool, with both Agent mode and IDE mode, and it’s easy to switch between them. Support for the tool also seems widely available online, with plenty of tutorials and documentation.",
+   "dislike": "The UI looks cool, but at times it can feel a bit too complex. Also, aside from the Cursor models, integration with other models seems limited. For example, other open-source models like GLM 5.3 can be used via an API, but that still lacks native integration."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I don't anymore. I used to like lots till they charged me without me choosing on demand services",
+   "dislike": "I had previously disabled Cursor's on-demand usage because I did not want additional pay-as-you-go charges.\n\nAfter upgrading to the $60/month Pro+ plan, I discovered a $200 on-demand limit on my account and received an additional $77.88 invoice.\n\nI asked Cursor Support when on-demand had been enabled, when the limit was created and what action authorised it. They told me their tools cannot provide that information, but they still refused to cancel or refund the charge.\n\nThey also told me on-demand cannot enable itself and must be explicitly activated.\n\nI had disabled it, did not knowingly re-enable it, and they cannot show me when or how it was enabled.\n\nI'm cancelling Pro+ and moving elsewhere. I would personally look at Claude, ChatGPT, GitHub Copilot, Windsurf or another alternative ins"
+  }
+ ]
+}
