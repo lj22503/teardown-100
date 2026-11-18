@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · Framer — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-17</span>
+  <span class="dot"></span>
+  <span>产品：Framer</span>
+</div>
+
+<h1>Framer<span class="tag">它卖的不是 AI，是「设计稿直接变成能上线的站」：画布即生产环境，AI 只是把这一步再压短。</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">建站工具 / AI 设计代理（Website Builders）</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">可核实：Marketplace 收录 28,915 个资源（模板 / 组件 / 插件 / 矢量）；定价页写 99.99% uptime；官网客户位置引用 Miro、Perplexity、Zapier、FLORA、Metalab、Cradle 的口述证言。第三方站点转述：G2 4.5 分（约 142 条）、Trustpilot 约 1.6 分（约 127–140 条，其中 74% 为一星）。官方未披露 ARR、站点数、付费用户数——本卡不编。</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">按站点订阅（Free / Basic / Pro / Enterprise）+ 席位（编辑器 HK$81/月、内容编辑 HK$41/月）+ 附加包（语言包 HK$81/个、Convert A/B 测试 HK$203/50 万事件、Advanced hosting HK$811）。本次抓到的金额为港币区域价（见 _raw.md），美元价为第三方评测转述，不作官方口径。</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成熟期。官网叙事已整体切到 design agent（导航三项挂 New：AI / Agents / External Agents），产品面覆盖 Agents、CMS、Hosting、Analytics、SEO、AEO、Convert、Localization、Marketplace、Hire Experts。公司成立年份与融资情况本次采集页未披露，不写 [推断] 以外的内容。</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. 应用层六维</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 已知（可在来源中逐条核对）：官网功能与模块原文、定价页四档与附加包金额（港币区域价）、Free 档细则、超额与退款规则、Marketplace 资源数 28,915、99.99% uptime、MCP 端点、Compare 页竞品清单、实测（燃冰）六维记录。推断（已标 [推断]）：公司历史沿革与融资、真实 ARR 与付费站点数、留存曲线、毛利结构、竞品金额。外部评论（G2 4.5 / Trustpilot 约 1.6 等）为第三方评测站点转述，非本报告直接抓取，引用处已标明。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>它把「设计稿直接变成能上线的站」卖成了订阅，AI 只是加速器；真正的护城河是编辑器手感＋托管＋模板市场，真正的伤口是按站点、按人头、按用量叠起来的账单。</h2>
+    <div class="sub">作为「AI 嵌入型」产品，拔掉 AI 它仍然是可用的建站工具（实测拔电测试结论：嵌入）。所以它的门槛不在模型，在软件本身——SEO 能力、托管、以及设计师已经养成的操作习惯。评论区分裂得很清楚：G2 夸的是编辑器，Trustpilot 骂的是账单与支持，这两件事同时为真。</div>
+  </div>
+  <div class="stars">
+    <div class="row"></div>
+    <div class="label">4 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>AI 是加速器，不是产品本体</strong> — 官网把 Agent 放在第一屏：描述需求 → 生成布局与组件 → 在画布上改 → 一键发布。但实测（燃冰）走完一圈的结论是：AI 替掉的是「从零搭骨架」这一段，审美判断仍由人做。拔掉 AI，产品还在。</li>
+    <li><strong>真正的门槛是软件，不是模型</strong> — 实测（燃冰）原话：门槛在产品本身的 SEO，以及设计用户的习惯，在软件。托管、CMS、AEO、Core Web Vitals、99.99% uptime 这些是模型给不了的，也是竞品最难一次补齐的。</li>
+    <li><strong>账单是它最脆的一根梁</strong> — 首页不提一个价格，定价页却叠了三层：站点订阅 + 席位（HK$81/编辑器）+ 附加包（语言、A/B、Advanced hosting）。Trustpilot 约 1.6 分、74% 一星，抱怨集中在计费与取消，而不是设计能力——这就是「营销面干净 / 账单面复杂」的代价。</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">未测</div>
+    <div class="desc">实测只记「原来几个月、现在几小时」，未做秒表计时，不换算成精确值</div>
+  </div>
+  <div class="num-card">
+    <div class="label">核心循环频次</div>
+    <div class="big">项目期</div>
+    <div class="desc">改版与上新时高强度，平时低频维护；官方未披露使用频次数据</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">我的评分，不是测量</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">Framer 是一个把设计、CMS、托管、分析、SEO 合成一条线的网站构建平台：你在画布上设计的东西就是最终上线的页面，AI 设计代理负责按描述生成布局、组件与代码片段。</div>
+      <h4>核心用户承诺</h4>
+      <p>官网原话：Framer is the pro website builder with a world-class design agent；以及 Build your website with agents and make it your own on a fully editable design canvas。翻译成用户语言：不用交接给开发，设计完就能发。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>它横跨两排货架：一排是专业建站（Webflow、Wix、Squarespace、WordPress），一排是 AI 生成站（Lovable、v0、Claude Code）。它站在中间偏设计的一侧——比 AI 生成类多了托管与 CMS 的厚度，比传统建站多了「描述即生成」的速度。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>[推断] 金额口径：本次定价页按访问地返回港币（HK$），未取到美元价；第三方评测普遍写 Basic $10/月、Pro $30/月、编辑器 $20/月、Advanced hosting $200/月，本报告只把它作为「量级参考」，不作为官方价。</li>
+        <li>[推断] 真实付费主力是「要上线的设计驱动团队」，不是「想用 AI 写文案的人」：依据是付费扳机在自定义域名、以及 Enterprise 档把 SSO/席位/uptime 当卖点。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://framerusercontent.com/images/p1nlsreSG3OgmowrP67Zn84BQZY.webp" alt="Framer 画布视图：右侧是设计 Agent 面板，区块可直接在画布上生成与改动（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 01</span>Framer 画布视图：右侧是设计 Agent 面板，区块可直接在画布上生成与改动（来自 framer.com 首页）</figcaption></figure>
+    <figure class="shot"><img src="https://framerusercontent.com/images/DWrkpsEG9AceDP0WEcPJSIwIKwU.jpg" alt="官网 Design with agents 区块：同一需求下多套设计稿的成稿预览（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 02</span>官网 Design with agents 区块：同一需求下多套设计稿的成稿预览（来自 framer.com 首页）</figcaption></figure>
+    <figure class="shot"><img src="https://framerusercontent.com/images/uHqR4DeCTki45dB5NH7QbxD00U.jpg" alt="CMS 数据表格：内容集合以表格形式管理，Agent 可就地改写字段（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 03</span>CMS 数据表格：内容集合以表格形式管理，Agent 可就地改写字段（来自 framer.com 首页）</figcaption></figure>
+    <figure class="shot"><img src="https://framerusercontent.com/images/Fr5a9tnNiCBjRADZZdMdDcXzSZg.png" alt="站点设置表单：SEO、域名与发布相关配置集中在同一面板（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 04</span>站点设置表单：SEO、域名与发布相关配置集中在同一面板（来自 framer.com 首页）</figcaption></figure>
+    <figure class="shot"><img src="https://framerusercontent.com/images/xbgBt9N8s7JRVdqHTUV072O8vhk.png" alt="性能指标面板：LCP / INP / CLS 等 Core Web Vitals 直接摆在产品里（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 05</span>性能指标面板：LCP / INP / CLS 等 Core Web Vitals 直接摆在产品里（来自 framer.com 首页）</figcaption></figure>
+    <figure class="shot"><img src="https://framerusercontent.com/images/0XETMD0vwcv1CvzlPp347WS7wto.png" alt="分析仪表盘：上线后的流量与页面表现（来自 framer.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>分析仪表盘：上线后的流量与页面表现（来自 framer.com 首页）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>设计师与设计驱动的市场团队</strong> — 官网 Solutions 直接列 Designers / Agencies / Marketers / Growth / Builders / Engineers / Site Teams / Founders；客户证言全部由设计负责人出镜（Miro 设计负责人、Perplexity 设计负责人）。他们要的是「设计权在自己手里」——评论原话：design ownership back in our hands。</li>
+        <li><strong>一人公司与小工作室</strong> — Free 档就能建、买域名才付费（定价页：连接自定义域名需升级），对项目周期拖延的 freelancer 是真金白银的缓冲。实测（燃冰）的判断也是这一层：免费用户也有很好的价值，比如模板和社区。</li>
+        <li><strong>代理商与企业站点团队</strong> — Enterprise 档给 SSO、SCIM、uptime 保障、无限编辑器；定价页另写 Pro Experts 对客户项目有免费编辑权限，r/framer 里官方人员提到 agency programme。但按站点计费叠席位，正是这类用户抱怨最集中的地方。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 要上新品牌站 / 改版落地页 / 赶一场发布会，而设计稿已经定了、开发还没排进来。</p>
+      <p><strong>使用频次：</strong> 项目制：改版与上新时高强度，平时低频维护（[推断] 依据：定价按站点与带宽计费，不是按对话次数计费）。</p>
+      <p><strong>使用场景：</strong> 浏览器为主（官网另列 Desktop App）；发布后由 Framer 托管（99.99% uptime），内容进 CMS，数据看内置 Analytics，实验走 Convert 附加包。</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">把一个设计想法（截图、参考站、Figma 稿）变成能对外发布、能被搜索引擎抓到的真站点，不经过开发交接。 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">不想再等排期、不想再为一个 padding 改三封邮件，也不想被人看出「这个站是模板拼的」。 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">对外看起来有一个完整的品牌站点——客户证言里反复出现的词是 ship updates daily、no dev handoff。 <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">设计稿已定，开发没空</div>
+      <div class="why">触发点不是「我想用 AI」，而是「这一步现在卡在别人手里」。评论与实测指向同一个场景：手上有成品设计，需要它变成站。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">描述需求 / 导入设计，在画布上改</div>
+      <div class="why">官网给的三步：Describe what you need（agent 生成布局与高级组件）→ Refine on the canvas（字号、组件、断点、特效全可改）→ Publish complete sites instantly（托管、CMS、分析、SEO、AEO 已在）。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">一个能直接发出去的站</div>
+      <div class="why">奖励不是「生成了一段代码」，是「域名绑好就能上线」。实测（燃冰）判定：能直接用，改的是每个组件细节，且支持直接对外发布。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">改版没有终点</div>
+      <div class="why">站点是活的：活动页、A/B 实验、多语言、CMS 上新都会把人拉回画布。循环的黏性来自资产沉淀在它这里（站点＋CMS＋分析），不来自 AI 的惊艳。</div>
+    </div>
+  </div>
+  <div class="loop-note">"它教用户的是「不用等开发」这件事本身；一旦团队习惯了设计即上线，再回到交接流程就会觉得慢——这是它最真实、也最容易被账单抵消的留存。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p>三条公开路径：① Marketplace 28,915 个资源做长尾入口（模板页本身就是 SEO 页）；② 官网大量 compare 页（vs Webflow / Figma / Wix / Squarespace / WordPress / Lovable / v0 / Claude Code…）截「选型意图」流量；③ 客户证言与作品展示做社会证明（Miro、Perplexity、Zapier 等设计负责人出镜）。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>实测（燃冰）：把一张真实设计稿/截图做成能上线的页面，且 AI 能按需求换部件——原来要几个月的事，几小时完成。啊哈点不在「它写得像人」，在「它直接产出了可以发布的东西」。</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>资产锁定：站点、CMS 内容、分析数据都在它这里，且官方不提供代码导出（评论与第三方评测一致点名），迁移等于重建。</li>
+        <li>习惯锁定：设计师已经把断点、组件、Scroll 动效的操作路径练熟；换工具的代价是重新学一套肌肉记忆（实测（燃冰）：门槛在设计用户的习惯，在软件）。</li>
+        <li>生态锁定：模板、组件、插件、Experts 市场把「找个人帮我改」也留在了平台内。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>弱且是副作用：站点页脚有 Made in Framer 一类的归属，作品展示与模板作者会带来自然扩散，但产品内没有邀请机制、没有协作裂变。它靠作品传播，不靠关系链传播。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">画布（Canvas）</span><div class="desc">产品本体。左侧 Pages / Layers / Assets，右侧属性面板，顶部断点与 Publish——设计对象就是生产对象。</div></div>
+    <div class="surface"><span class="name">Agent 面板</span><div class="desc">描述需求生成布局/组件/文案，也能生成代码与图片；官网演示里它会先给「design plan」再动手。</div></div>
+    <div class="surface"><span class="name">CMS</span><div class="desc">Collections / Fields / Plugins 三层，内容与画布联动；Free 档 10 个集合、1,000 页，付费档按集合数与条目数分档。</div></div>
+    <div class="surface"><span class="name">Site Settings（SEO / Localization / Domains）</span><div class="desc">标题、URL、描述、社交预览图、语言包比例、分支与发布；技术 SEO 的天花板就在这一页（评论点名 robots.txt 与静态文件受限）。</div></div>
+    <div class="surface"><span class="name">Analytics / Convert / A/B 测试</span><div class="desc">内置访客、页面浏览、跳出率、平均时长，加 A/B 变体与转化率；Convert 是附加包，按事件计费（HK$203/50 万事件）。</div></div>
+    <div class="surface"><span class="name">Marketplace / Hire Experts</span><div class="desc">28,915 个模板、组件、插件、矢量；找不到人还能直接在平台内找专家，把服务也留在生态里。</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">Site / Project（一个站点，计费单位）</span>
+    <span class="entity">Page / Breakpoint（页面与响应式断点）</span>
+    <span class="entity">Component（可复用组件与变体）</span>
+    <span class="entity">Collection / Item（CMS 集合与条目）</span>
+    <span class="entity">Locale / Branch（语言版本与发布分支）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>主轴是「站点」而不是「文件」：先选项目，再选页面，再选断点与图层；CMS、分析、SEO、语言都是站点下的子配置。它没有「知识库」这一层，资产就是站点本身——这也是迁移成本高的结构原因。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>对设计师几乎零学习成本（Figma 式画布），对非设计师有一个词汇门槛：Breakpoint、Collection、Branch、Locale、Credits 这些词要先学会。实测（燃冰）没有卡在界面上，卡在「审美判断」这一步——界面不难，判断难。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">先让设计师愿意在里面待着，再谈 AI 能生成多少。它所有 AI 功能都长在画布上，而不是另开一个聊天窗口——这是它和「一句话生成站」类产品的根本差别。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">画布即生产环境</span><div class="body">没有「设计稿 → 交付 → 重建」这一段：你在画布上改的就是上线的那一版。这是它所有体验优势的根，也是所有锁定风险的根。</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">AI 生成 + 全可编辑</span><div class="body">官网原话 Everything stays editable；生成的不是一张图，而是一组可拆的图层与组件。评论里被夸的也是这一点：生成后能逐件改，而不是重画。</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">把 SEO / AEO / 性能做成默认值</span><div class="body">首页直接摆 Core Web Vitals 实测面板（LCP 1.1s / INP 95ms / CLS 0.01），并有 AEO scanner、Stack Score 这类自家工具。卖点不是「能优化」，是「默认就好」。</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">三层计量：站点 + 席位 + credits</span><div class="body">credits 供 Agent / 本地化等 AI 功能消耗，全工作区共享；超出可加购。这套设计让重度使用能持续变现，也让账单变得难预测（Trustpilot 抱怨的主要来源）。</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">用对比页把选型流量收干净</span><div class="body">导航 Compare 下列了近 20 个对手（Webflow、Figma、Wix、Squarespace、WordPress、Lovable、v0、Claude Code、ChatGPT、Replit、Astro…）。每一页都在回答同一个问题：为什么不是它。</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">价值到达时间：本次未测（实测只记「几小时完成一次页面替换」，未做计时）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">认知负荷：中（设计师低，非设计师中高；词汇门槛在 Breakpoint / Collection / Locale / Credits）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">惊喜点：全可编辑的生成 + MCP 外接 + 默认性能</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">信任：产品层有 uptime 承诺（99.99%）与 Enterprise 的 SSO/SCIM；信任事件集中在计费（credits 自动加购、席位、附加包）与支持响应（第三方转述：机器人优先、答复慢）。</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">摩擦：账单不可预测、无法导出、技术 SEO 受限</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>生成之后所有东西都能改（官网原话 Everything stays editable，实测（燃冰）也是「改每个组件细节」而不是重做）。</li>
+        <li>MCP 对外开放：Claude、Codex、Cursor 都能接进来改文案、导 CMS 内容（官网原文 Connect your AI with MCP，端点 mcp.framer.com/mcp）。</li>
+        <li>默认性能面板就摆在首页：LCP 1.1s、INP 95ms、CLS 0.01——把「快」当成可展示的事实而不是形容词。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>账单不可预测：站点订阅 + 席位 + credits + 附加包四层叠加，第三方转述的 Trustpilot 差评主要集中在「升级/加购超出预期」。</li>
+        <li>没有代码导出，迁移等于重建：评论原话（转述）impossible to leave framer without export and they do not provide it。</li>
+        <li>技术 SEO 有天花板：第三方转述指出无法编辑 robots.txt、静态文件上传被锁在 Advanced hosting 附加包后。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>订阅（按站点）+ 席位 + 附加包</h5><p>定价页四档：Free（500 credits、Framer 子域名、1 GB 带宽）/ Basic（1,000–15,000 credits、自定义域名、2 个 CMS 集合、50 GB）/ Pro（3,000–100,000 credits、10 个集合、100 GB、重定向、Staging、分支预览，A/B 与 Advanced hosting 为加购）/ Enterprise（自定义额度、SSO、SCIM、无限编辑器、uptime 保障）。退款：EU 与土耳其 14 天。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>免费到哪里为止</h5><p>Free：500 AI credits/月、Framer 子域名、1 GB 带宽、10 个 CMS 集合、1,000 页、5 MB 单文件上传、1 个免费语言、最多 3 位协作编辑；不能绑自定义域名。超限规则：带宽可超一个月并邮件提醒升级；credits 不够可加购或升级站点。</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>变现入口：自定义域名</h5><p>免费档可以建、可以预览，但定价页写明「连接自定义域名需要升级」——付费扳机不是 AI 用完，是「要上线」。这一刀切得很准：项目没上线前不收费。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>体验和变现打架吗？</h5><p>局部一致、整体打架。一致的地方：付费点（域名）正好是价值点（上线），用户不会觉得被卡。打架的地方：credits 与席位是「用得越多付得越多」，而它的体验目标是「让你一直改」——改得越多，账单越不可预测，这就是信任分的裂缝。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">名单来源：官网 Compare 页自己列的对手（Webflow、Figma、Wix、Squarespace、WordPress、Readymag、Ceros、Unbounce、Lovable、Claude Code、ChatGPT、Codex、Contentful、Sanity、AEM、Replit、Astro、v0）+ 第三方评论里用户实际提到换去的地方。Product Hunt 的 Similar Products 本次未取到（页面被 Cloudflare 拦），已注明。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>Framer</th>
+          <th>Webflow</th>
+          <th>Wix / Squarespace</th>
+          <th>Figma Sites</th>
+          <th>Lovable / v0 / Claude Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>主战场</th><td class="own">设计即上线的专业建站 + 一站式托管</td><td>设计师向的专业建站（同一批人）</td><td>通用建站（同一段需求，不同人群）</td><td>设计文件的直接出口</td><td>一句话/一段提示生成站（AI 侧夹击）</td></tr>
+        <tr><th>技术形态</th><td class="own">画布即生产环境、AI 生成全可编辑、CMS/分析/SEO/AEO 内置</td><td>自研可视化 CSS 引擎 + 托管，导出与代码控制更强</td><td>模板 + 拖拽 + 全托管，AI 生成站为附加能力</td><td>设计工具内直出站点，省掉「导入建站工具」这一步</td><td>LLM 生成 React/Tailwind 代码 + 第三方部署，可导出源码</td></tr>
+        <tr><th>分发位置</th><td class="own">设计师社区 + 28,915 资源市场 + 大量对比页截流 + MCP 外接</td><td>代理商与专业建站社区</td><td>搜索广告与大众渠道</td><td>已有设计团队的默认位</td><td>开发者与 AI 尝鲜者渠道</td></tr>
+        <tr><th>价格可见性</th><td class="own">首页零价格，定价页四档 + 三层附加；港币区域价已抓到</td><td>有公开定价页；金额本次未逐个核实</td><td>有公开定价页；金额本次未逐个核实</td><td>随 Figma 订阅；本次未核实</td><td>订阅制；本次未核实</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 设计与发布的连续性：同一块画布上完成「想—做—发」，且生成物可逐件修改。评论里被反复夸的是断点调整与动效成本（同一处改动不用重做），这是壳层产品（LLM 生成代码）目前给不了的手感。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 三条：① 要代码主权的人被 LLM 生成类（Lovable / v0 / Claude Code）截走，因为它们能导出源码；② 内容与电商复杂度的上限被 Webflow / Shopify 压住（评论点名 CMS 上限、无原生电商）；③ 免费与低价的边缘被 Wix / Squarespace 与开源方案吃掉。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>模板与作品生态：Marketplace 28,915 个资源做长尾入口，模板页本身就是落地页。</li>
+        <li>选型对比页：官网 Compare 下近 20 个竞品页，接住「到底用哪个」的搜索意图。</li>
+        <li>客户证言与 Experts 市场：Miro / Perplexity / Zapier 等设计负责人口述 + 平台内找专家，把服务也留在生态内。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>模板与作品 → 搜索与社区 → 试用</strong> — 28,915 个 Marketpace 资源每一个都是一张落地页；模板作者为了卖模板主动做外链与教程，平台不付流量费。</li>
+        <li><strong>对比页截流 → 迁移 → 反哺口碑</strong> — [推断] 官网为几乎每个竞品都建了 compare 页，这是长尾 SEO 的标准吃法：用户在「选哪个」这一刻被接住。第三方评测也印证了迁移路径存在（有用户从 Webflow 迁入且称四个月 SEO 无损失）。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>从建站扩到运营：Analytics、Convert（A/B、漏斗）、Localization、SEO/AEO scanner——把「上线之后」也吃掉。</li><li>[推断] 从设计师扩到市场与创始人：Solutions 已按 Designers / Marketers / Founders / Agencies 分入口，话术从「设计工具」转向「增长工具」。</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>专业站点与品牌站：作品集、落地页、营销站、代理商客户站（Pro Experts 对客户项目有免费编辑权限）。</li><li>CMS 驱动的内容站：Blog、Case、活动页；上限在集合数与条目数（Pro 加购后最多 40 个集合、40,000 条）。</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>有开放接口：MCP 端点 mcp.framer.com/mcp 让 Claude / Codex / Cursor 等外部 agent 直接改站点内容，发布前在画布复核。</li><li>[推断] 平台化走「协议 + 市场」：不靠抽成交易，靠 MCP 把外接 agent 变成免费劳动力，靠 Marketplace 把模板作者变成免费渠道。</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>应用层六维</h3>
+    <span class="pill">模型用得好不好</span>
+  </div>
+  <p class="section-intro">六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。</p>
+  <p class="section-intro">本片判为 **嵌入**。拔电测试：拿走 AI，产品照常卖 → AI 嵌入。（依据：工具型建站产品，AI 只做生成首屏与文案，不在主链路（实测反馈））</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① 替掉哪一步</h4>
+      <p>替掉的是「设计实现」这一步：原来由设计师做设计评估、再由开发实现，实测（燃冰）记录的量级是几个月；现在拿一张成品截图/设计稿在上面让 AI 换部件，几小时。成本从「设计师人力」变成「工具订阅」——这是它最硬的替换价值。</p>
+    </div>
+    <div class="info-card">
+      <h4>② 脏活谁干</h4>
+      <p>数据、权限、格式的脏活它自己啃：域名、托管、SSL、带宽、CMS 结构、SEO 元信息、发布流程都内置。甩回给人的只有一次，但这一次很关键——它要求「给示例、给需求」，也就是审美判断。实测（燃冰）的判断：甩回来的这部分，正是这个品类真正的门槛。</p>
+    </div>
+    <div class="info-card">
+      <h4>③ 出来能不能用</h4>
+      <p>能直接用。实测（燃冰）原话是「能直接用」「直接支持外发，它是一站式网站生成工具」，需要改的是每个组件的细节，不是重做。</p>
+    </div>
+    <div class="info-card">
+      <h4>④ 错了怎么兜</h4>
+      <p>产品侧兜底靠撤销与历史（实测：支持 undo、有记录），Pro 档另有 Staging 与分支预览；但它不标来源、不给置信度、也不纠正错误前提（实测（燃冰）：它不处理这种事情，判断它不负责）。最终兜底是人——人工复核。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ 错一次多贵</h4>
+      <p>错得起。结构是可拆的（组件/图层级），有 undo 与历史，改坏能退回。真正不可逆的部分不在画布里：绑定的域名、对外发布的那一版、以及「没有代码导出」带来的迁移成本。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ 不用它的替代</h4>
+      <p>换得掉。官网自己列了近 20 个替代（Webflow、Wix、Squarespace、WordPress、Figma、Lovable、v0…），实测（燃冰）也确认可以回到原来的做法。但换的代价要算清：站要重建，且第三方转述普遍指出「没有导出」让迁移更贵。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方未公开任何运营指标。以下是可核实事实 + [推断]，用来说明「它该看什么」，不代表真实数据。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>已发布站点数 × 每站点月活维护动作（[推断]）</h5>
+      <p>[推断] 它按站点订阅、按席位与 credits 增收：站点数是收入底座，「还在改」是续费与加购的前提。所以它要的不是注册数，是「站上线且一直有人动」。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>免费档 → 绑定自定义域名的转化率</h5>
+      <p>这是它唯一的付费扳机（定价页写明绑域名需升级）。这个数字决定免费档是成本还是漏斗。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>每站点 credits 消耗与加购率</h5>
+      <p>credits 是 AI 功能的计量单位，也是账单争议的来源；加购率高说明 AI 真在干活，同时说明抱怨会跟着涨。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>Pro 档席位（编辑器）附加率</h5>
+      <p>席位是第二增长曲线，也是最容易被吐槽的一项（HK$81/编辑器）；它决定「团队版」能不能撑起来。</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>计费/退款投诉数 + 支持首响时长</h5>
+      <p>Trustpilot 的低分与 G2 的高分同时存在，说明产品满意度不等于商业满意度；这两条是唯一能把「设计口碑」和「账单口碑」分开监控的护栏。</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>没有公开留存曲线、迁移率、毛利率，也没有「每站点带宽/推理成本」口径 [推断]</h5>
+      <p>[推断] 它卖订阅、付带宽与推理：只看收入不看单位成本，越增长越难看的毛利会被藏起来；而「无法导出」会同时压低迁移率、抬高投诉率，两个方向都不透明。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">账单不可预测</span><span class="sev">高</span></div>
+      <div class="body">站点订阅 + 席位（HK$81/编辑器）+ credits + 附加包（语言 HK$81/个、Convert HK$203/50 万事件、Advanced hosting HK$811）四层叠加。第三方站点转述的 Trustpilot 差评（约 1.6 分、74% 一星）主要集中在「自动升级/加购超出预期」。用户不是不愿付，是付之前算不出来。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">没有代码导出，走了就重建</span><span class="sev">高 · High</span></div>
+      <div class="body">评论转述原话：impossible to leave framer without export and they do not provide it；r/framer 的共识是 lockin and lack of code export are the trade-offs for that simplicity。它是商业选择，也是信任成本。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">技术 SEO 的天花板说不清</span><span class="sev">中</span></div>
+      <div class="body">第三方转述：无法编辑 robots.txt；静态文件上传（最多 500 个）锁在 Advanced hosting 附加包（HK$811）。官网卖点是 Built-in SEO 与 AEO scanner——元标签与结构化没问题，再往下要先查清能力边界再决定把站交给它。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">支持响应是第二条差评线</span><span class="sev">中 · Medium</span></div>
+      <div class="body">第三方转述：支持机器人优先、答复慢，Trustpilot 上有「不回复负评」的标记；Capterra 的易用性子分也是全项最低。对一人公司伤害最大——出问题时没人可问。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">风险按「可能性 × 影响」排序；严重度是我的判断，不是官方披露。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>账单不可预测引发的信任崩塌</strong></td><td>Business</td><td class="sev-high">High</td><td>High</td><td>把 credits 与附加包在动手前显式预算化；席位与语言包给打包价；取消流程做到两键。Trustpilot 的低分不是产品问题，是账单体验问题，可修。</td></tr>
+      <tr><td><strong>AI 生成站从侧翼替代</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>守「可编辑 + 托管 + 性能」三件套，并把 MCP 开放到底（让那些 agent 反而成为它的输入）；同时用导出/迁移的付费出口化解锁定争议。</td></tr>
+      <tr><td><strong>技术 SEO 与自定义能力的天花板</strong></td><td>Product</td><td class="sev-med">Medium</td><td>Medium</td><td>把 robots.txt、静态文件、headers 这类能力从「附加包」提到 Pro 档默认；能力边界在页面上写清楚，比事后被差评划算。</td></tr>
+      <tr><td><strong>支持体系跟不上付费规模</strong></td><td>Operations</td><td class="sev-med">Medium</td><td>Medium</td><td>对一人公司与小工作室给「计费争议」专用人工通道；公开首响时长指标。这类用户单个 LTV 低，但口碑权重高。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>（我的判断）把「改完即上线」做成可核对的差异清单</h5>
+      <div class="desc">How：每次 Agent 改动后给一份「动了哪些图层/组件/文案」的清单，一键回滚到上一版。Why：实测（燃冰）说改的是每个组件细节，而审阅能力决定人敢不敢放手让它改；这也是它相对「一句话生成站」唯一能守住的信任差。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>（我的判断）把示例驱动做成内置的参考库</h5>
+      <div class="desc">How：Agent 首轮就要求「给一个你想像的示例」，并把需求写成结构化 brief 让人确认，再动手。Why：实测（燃冰）明确写「它要求我找示例、给需求」，而这一步正是审美判断的门槛——产品把它接住，非设计师才进得来。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>（我的判断）把账单做成开工前的预算</h5>
+      <div class="desc">How：动手前显示这次改版会消耗多少 credits、涉及哪些附加包（语言/A/B/托管），超限前预警。Why：Trustpilot 约 1.6 分的主因是账单不可预测，而这项改造不需要架构变动，是最轻的一刀。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>赌注：用 AI 降低「从零到可上线」的门槛，用托管与生态把站留住</h5>
+      <div class="desc">它同时押两件事：一是把 Agent 做成画布的一部分（设计代理、CMS 代理、代码代理），让非设计师也能开工；二是继续把上线之后的事（托管、分析、A/B、多语言、AEO）收进订阅。第一条扩人群，第二条提 ARPU——中间那个「无法导出」是它敢这么押的底气，也是它最招骂的地方。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>终局：让「做站」这件事不再需要交接</h5>
+      <div class="desc">如果 Agent 能读懂设计意图、CMS 能自动组织内容、托管与 SEO 默认达标，那么「设计—前端—运维」这条链上的人会被压缩成一个：改画布的人。它离这一步的距离不在模型能力，在审阅与信任机制（能不能让人放心让它改）。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>设计与发布的连续性、默认达标的性能与 SEO、28,915 个资源的长尾入口、MCP 带来的外接生态。四条里只有第一条是「别人抄不动」的。</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>要代码主权的人、要复杂电商与超大规模 CMS 的团队、把技术 SEO（robots.txt/静态文件/headers）当硬要求的人、以及合约里写明「资产必须可迁移」的甲方。</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>有护城河，但位置很具体：不在模型，在「画布即生产环境 + 托管 + 模板市场」这三件耦合，加上一层「不给导出」的人为锁定。前三条要多年积累，最后一条只要改政策就能失去——它的护城河一半是能力，一半是合同条款。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">缺件先说：Product Hunt 的 <strong>Similar Products</strong> 区块本次没拿到（页面被 Cloudflare 拦），所以这张地图的名单来自两处——<strong>官网 Compare 页自己列的对手</strong>，以及第三方评测里用户实际提到换去的地方。</p><table class="risk-table"><thead><tr><th>谁</th><th>抢同一个需求</th><th>抢同一段链路</th><th>用户实际迁移</th></tr></thead><tbody><tr><td>Webflow</td><td>设计师做专业站</td><td>画布 + 托管 + CMS</td><td>双向流动：设计师选 Framer 求手感，要代码控制的人回 Webflow（第三方转述的设计师/开发者分野）</td></tr><tr><td>Wix / Squarespace</td><td>非设计师想上线</td><td>模板 + 拖拽 + 托管</td><td>价格敏感段被它们接走（评论点名低价替代）</td></tr><tr><td>Figma Sites</td><td>设计稿想直接发</td><td>设计文件到站点这一段</td><td>[推断] 已在 Figma 里的团队最省事，抢的是「导入」这一步</td></tr><tr><td>Lovable / v0 / Claude Code</td><td>一句话生成站</td><td>生成与代码</td><td>要源码与自由部署的人往这边走（评论原话点名没有导出是离开的原因）</td></tr><tr><td>WordPress</td><td>内容站与自主可控</td><td>CMS + SEO + 插件</td><td>技术 SEO 受限的人（robots.txt / 静态文件）往回走</td></tr><tr><td>Readymag / Ceros / Unbounce</td><td>营销页与互动页</td><td>单页制作与投放</td><td>[推断] 单一场景被更专的工具切走，官网把它们的对比页都建了</td></tr></tbody></table><p class="section-intro"><strong>结论</strong>：抢同一段链路的是 Webflow 与 Figma Sites（画布到上线），抢同一个需求的是 Wix 与 AI 生成类。真正让用户离开的不是功能短板，是<strong>账单与导出</strong>——这两条都不在功能对比表里。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">看底座比看功能快：底座决定了它「不做什么」，也就决定了它会输在哪。</p><table class="risk-table"><thead><tr><th>产品</th><th>技术底座（公开可核实）</th><th>锁住了什么能力</th></tr></thead><tbody><tr><td>Framer</td><td>自研画布编辑器 + 自建托管与 CDN + 内置 CMS / 分析 / 本地化；MCP 对外开放（mcp.framer.com/mcp）</td><td>「设计即生产」的连续感、默认达标的 Core Web Vitals（LCP 1.1s / INP 95ms / CLS 0.01）、以及不给导出的锁定</td></tr><tr><td>Webflow</td><td>自研可视化 CSS 引擎 + 托管 + 更强的代码导出与自定义代码位</td><td>对 CSS 与结构的精确控制；代价是学习曲线</td></tr><tr><td>Wix / Squarespace</td><td>模板系统 + 拖拽 + 全托管，AI 建站为附加层</td><td>上手速度与价格带，锁在低复杂度站点</td></tr><tr><td>WordPress</td><td>PHP + MySQL + 插件生态，自托管</td><td>资产主权与无限扩展；代价是运维</td></tr><tr><td>Lovable / v0 / Claude Code</td><td>LLM 生成 React / Tailwind 代码，部署在第三方平台，源码可导出</td><td>代码主权与自由部署，锁不住用户</td></tr></tbody></table><p class="section-intro"><strong>哪一层是真护城河</strong>[推断]：不在模型层——Framer 用的模型能力是外部可得的；在<strong>「画布 + 托管 + CMS + 模板市场」的耦合</strong>。这一层难在多年打磨与生态，不在算法；而「没有导出」是一层人造锁定，改政策就能失去，所以它既是护城河也是风险源。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">写给一人公司和小团队，四条能直接用。每条先问一句：这个弱点换个渠道还是不是弱点？</p><p class="section-intro"><strong>一、把「示例 + 需求」做成开工前的 brief（我的判断）。</strong>Framer 的 Agent 要人先给示例，实测（燃冰）就卡在这一步。换个场景照样成立：任何「生成型」工具，把用户脑子里的参考物先结构化成 brief，就能把审美判断这道门槛降下来。最轻：一个三步表单 + 一次确认。</p><p class="section-intro"><strong>二、把改动做成 diff（我的判断）。</strong>它支持 undo，但不告诉人「这次动了什么」。做内容或代码类 AI 产品，改动清单 + 一键回滚是通用刚需——因为它同时解决审阅与定价争议两个问题。</p><p class="section-intro"><strong>三、账单前置（我的判断）。</strong>Framer 的 Trustpilot 低分几乎全是「没想到这么贵」。任何按量计费的产品，把预估账单放在动手前，是最便宜的信任投资；这条换到 API、算力、投放任何渠道都成立。</p><p class="section-intro"><strong>四、把「迁移出口」做成产品（我的判断）。</strong>「不能导出」是它最招骂的地方，也是别人不敢做的位置：谁能把「进来容易、出去也容易」讲清楚，谁就能在同一个需求里收「信任溢价」。最轻的做法：一键导出结构化内容 + 站点快照。</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro"><strong>套利三问。</strong>① <strong>钱从谁的兜里出</strong>：设计驱动的市场团队与代理商（按站点订阅）、团队里的每个编辑（按席位）、重度用 AI 的人（按 credits）、要多语言与实验的人（按附加包）。② <strong>还能拿多久</strong>：只要「设计即上线」的手感没被 AI 生成类追平，就能继续拿；一旦能导出源码的工具把画布体验补齐，议价权会掉。③ <strong>凭什么你拿到</strong>：28,915 个模板与组件构成的长尾入口 + 近 20 个对比页接住的选型流量 + 客户证言（Miro / Perplexity / Zapier）——三条都不是产品功能，是分发资产。</p><p class="section-intro"><strong>流量吃爆款还是长尾。</strong>两样都吃，但偏长尾：模板页、作品页、对比页都是典型的长尾结构；爆款来自产品发布与设计社区的作品展示。[推断] 官网把 Compare 做成近 20 个独立页面，说明它自己算过「选型词」的转化比通用词高。</p><p class="section-intro"><strong>变现三层结构。</strong>第一层订阅（按站点，决定收入底座）→ 第二层席位（按编辑人头，决定团队扩张的弹性）→ 第三层附加包（语言、A/B、Advanced hosting，决定重度用户的榨取率）。定价页把三层写得清楚，首页一个价格都不放——这是刻意把价格推到「已决定要上线」的那一刻。</p><p class="section-intro"><strong>最脆的那根梁。</strong>不是 AI 能力，是<strong>「免费档先建、绑域名才付」与「credits/席位/附加包三层计量」之间的落差</strong>：入口体验干净，出口账单复杂。Trustpilot 约 1.6 分、74% 一星，几乎全部砸在这一点上。[推断] 这条梁不修，它的 ARPU 会继续涨、口碑会继续掉，最后靠企业档与代理商计划兜住——那是另一门生意。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://www.framer.com/" target="_blank" rel="noopener">官网首页（功能与模块原文）</a></li>
+    <li><a href="https://www.framer.com/pricing" target="_blank" rel="noopener">定价页（四档 + 附加包 + FAQ）</a></li>
+    <li><a href="https://www.framer.com/compare/framer-vs-wix" target="_blank" rel="noopener">官网对比页：Framer vs Wix</a></li>
+    <li><a href="https://mcp.framer.com/mcp" target="_blank" rel="noopener">MCP 端点（官网原文）</a></li>
+    <li><a href="https://www.framer.com/marketplace/" target="_blank" rel="noopener">Marketplace（28,915 个资源）</a></li>
+    <li><a href="https://www.producthunt.com/products/framer" target="_blank" rel="noopener">Product Hunt 产品页（本次被 Cloudflare 拦）</a></li>
+    <li><a href="https://www.g2.com/products/framer/reviews" target="_blank" rel="noopener">G2 评论页（本次抓取失败）</a></li>
+    <li><a href="https://www.trustpilot.com/review/framer.com" target="_blank" rel="noopener">Trustpilot 评论页（分数为第三方转述）</a></li>
+    <li><a href="https://aiinsiders.net/tools/reviews/framer" target="_blank" rel="noopener">第三方评测：AI Insiders（转述 Trustpilot/G2）</a></li>
+    <li><a href="https://aitoolspolice.com/reviews/framer/" target="_blank" rel="noopener">第三方评测：AI Tools Police（转述 r/framer 原话）</a></li>
+    <li><a href="https://nqz.ai/blog/roast-framer-11" target="_blank" rel="noopener">第三方评测：nqz.ai（价格与评论分歧）</a></li>
+    <li><a href="https://bestaiq.com/framer-review" target="_blank" rel="noopener">第三方评测：bestaiq（差评主题汇总）</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>
