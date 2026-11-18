@@ -1,6 +1,6 @@
-# 用户评论采集：Cursor（2026-11-17）
+# 用户评论采集：Figma（2026-11-18）
 
-> 来源：Product Hunt 评论区 `https://www.producthunt.com/products/cursor/reviews`
+> 来源：Product Hunt 评论区 `https://www.producthunt.com/products/figma/reviews`
 > 总评论数：未知
 
 ## AI 汇总的 Pros / Cons（抱怨计数就是痛点分布）

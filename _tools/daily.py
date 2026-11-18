@@ -7,6 +7,7 @@ Marvis 不需要理解流程，只需要按顺序跑这四条命令，看输出�
   python _tools/daily.py collect 003 --site https://capacities.io --pricing https://capacities.io/pricing
   python _tools/daily.py build 003                 # 渲染中英报告 + 刷进度墙
   python _tools/daily.py commit 003                # git add/commit/push
+  python _tools/daily.py skip 008 --reason "用户已弃用该产品"   # 登记主动跳过（不写报告）
 
 每条命令最后一行固定输出 RESULT={...}，Marvis 只需照抄这一行。
 任何一步失败，命令会以 exit code 1 结束并打印 ERROR=，Marvis 必须停下，不许继续下一步。
@@ -176,6 +177,35 @@ def cmd_exp(args):
 
 
 # ---------- build ----------
+def cmd_skip(args):
+    """把某一篇登记为主动跳过（写 _data/skipped.csv），选题器不再催它。"""
+    import csv
+    import time
+    row = queue_row(args.no)
+    if not row:
+        fail("队列里没有第 %s 号" % args.no)
+    no = int(args.no)
+    d = dir_of(no, row["slug"])
+    if os.path.exists(os.path.join(d, "teardown-zh.html")) and not args.force:
+        fail("第 %d 篇 %s 已经出过报告，不该跳过；真要跳过请加 --force" % (no, row["name"]))
+    path = os.path.join(ROOT, "_data", "skipped.csv")
+    rows = []
+    if os.path.exists(path):
+        with open(path, encoding="utf-8-sig") as f:
+            rows = [r for r in csv.DictReader(f) if str(r.get("no", "")).strip()]
+    rows = [r for r in rows if int(r["no"]) != no]
+    reason = args.reason or os.environ.get("MARVIS_SKIP_REASON") or "用户决定跳过"
+    rows.append({"no": no, "slug": row["slug"], "name": row["name"],
+                 "reason": reason, "date": time.strftime("%Y-%m-%d")})
+    rows.sort(key=lambda r: int(r["no"]))
+    with open(path, "w", encoding="utf-8", newline="") as f:
+        w = csv.DictWriter(f, fieldnames=["no", "slug", "name", "reason", "date"])
+        w.writeheader()
+        w.writerows(rows)
+    emit({"ok": True, "step": "skip", "no": no, "name": row["name"],
+          "reason": reason, "skipped_total": len(rows)})
+
+
 def cmd_build(args):
     row = queue_row(args.no)
     if not row:
@@ -217,6 +247,7 @@ def main():
     sub.add_parser("next").set_defaults(fn=cmd_next)
     c = sub.add_parser("collect"); c.add_argument("no"); c.add_argument("--site"); c.add_argument("--pricing"); c.set_defaults(fn=cmd_collect)
     e = sub.add_parser("exp"); e.add_argument("no"); e.set_defaults(fn=cmd_exp)
+    k = sub.add_parser("skip"); k.add_argument("no"); k.add_argument("--reason"); k.add_argument("--force", action="store_true"); k.set_defaults(fn=cmd_skip)
     b = sub.add_parser("build"); b.add_argument("no"); b.set_defaults(fn=cmd_build)
     m = sub.add_parser("commit"); m.add_argument("no"); m.set_defaults(fn=cmd_commit)
     args = ap.parse_args()

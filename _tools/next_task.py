@@ -7,6 +7,7 @@
   3. 如果最小未完成的那篇有目录但没报告 → 状态「待出报告」，不许去做下一号
   4. 如果连目录都没有 → 状态「待采集」
   5. 如果更前面有缺报告的 → 先报它，不许往后走
+  6. _data/skipped.csv 里登记过的编号算「主动跳过」：不算未完成，也不算跳号
 
 用法：
   python _tools/next_task.py          # 人看的中文一行
@@ -17,6 +18,7 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 QUEUE = os.path.join(ROOT, "_data", "queue.csv")
+SKIP = os.path.join(ROOT, "_data", "skipped.csv")
 
 
 def load_queue():
@@ -38,15 +40,29 @@ def done(r):
     return os.path.exists(os.path.join(d, "teardown-zh.html"))
 
 
+def load_skipped():
+    """_data/skipped.csv：人主动跳过、不打算出报告的编号。"""
+    if not os.path.exists(SKIP):
+        return {}
+    out = {}
+    with open(SKIP, encoding="utf-8-sig") as f:
+        for r in csv.DictReader(f):
+            if str(r.get("no", "")).strip():
+                out[int(r["no"])] = r
+    return out
+
+
 def main():
     rows = load_queue()
     total = len(rows)
     finished = [r for r in rows if done(r)]
+    skipped = load_skipped()
 
-    pending = next((r for r in rows if not done(r)), None)
+    pending = next((r for r in rows if not done(r) and int(r["no"]) not in skipped), None)
     if pending is None:
         out = {"state": "all_done", "done": len(finished), "total": total,
-               "message": "100 篇全部出报告了"}
+               "skipped": sorted(skipped.keys()),
+               "message": "没有待办了：剩下的要么已出报告、要么已跳过"}
     else:
         d = os.path.join(ROOT, dir_of(pending))
         has_dir = os.path.isdir(d)
@@ -68,10 +84,14 @@ def main():
     gaps = []
     seen_undone = False
     for r in rows:
+        if int(r["no"]) in skipped:
+            continue
         if not done(r):
             seen_undone = True
         elif seen_undone:
             gaps.append(int(r["no"]))
+    if skipped:
+        out["skipped"] = sorted(skipped.keys())
     if gaps:
         out["gaps"] = gaps
         out["gap_warning"] = "跳号：第 %s 篇已出报告，但前面还有没出的" % "、".join(str(g) for g in gaps)
