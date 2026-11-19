@@ -1,0 +1,70 @@
+{
+ "slug": "fathom",
+ "name": "Fathom",
+ "dist": [
+  "5 star79%",
+  "4 star19%",
+  "3 star1%"
+ ],
+ "overall": [
+  "4.6",
+  "177"
+ ],
+ "lowRated": [
+  {
+   "rating": "3",
+   "title": "",
+   "like": "The ease of the data moving into the system.",
+   "dislike": "The front end work to get it setup and work well takes a bit of time."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "It's simple to use and navigate all this software features and functionalities.",
+   "dislike": "I don't find any complain with this software."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "The fact that I can visually see and interrogate my data from Xero. Not just data I feed Fathom, but data that is live, hot off the press. Then I can create custom KPI's to see just the important metrics for me.",
+   "dislike": "The interface uses something like Javascript which sometimes causes some issues in loading or displaying data unless you're in Chrome."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "I like Fathom for its ease of use for the most part. On the financial reports, I like the fact that I can do the reporting across multiple clients.",
+   "dislike": "I do find the budgeting quite cumbersome and hard to understand. Would like to understand budgeting more because it feels very cumbersome to get to the output I need."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "Consolidation of Multi-Currency reporting entities",
+   "dislike": "Generation of custom reports is not easy"
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "Support staff is prompt, polite and helpful. UI is fairly intuitive and platform does what it advertises",
+   "dislike": "While its simplicity is its strength, Fathom isn't too customisable beyond producing performance reports. The format to upload data via excel is also a bit annoying"
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "I like the multi-currency consolidation features. The support has been really good too.",
+   "dislike": "I think an easier explanation of how the multi-currency consolidation is done on the backend would be helpful."
+  },
+  {
+   "rating": "4",
+   "title": "",
+   "like": "I like the ease it can pull financial data from Quickbooks Online and, after setting a few KPIs, can produce a repeatable report easy for business owners to read who don't want to stare at a sheet of numbers. The ability to update each quarter with ease is great and perfect for some key board reports.",
+   "dislike": "It's a bit more complicated to produce reports when you have a budget by class, but not impossible.\n\n\nRecommendations to others considering Fathom:\n\nThe product team at Fathom is quick to answer questions and are continually listening to input and feedback on ways to improve their product."
+  },
+  {
+   "rating": "4",
+   "title": "",
+   "like": "This tool takes notes from the meetings in a very useful way so you can concentrate on the meeting fully and later review the notes and share as needed.",
+   "dislike": "Nothing as such. Waiting for getting new features and functionalities added to this."
+  }
+ ],
+ "default": []
+}

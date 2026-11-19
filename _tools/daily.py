@@ -238,7 +238,13 @@ def cmd_commit(args):
     if rc != 0:
         fail("git push 失败（检查网络或凭证）：" + out[-300:])
     rc, head = run(["git", "rev-parse", "--short", "HEAD"])
-    emit({"ok": True, "step": "commit", "commit": head.strip()})
+    # 同步 GitHub 主页的连载进度（独立仓库）
+    prof = subprocess.run([PY, os.path.join(TOOLS, "build_profile.py")],
+                          cwd=ROOT, capture_output=True, text=True, encoding="utf-8", errors="replace")
+    prof_out = (prof.stdout or "") + (prof.stderr or "")
+    emit({"ok": True, "step": "commit", "commit": head.strip(),
+          "profile": prof_out.strip().splitlines()[-1] if prof_out.strip() else "",
+          "profile_ok": prof.returncode == 0})
 
 
 def main():

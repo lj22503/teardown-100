@@ -31,6 +31,11 @@ def load_queue():
     return rows
 
 
+def active(rows):
+    """跳过标了 deferred 的（老板决定先不做）"""
+    return [r for r in rows if (r.get("status") or "").lower() != "deferred"]
+
+
 def dir_of(r):
     return "%03d-%s" % (int(r["no"]), r["slug"])
 
@@ -53,8 +58,9 @@ def load_skipped():
 
 
 def main():
-    rows = load_queue()
-    total = len(rows)
+    all_rows = load_queue()
+    total = len(all_rows)
+    rows = active(all_rows)
     finished = [r for r in rows if done(r)]
     skipped = load_skipped()
 

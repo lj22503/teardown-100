@@ -9,11 +9,11 @@
 
 ## 进度墙
 
-✅ = 已出报告（点进目录）· 🟡 = 素材齐了待出报告 · ⬜ = 在队列里
+✅ = 已出报告 · 🟡 = 素材齐了待出报告 · ⏸ = 主动跳过 · ⬜ = 在队列里
 
 |  |  |  |  |  |  |  |  |  |  |
 |---|---|---|---|---|---|---|---|---|---|
-| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ✅ [Claude by Anthropic](006-claude/) | ✅ [Framer](007-framer/) | 🟡 Cursor | ✅ [Figma](009-figma/) | ⬜ Fathom |
+| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ✅ [Claude by Anthropic](006-claude/) | ✅ [Framer](007-framer/) | 🟡 Cursor | ✅ [Figma](009-figma/) | 🟡 Fathom |
 | ⬜ ElevenLabs | ⬜ Gamma | ⬜ Slack | ⬜ Taskade | ⬜ Midjourney | ⬜ Relay.app | ⬜ Gmail | ⬜ JetBrains | ⬜ Final Round AI | ⬜ Pitch |
 | ⬜ Canva | ⬜ Softr | ⬜ AI Image Upscaler by Upscale.media | ⬜ Spline | ⬜ Linear | ⬜ v0 by Vercel | ⬜ Groq Chat | ⬜ Microsoft Designer | ⬜ Google Chrome | ⬜ Writesonic |
 | ⬜ Cortex | ⬜ Dovetail | ⬜ Resend | ⬜ Fireflies.ai 👔 | ⬜ YourGPT | ⬜ YouWare | ⬜ Arc | ⬜ Supademo | ⬜ Vapi | ⬜ Typeahead |

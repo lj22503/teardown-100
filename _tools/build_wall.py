@@ -49,7 +49,7 @@ def main():
     lines.append("")
     lines.append("## 进度墙")
     lines.append("")
-    lines.append("✅ = 已出报告（点进目录）· 🟡 = 素材齐了待出报告 · ⬜ = 在队列里")
+    lines.append("✅ = 已出报告 · 🟡 = 素材齐了待出报告 · ⏸ = 主动跳过 · ⬜ = 在队列里")
     lines.append("")
     lines.append("|  |  |  |  |  |  |  |  |  |  |")
     lines.append("|---|---|---|---|---|---|---|---|---|---|")

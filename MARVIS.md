@@ -88,6 +88,9 @@ python _tools\daily.py commit <no>
 
 `build` 必须看到 `残留占位符=0`。有残留就是 content.json 缺字段，回去补，不许硬提交。
 
+`commit` 会自动调 `python _tools\build_profile.py` 同步 GitHub 主页（lj22503/lj22503）上的「进度 N/100 ｜ 最新一篇」。
+如果输出里 `"profile_ok": false`，说明主页没同步上，**单独再跑一次** `python _tools\build_profile.py`，还是失败就报错停下，不要忽略——主页是唯一对外入口。
+
 ### 第 6 步 · 发 IMA（你的活）
 
 把这两个文件发到 IMA 知识库「拆解100个AI＋产品」：
