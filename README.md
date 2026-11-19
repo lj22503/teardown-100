@@ -3,7 +3,7 @@
 > 每天拆一个 AI 产品：**可核实的事实 + 一手实测 + 明确标注的判断**。
 > 不给假精度，不把推断说成事实。
 
-**进度：8 / 100（8%）**
+**进度：9 / 100（9%）**
 
 ---
 
@@ -13,7 +13,7 @@
 
 |  |  |  |  |  |  |  |  |  |  |
 |---|---|---|---|---|---|---|---|---|---|
-| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ✅ [Claude by Anthropic](006-claude/) | ✅ [Framer](007-framer/) | 🟡 Cursor | ✅ [Figma](009-figma/) | 🟡 Fathom |
+| ✅ [Notion](001-notion/) | ✅ [Obsidian](002-obsidian/) | ✅ [Capacities](003-capacities/) | ✅ [Reflect](004-reflect-notes/) | ✅ [HyNote AI](005-hynote-ai/) | ✅ [Claude by Anthropic](006-claude/) | ✅ [Framer](007-framer/) | 🟡 Cursor | ✅ [Figma](009-figma/) | ✅ [Fathom](010-fathom/) |
 | ⬜ ElevenLabs | ⬜ Gamma | ⬜ Slack | ⬜ Taskade | ⬜ Midjourney | ⬜ Relay.app | ⬜ Gmail | ⬜ JetBrains | ⬜ Final Round AI | ⬜ Pitch |
 | ⬜ Canva | ⬜ Softr | ⬜ AI Image Upscaler by Upscale.media | ⬜ Spline | ⬜ Linear | ⬜ v0 by Vercel | ⬜ Groq Chat | ⬜ Microsoft Designer | ⬜ Google Chrome | ⬜ Writesonic |
 | ⬜ Cortex | ⬜ Dovetail | ⬜ Resend | ⬜ Fireflies.ai 👔 | ⬜ YourGPT | ⬜ YouWare | ⬜ Arc | ⬜ Supademo | ⬜ Vapi | ⬜ Typeahead |

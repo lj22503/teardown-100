@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Teardown · Fathom — Principal PM Analysis</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="Report tools">
+  <div class="lang-tools" role="group" aria-label="Language">
+    <a href="teardown-en.html" class="lang-btn active" aria-label="English version">EN</a>
+    <a href="teardown-zh.html" class="lang-btn " aria-label="中文版本">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">Export MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">Export PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 Product Teardown</div>
+
+<div class="meta-strip">
+  <span>Product Teardown · Principal PM Analysis</span>
+  <span class="dot"></span>
+  <span>Generated 2026-11-19</span>
+  <span class="dot"></span>
+  <span>Product: Fathom</span>
+</div>
+
+<h1>Fathom<span class="tag">It doesn't sell transcription. It sells 'the meeting ends and the summary plus next steps are already there.' Its free tier is so generous it looks like a mistake — the sharpest acquisition weapon, and the weakest revenue beam.</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">Category</div><div class="value">AI Meeting Notetakers / Meeting Intelligence</div></div>
+  <div class="cell"><div class="label">Users</div><div class="value">Verifiable: the site says 'Used at 500K+ companies' (companies, per the site's own wording, not users); 316 reviews on the Product Hunt listing (only the count and 8 latest review excerpts were captured this round); G2 4.6 / 177, but that page is dominated by a different, same-named financial-analysis product (see review evidence). ARR, paid seats and retention are not disclosed, so this card does not invent them. The site also claims 95% of users say they were fully present, 6+ hours of follow-up saved per person per week, and 3X faster insight-to-action — all vendor claims, unverified by a third party.</div></div>
+  <div class="cell"><div class="label">Model</div><div class="value">Individual subscription + per-seat team subscription + compliance uplift. Individual: Free $0 / Premium $16. Teams start at 2 seats: Team $15 / Business $25 / Enterprise $35 per user per month, Enterprise annual only; every plan saves 25%+ annually and carries a 90-day guarantee (pricing page).</div></div>
+  <div class="cell"><div class="label">Stage</div><div class="value">Growth, leaning mature, and already folded into a larger suite. Three product layers: individual (bot or bot-free capture, unlimited recording and transcription, instant summaries, clips and playlists, cross-call search; paid adds advanced summaries, AI action items, a conversational assistant, custom bots), team (shared workspace, Trackers, team-wide Ask Fathom, team security controls, HIPAA with a standard BAA), enterprise (Launch Assist onboarding, SSO and SCIM, custom retention, custom BAA on request, priority SLA, dedicated success manager). Cross-platform via iOS app, desktop and browser extension. On 2026-04-15 Superhuman announced its acquisition of Fathom.</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">Inside</span>
+  <ol>
+    <li><a href="#tldr">Verdict · TL;DR</a></li>
+    <li><a href="#metrics">Key Signals</a></li>
+    <li><a href="#s1">1. Product Snapshot</a></li>
+    <li><a href="#gallery">· Product Tour</a></li>
+    <li><a href="#s2">2. Users & JTBD</a></li>
+    <li><a href="#s3">3. Core Product Loop</a></li>
+    <li><a href="#s4">4. Architecture & UX System</a></li>
+    <li><a href="#s5">5. Design Language & Craft</a></li>
+    <li><a href="#s6">6. Value Delivery & UX Quality</a></li>
+    <li><a href="#s7">7. Business Model</a></li>
+    <li><a href="#s8">8. Competitor Landscape</a></li>
+    <li><a href="#s9">9. Growth Strategy</a></li>
+    <li><a href="#s10">10. Application six-dim</a></li>
+    <li><a href="#s11">11. Metrics They Optimize For</a></li>
+    <li><a href="#s12">12. Friction & Weaknesses</a></li>
+    <li><a href="#s13">13. Risk Matrix</a></li>
+    <li><a href="#s14">14. Opportunities & Redesign</a></li>
+    <li><a href="#s15">15. Final PM Verdict</a></li>
+      <li><a href="#s16">16. Competitive map</a></li>
+    <li><a href="#s17">17. Competitors' technical base</a></li>
+    <li><a href="#s18">18. Transferable opportunities (my judgement)</a></li>
+    <li><a href="#s19">19. Traffic and monetisation breakdown</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>Assumptions:</strong> Verifiable: site positioning and feature list, bot-free and compliance badges, 'Used at 500K+ companies' (site wording), five-tier pricing and feature mapping (USD list prices), the 2026-04-15 Superhuman acquisition announcement, the PH count of 316 reviews plus 8 latest excerpts, G2 4.6/177 with rating distribution, Fireflies' four-tier list prices, and the hands-on (RanBing) six-dimension record. Inferred and flagged: frequency, north-star and input/guardrail metrics, margin and unit cost, post-acquisition integration direction, and Granola/Otter prices (no quotable body text captured this round).
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM Verdict</div>
+    <h2>It is the factory downstream of every meeting: a conversation goes in, notes, action items and follow-up email come out. The wall isn't the model — it's the gap between a free tier this generous and free native capture inside the meeting apps.</h2>
+    <div class="sub">The unplug test says AI-native: remove ASR and summarization and only an audio file remains (the hands-on verdict: half recorder, half AI recognition and context judgement). So the barrier isn't in the UI, it's in speech recognition and the capture entry point — the hands-on answer was literally 'the barrier is recognition accuracy'. What actually holds is the free tier, bot-free capture, and cross-meeting retrieval (Ask Fathom / MCP). All three can be covered by the platform vendors who are already inside the meeting for free.</div>
+  </div>
+  <div class="stars">
+    <div class="row"></div>
+    <div class="label">4 / 5 · Strategic strength</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">If you only read three things —</div>
+  <ul>
+    <li><strong>The free tier is too generous to look free</strong> — Unlimited recording, unlimited transcription and instant summaries sit on the $0 plan (pricing page). At least two independent reviews say so: one writes 'I was actually confused with the features that they offered me for free', another says they were almost worried Fathom gives too much and would claw it back after the trial. On the same page, the individual upgrade to Premium buys only advanced summaries, AI action items, the conversational assistant and custom bots — meaning an individual user barely feels why the $16 is necessary.</li>
+    <li><strong>The barrier is recognition, not summarization</strong> — The three-question hands-on verdict: worth the price (it saves recording time, and recording is already free), and the barrier sits on the model side — specifically recognition accuracy. This mirrors 009 Figma, where the barrier sits in the software. Anyone can write a plausible summary; getting overlapping speakers, accents and domain terms right is the floor this category stands on.</li>
+    <li><strong>Three weak beams: free tier too strong, native competition, and pricing power no longer its own</strong> — First: a review already documents someone dropping from the Pro trial back to free after two weeks because value fell off. Second: its own competitor list includes Google Meet's Gemini and ZoomMate — the platforms are already in the room at zero marginal cost. Third: since 2026-04-15 it belongs to Superhuman (site banner: FATHOM IS NOW PART OF SUPERHUMAN), so independent pricing power is no longer fully in its hands.</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">Time to value</div>
+    <div class="big">Not measured</div>
+    <div class="desc">The hands-on run recorded the sequence (signup → permissions → download → join → summary) without a stopwatch, so no minutes are claimed</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Free-tier recording allowance</div>
+    <div class="big">Unlimited<small> minutes</small></div>
+    <div class="desc">Pricing page: unlimited recording and transcription; money buys advanced summaries, team collaboration and compliance</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Moat score</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">My judgement, not a measurement; points lost on recognition quality, native competition and pricing power already ceded</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>Product Snapshot</h3>
+    <span class="pill">What it really is</span>
+  </div>
+  <p class="section-intro">Beyond the marketing description — what this product actually is as a system.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">Fathom is an AI meeting recorder and meeting-intelligence product: it captures audio with a bot or bot-free, produces transcripts, summaries, action items and follow-up emails, then pushes results into CRM, Slack, Notion and Asana, or exposes them through a public API and MCP for ChatGPT and Claude.</div>
+      <h4>Core user promise</h4>
+      <p>Official line (site): 'Fathom summarizes your meetings so you can focus on the conversation.' In user language: stop taking notes in the meeting; the notes, action items and follow-up email are already there when it ends.</p>
+    </div>
+    <div class="info-card">
+      <h4>Category & positioning</h4>
+      <p>It sits where two shelves cross: meeting notetakers (Fireflies, Otter, Granola) and sales/revenue intelligence (Gong). It leans toward recording but further toward action and integration — more CRM sync and Scorecards than a pure notetaker, less call scoring and methodology depth than Gong, more cross-meeting retrieval and open interfaces than platform-native tools.</p>
+      <h4 style="margin-top:14px;">Assumptions</h4>
+      <ul>
+        <li>[inferred] 'Used at 500K+ companies' counts companies, not paid seats, and includes free users; no user count, paid count or retention is disclosed, so any ARR derived from it is unreliable.</li>
+        <li>[inferred] The paying core is team tiers, not individuals: the free plan already includes unlimited recording and transcription (pricing page), the hands-on run found free sufficient for an individual, and reviews document downgrades from Pro. Its growth curve therefore depends on when one person pulls a colleague in.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 PRODUCT TOUR (screenshots) -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>Product Tour</h3>
+    <span class="pill">Screenshots from the product</span>
+  </div>
+  <p class="section-intro">A visual pass through the surfaces we'll analyze next. Images sourced live from the product's public marketing pages.</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/68f20f5cd1c6d0de365b8849_Fathom-Visual_Identity_Concepts-Stage_07-Website_Thumbnail-01.jpg" alt="Fathom's site hero (OG image): positioned as AI meeting notes, with the Superhuman ownership badge on the homepage since 2026 (from fathom.ai)" loading="lazy"/><figcaption><span class="fig-num">Fig.01</span>Fathom's site hero (OG image): positioned as AI meeting notes, with the Superhuman ownership badge on the homepage since 2026 (from fathom.ai)</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/6a313ff6c90ece284701c132_overview-new_section-2_transcript-only.png" alt="Product overview 1: the meeting summary is attached to the call, summary and content on one screen (from fathom.ai/product)" loading="lazy"/><figcaption><span class="fig-num">Fig.02</span>Product overview 1: the meeting summary is attached to the call, summary and content on one screen (from fathom.ai/product)</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/6a3140b6f90b327120a57477_overview-new_section-2_audio%2Btranscript.png" alt="Product overview 2: summary panel on the left, audio player synced with the transcript on the right (from fathom.ai/product)" loading="lazy"/><figcaption><span class="fig-num">Fig.03</span>Product overview 2: summary panel on the left, audio player synced with the transcript on the right (from fathom.ai/product)</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/6a3140bec3800ab82844123f_overview-new_section-2_audio%2Bvideo.png" alt="Product overview 3: a video player under the summary block, jump back to any timestamp (from fathom.ai/product)" loading="lazy"/><figcaption><span class="fig-num">Fig.04</span>Product overview 3: a video player under the summary block, jump back to any timestamp (from fathom.ai/product)</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/68a30341d9ec04942e1e1888_image%207.png" alt="Meeting discovery view: many meetings on one screen, searchable and filterable (from fathom.ai)" loading="lazy"/><figcaption><span class="fig-num">Fig.05</span>Meeting discovery view: many meetings on one screen, searchable and filterable (from fathom.ai)</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/68a30340a6cc83f91639a6c4_Frame%2079.png" alt="Meetings grouped by date: yesterday and today side by side — the daily entry into the meeting library (from fathom.ai)" loading="lazy"/><figcaption><span class="fig-num">Fig.06</span>Meetings grouped by date: yesterday and today side by side — the daily entry into the meeting library (from fathom.ai)</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>Target Users & Jobs-to-be-Done</h3>
+    <span class="pill">Who + why</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Primary user segments</h4>
+      <ul>
+        <li><strong>Heavy individual meeting takers (sales, coaching, consulting, recruiting)</strong> — People with a dozen meetings a week who still owe someone notes. The hands-on test (RanBing) sits exactly here: notes used to take at least half an hour, now feedback is captured during the meeting. The review evidence clusters here too — one founder writes about 10+ customer calls a week and how bot-free removed the awkward 'is someone else joining?' moment.</li>
+        <li><strong>Sales and customer-success teams</strong> — They don't want notes, they want a shared source of customer truth: Trackers on key topics, Ask Fathom across calls, CRM field sync, Deal View and AI Scorecards for coaching. All of it gates at Team and above; the individual plan never touches it — which is the main reason a person would ever pay.</li>
+        <li><strong>Enterprise and compliance-sensitive industries</strong> — They buy SSO and SCIM, custom retention, BAA on request, priority SLA and a dedicated success manager (Enterprise, annual only). The site claims SOC 2 Type II, GDPR and HIPAA compliance. Thickest wallet, slowest cycle — but once in, the highest switching cost.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Trigger & context</h4>
+      <p><strong>Trigger moment:</strong> The third meeting of the day just ended and last meeting's follow-up is still unsent. In the hands-on test the trigger was simpler: the landing page showed what it could do, so it got tried.</p>
+      <p><strong>Frequency:</strong> Tied to meeting volume — several times a day for heavy users. Frequency data is not disclosed.</p>
+      <p><strong>Context:</strong> Starts inside the meeting app (Meet / Zoom / Teams), lands on web or desktop for the summary; action items and notes flow to Slack, Notion, Asana, email; data exits through CRM, API and MCP; iOS app on mobile.</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done</h4>
+    <div class="jtbd-row">
+      <div class="who">Functional</div>
+      <div class="job">Turn one meeting into three usable artifacts: a searchable transcript, a readable summary, an action list someone can be assigned. <br><em>"When ___, I want to ___, so I can ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Emotional</div>
+      <div class="job">Be allowed to stop taking notes — and not fear missing the one sentence the other side committed to. The hands-on line: 'you can stay present in the meeting instead of writing things down.' <br><em>"I want to feel ___ / avoid feeling ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Social</div>
+      <div class="job">Be the person whose meetings end with conclusions; never be the one typing while a client talks. <br><em>"I want others to see me as ___."</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>Core Product Loop</h3>
+    <span class="pill">System dynamics</span>
+  </div>
+  <p class="section-intro">The engine — how a single user session compounds into retention and, if lucky, growth.</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">Trigger</div>
+      <div class="what">The meeting just ended</div>
+      <div class="why">The trigger isn't 'I want AI', it's 'I need a record of this and I need to hand out work'. The first hands-on impression: it has two halves — meeting recording, and AI recognition plus context judgement.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Action</div>
+      <div class="what">Let it into the meeting — or skip the bot entirely</div>
+      <div class="why">Hands-on flow: sign up from the landing page, authorise the meeting-related mailbox and meeting tools step by step, and only download at the very end (install opens in the browser, extensions supported). That is the one moment the whole flow asks you to stop and think: permissions first, product second.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Reward</div>
+      <div class="what">Summary, action items and next step, ready to read</div>
+      <div class="why">Hands-on verdict: directly usable; the only things needing edits are the meeting consensus and the action list — not the format. The smartest moment is when it extracts the next actions and asks a human to confirm.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Return</div>
+      <div class="what">Meetings accumulate; next time you search them</div>
+      <div class="why">You come back not to record again but to ask 'what did they say last time'. Trackers and Ask Fathom turn history into a queryable asset, plus a shared workspace on team plans.</div>
+    </div>
+  </div>
+  <div class="loop-note">"What it actually teaches is that a meeting's value lives in post-meeting action, not in the record — after one use, people start running meetings around action items instead of agendas."</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Acquisition loop</h4>
+      <p>Three run at once: free-tier word of mouth (unlimited recording makes 'just try it' cost nothing — several reviews say the free plan is enough); a content/SEO matrix, where every competitor in the site's Competitors menu has its own comparison page eating 'X vs Fathom' searches; and integration directories (Salesforce, HubSpot, Slack, Asana, Zapier, ChatGPT, Claude), which is renting shelf space in someone else's market.</p>
+    </div>
+    <div class="info-card">
+      <h4>Activation · Aha moment</h4>
+      <p>The first time a meeting ends and the summary, action items and follow-up email are already on the page — with no third-party bot in the room. Review quote: it 'removes the awkward "is someone else joining?" moment that always derailed the first 30 seconds'.</p>
+    </div>
+    <div class="info-card">
+      <h4>Retention drivers</h4>
+      <ul>
+        <li>Meetings accumulate in the account: transcripts, summaries and action items are all searchable, so leaving means abandoning your own meeting archive.</li>
+        <li>Once team Trackers are used to watch metrics (competitor mentions, churn reasons), the product becomes part of the management process.</li>
+        <li>Automatic CRM field write-back stitches meetings into customer records; removing it means going back to copy-paste.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Virality / network effects</h4>
+      <p>Yes, but weak — and bot-free is structurally anti-viral: a bot in the room is the most visible brand impression, and Fathom eliminated it as a defect. What does spread is sharing a notes link with someone who has no account — [inferred]; sharing data is not disclosed.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>Product Architecture & UX System</h3>
+    <span class="pill">Surfaces + entities</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">Key product surfaces</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Capture layer (bot / bot-free)</span><div class="desc">The entry point and the moat: a bot joins any meeting, while bot-free grabs system audio on the desktop — solving 'a robot in the room is awkward' (site: 'Now available bot-free').</div></div>
+    <div class="surface"><span class="name">Summary and action items</span><div class="desc">The main dish. The hands-on view shows summary, video and to-dos on one screen; action items are drafted by AI and confirmed by a human — the 'AI drafts, human signs' structure is its most correct design decision.</div></div>
+    <div class="surface"><span class="name">Meeting library and search (Ask Fathom)</span><div class="desc">Turns single meetings into a database: cross-meeting retrieval, topic-level follow-up questions. Team-level Ask Fathom queries the whole team's meetings — the dividing line between a recorder and a memory layer.</div></div>
+    <div class="surface"><span class="name">Trackers</span><div class="desc">AI that watches instead of only summarising: competitor mentions, pricing objections, churn reasons get flagged automatically. This is the layer sales managers pay for.</div></div>
+    <div class="surface"><span class="name">Integrations and exits (CRM / Slack / API / MCP)</span><div class="desc">Meeting output needs somewhere to go or it's another silo. Business-tier CRM field sync and Deal View, plus the public API and MCP (ChatGPT, Claude), decide whether it is 'a tool' or 'a layer of data'.</div></div>
+    <div class="surface"><span class="name">Team and billing (Workspace / Seat)</span><div class="desc">Money and compliance live here: 2-seat minimum, per-seat pricing, and the gaps between Business and Enterprise are CRM sync, SSO/SCIM and custom retention. The tier cut lines describe the business intent better than the feature list does.</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">Core entities · what the system is built around</h4>
+  <div class="entity-row">
+    <span class="entity">Meeting (one call; the unit of capture and output)</span>
+    <span class="entity">Transcript (searchable, jump-to-timestamp)</span>
+    <span class="entity">Summary / Action item (what actually gets consumed)</span>
+    <span class="entity">Tracker (a topic watched across meetings)</span>
+    <span class="entity">Workspace / Seat (the boundary of money and permissions)</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>IA logic</h4>
+      <p>The spine is 'the meeting': enter from a calendar or meeting app, land on individual records, then string them sideways into search and Trackers. The upside is zero new concepts — a meeting is already the unit of the user's day. The cost is that the product has no canvas of its own: all value is stored inside someone else's meeting app, and if capture permissions break, the product is empty.</p>
+    </div>
+    <div class="info-card">
+      <h4>Navigation & interaction model</h4>
+      <p>The hands-on path: understand it from the landing page → sign up → authorise mailbox and meeting tools step by step → download last (browser-based install, extensions supported). The UI itself asks nothing to learn; the friction is the authorisation stretch — you hand over the meeting entry point before you see the product. Good for growth (account before experience), a test of trust.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>Design Language & Craft Signals</h3>
+    <span class="pill">What craft actually means</span>
+  </div>
+  <p class="section-intro">Make in-meeting friction disappear first, then argue about how well AI writes. Every craft choice here reduces discomfort during the meeting rather than adding buttons after it.</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">Authorise first, download last</span><div class="body">The most instructive craft detail from the hands-on test: it does not make you install a client you can't use yet. Signup and permissions are split into steps and the download comes last, so the first time you open the product the meetings are already inside. The first experience is 'there is a result', not 'an empty screen'.</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">Treating 'a bot in the room' as a defect to remove</span><div class="body">Bot-free is social design, not a technical checkbox: no third-party robot means no awkward first 30 seconds (named in reviews). Choosing to build a desktop capture path just so 'nobody can see me recording' tells you it understands where the real friction lives.</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">Action items: AI drafts, human signs</span><div class="body">Hands-on line: 'she extracts the next actions and then has a human confirm them.' That is the right way to keep irreversible external commitments in human hands — AI writes the draft, signing authority never leaves.</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">A free tier metered by features, not minutes</span><div class="body">Most tools put a minute counter on the wall; Fathom pays for itself in features — recording and transcription unlimited, and money buys advanced summaries, team collaboration and compliance. The cost is that all conversion pressure lands on team plans; the benefit is remarkably clean word of mouth — only 10 complaints across 316 reviews.</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">Making meetings a data source other AIs can call</span><div class="body">The public API and MCP (ChatGPT, Claude) mean it isn't fighting over 'who is the assistant' but over 'whose meeting records the assistant reads'. Reviewers are already waiting for this: they want to query across all sales conversations instead of pasting transcripts.</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>Value Delivery & UX Quality</h3>
+    <span class="pill">Feel of the product</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">Time-to-value</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Time-to-value: not measured this round (the hands-on run recorded sequence, not a stopwatch: signup → permissions → download → join → summary)</span></div>
+  <div class="ux-bar"><span class="lbl">Cognitive load</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">Cognitive load: low (the landing page explains itself; the real friction is authorisation, not the interface)</span></div>
+  <div class="ux-bar"><span class="lbl">Delight density</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Delight: zero-social-friction capture + quota-free free tier + action items that exist the moment the meeting ends</span></div>
+  <div class="ux-bar"><span class="lbl">Trust signals</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Trust: product layer is solid (only 10 complaints out of 316 PH reviews) and compliance badges are all present (SOC 2 Type II / GDPR / HIPAA, standard BAA on team plans). But the hands-on judgement is 'you can't afford to be wrong' — one wrong commitment in the notes and everything downstream bends.</span></div>
+  <div class="ux-bar"><span class="lbl">Struggle risk</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">Friction: Chinese recognition, upgrade rationale, mobile and phone-call gap</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>Key delight moments</h4>
+      <ul>
+        <li>No bot in the room (bot-free), so nobody has to explain what that thing is (the exact awkwardness named in reviews).</li>
+        <li>Unlimited recording and transcription on free — no quota anxiety while trialling (pricing page; hands-on verdict: the free version is already powerful, and it ships a rich API and AI integrations).</li>
+        <li>Action items are extracted and confirmed rather than buried in a wall of summary (hands-on line).</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Where users likely struggle</h4>
+      <ul>
+        <li>Chinese-language overlapping speech is unstable: the hands-on test puts the barrier exactly at recognition accuracy, and when recognition drifts, summaries and action items drift with it.</li>
+        <li>Free is so strong that 'why upgrade' is hard to answer: one review drops from the Pro trial back to free after two weeks saying value fell off; another complains it tries to join every call without delivering value.</li>
+        <li>Mobile and phone-call scenarios aren't closed: 'no mobile app' appears 3 times in Cons, with reviewers asking for native iPhone call capture or at least an easy way to upload call recordings.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>Business Model & Monetization</h3>
+    <span class="pill">How it makes money</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">Revenue model</span><h5>Individual subscription + team seats + compliance tier</h5><p>Individual Free $0 / Premium $16; teams from 2 seats at Team $15 / Business $25 / Enterprise $35 per user per month (Enterprise annual only). Compliance and implementation capabilities (SSO/SCIM, custom retention, custom BAA, Launch Assist, dedicated CSM) are stacked at the top — the classic 'the higher you go, the more it looks like enterprise software' curve.</p></div>
+    <div class="biz-card"><span class="tag">Free ↔ Paid boundary</span><h5>Where free stops</h5><p>Free: unlimited recording and transcription, instant summaries, clips and playlists, cross-call search, bot or bot-free capture. Paid: $16 individual buys advanced summaries, AI action items, the conversational assistant, custom bots; $15 teams buy a shared workspace, Trackers, team-wide Ask Fathom, team security controls and HIPAA with a standard BAA; $25 adds CRM field sync, Deal View, coaching metrics and AI Scorecards; $35 adds Launch Assist, SSO and SCIM, custom retention, custom BAA and priority SLA.</p></div>
+    <div class="biz-card"><span class="tag">Monetization entry points</span><h5>The entry is absurdly free; the money is in teams and compliance</h5><p>The free plan hands out unlimited recording and transcription, deleting 'trial' from the workflow. The moment you need a shared workspace, Trackers, team-wide Q&A and a BAA, you cross into Team at $15; CRM sync and coaching metrics pull you to Business at $25; SSO/SCIM and custom retention pull you to Enterprise at $35 (annual only). What it sells is the jump from 'personal tool' to 'team infrastructure'.</p></div>
+    <div class="biz-card"><span class="tag">UX ↔ Monetization alignment</span><h5>Are experience and monetisation aligned, or fighting?</h5><p>Structurally fighting. Aligned: the free tier removes the psychological cost of trying, and the paywall lands on team collaboration and compliance — exactly what an individual never needs and a team always hits. Fighting: the individual tier is so good that reviews say they were 'almost concerned they're offering too much', leaving only nice-to-have upgrades (advanced summaries, AI action items) as the reason to pay. All conversion pressure moves to team plans, where the buyer (manager, IT, compliance) is not the person who fell in love with the product.</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>Competitor Landscape</h3>
+    <span class="pill">Positioning matrix</span>
+  </div>
+  <p class="section-intro">The list comes from four places: the site's own Competitors menu (Fireflies, Granola, Gong, Otter, Read AI, ZoomMate, Google Meet's Gemini, an in-house option), the sales-intelligence layer its Business tier collides with head-on (Gong), and the substitutes reviewers mention (Fireflies, Zoom and Google Meet native). The Product Hunt listing was blocked by Cloudflare this round, so the 'More alternatives' block was not captured — **and no PH similar-product list is substituted for it**.</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Fathom</th>
+          <th>Fireflies.ai</th>
+          <th>Granola</th>
+          <th>Otter.ai</th>
+          <th>Platform-native (Google Meet's Gemini / Teams' Copilot / Zoom AI Companion)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Main battleground</th><td class="own">AI meeting recording and meeting intelligence</td><td>Same people: meeting-heavy sales and teams</td><td>Individuals and small groups who don't want a bot</td><td>General users spanning meetings and voice recorders</td><td>Everyone already using that meeting app</td></tr>
+        <tr><th>Capture method</th><td class="own">Dual capture (bot or bot-free) + summaries/action items + Trackers + cross-meeting retrieval + CRM sync + API/MCP</td><td>Bot-first, 100+ languages, AskFred assistant, private storage</td><td>Local system audio, no bot, Mac-first</td><td>Home-grown ASR; OtterPilot auto-joins</td><td>Built into the meeting app; needs no capture permission</td></tr>
+        <tr><th>Distribution</th><td class="own">Free-tier word of mouth, seven competitor comparison pages for SEO, integration directories</td><td>Meeting-app marketplaces and integration directories; claims 1,000,000+ companies</td><td>Word of mouth inside founder/investor circles</td><td>Education and enterprise long tail, years of brand equity</td><td>The default surface of the meeting app — zero distribution cost</td></tr>
+        <tr><th>Price transparency</th><td class="own">Public pricing: individual 0/16, teams 15/25/35, 25%+ off annual, 90-day guarantee</td><td>Four public tiers: Free $0 / Pro $18 ($10 annual) / Business $29 ($19 annual) / Enterprise $39 (annual only), per user per month</td><td>Pricing page is JS-rendered; no quotable price text captured this round (not invented)</td><td>Only the student-discount FAQ was readable this round (Pro $79.99/yr student price); list price not fully captured</td><td>Bundled or add-on with the meeting subscription; users perceive it as 'already included'</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>Where the product wins:</strong> Three things rivals can't close quickly: how thick the free tier is (unlimited recording and transcription removes trial friction outright); bot-free capture (Granola does it, but without this ecosystem and integration depth); and cross-meeting retrieval plus an MCP exit — letting Claude and ChatGPT read its meeting records inserts it into someone else's AI workflow.</div>
+  <div class="comp-verdict warn"><strong>Where rivals are catching up:</strong> Three gaps: platform-native (Gemini / Copilot are already in the room; nobody buys the same thing twice); Fireflies' price and language coverage ($10 annual entry, 100+ languages); Gong's sales-management depth (its Business tier walks straight into Gong's home ground). Chinese-language markets are the fourth gap, and the hands-on verdict already points at it.</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>Growth Strategy</h3>
+    <span class="pill">Explicit or inferred</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Likely acquisition channels</h4>
+      <ul>
+        <li>High-intent SEO: one comparison page per rival (seven under Competitors), capturing 'X vs Fathom' and 'Fathom alternative' searches.</li>
+        <li>Product Hunt and press peaks: 316 reviews on the listing, plus the 2026-04-15 Superhuman acquisition coverage.</li>
+        <li>Ecosystem directories: listed inside Salesforce, HubSpot, Slack, Asana, Zapier, ChatGPT and Claude marketplaces — a stall in someone else's bazaar.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Primary growth loops</h4>
+      <ul>
+        <li><strong>Free-tier word-of-mouth loop</strong> — Free unlimited recording → get fluent → bring it into a team → the team needs a shared workspace and compliance → seats are bought. The whole loop leans on 'free is enough', which makes it both the growth engine and the leak in the funnel.</li>
+        <li><strong>Comparison-page search loop</strong> — One comparison page per rival (Fireflies, Granola, Gong, Otter, Read AI, ZoomMate, Google Meet's Gemini) → high-intent searchers land → straight into the free tier. Classic high-intent SEO: cheap to run, slow to compound.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">Expansion vectors</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>Horizontal</h5><ul><li>From record to action: AI action items, follow-up email, CRM field sync, Deal View — wiring the end of the meeting into the sales process.</li><li>From single meeting to cross-meeting: Trackers, Ask Fathom, AI Scorecards — turning meetings from events into a queryable dataset ([inferred] its only route around platform-native capture).</li></ul></div>
+    <div class="growth-col"><h5>Vertical</h5><ul><li>Sales and customer success: customer calls, objections and competitor mentions, renewal risk.</li><li>Recruiting, coaching, consulting, operations: the site's Solutions menu is already cut by role across six, showing the push toward 'everyone who meets'.</li></ul></div>
+    <div class="growth-col"><h5>Platform</h5><ul><li>Open interfaces already exist: public API and MCP (ChatGPT, Claude), plus Zapier and a long list of native integrations.</li><li>[inferred] Its platform strategy is to be someone else's data source — not to win the assistant entry point but to own the factual layer of meeting records. Post-acquisition, the likeliest path is becoming a capability inside a suite rather than a standalone super-app.</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>Application six-dim</h3>
+    <span class="pill">how well the model is used</span>
+  </div>
+  <p class="section-intro">Six dimensions are the main framework: the first three are about value, the last three about trust and switching cost.</p>
+  <p class="section-intro">Classified as **原生**. 拔电测试：拿走 AI，产品消失 → AI 原生 (basis: 人工名单)</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① What step it replaces</h4>
+      <p>It replaces the 'write the notes and email them round' step: a human used to spend at least half an hour, and meeting content never turned into actions directly. Now feedback is captured during the meeting and the summary plus action items exist afterwards (hands-on: 'it used to be manual; now I can capture feedback during the meeting — before it took at least half an hour'). Cost moves from labour to $0 entry, which is why the hands-on verdict was 'worth it'.</p>
+    </div>
+    <div class="info-card">
+      <h4>② Who does the dirty work</h4>
+      <p>It eats transcription, summarisation, action items, follow-up email and CRM write-back; it hands back one thing — you must authorise and connect the meeting tools you actually use (hands-on: 'she needed me to connect the meeting tools I use'), and a human must confirm action items. That authorisation isn't laziness, it's the category's entry fee: no meeting, no audio.</p>
+    </div>
+    <div class="info-card">
+      <h4>③ Is the output usable</h4>
+      <p>Directly usable. Hands-on: 'usable as-is; what needs editing is the meeting consensus and the action list.' In team settings people do send it out as-is (she pushes it for team use). So what comes back is signable notes, not a draft needing reformatting.</p>
+    </div>
+    <div class="info-card">
+      <h4>④ How errors are caught</h4>
+      <p>Thin safety net: it faithfully records and reports per meeting, with no source attribution and no confidence level; give it a wrong premise and it follows it (hands-on: 'if the premise you give it is wrong, she follows along too — the fallback is human confirmation'). The only real fallback is a person.</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ Cost of one error</h4>
+      <p>You can't afford to be wrong. History and replay exist (reversible), but in a meeting where sales decisions form live, a miswritten action item bends everything downstream — and the commitment has already been spoken, so it's irreversible (hands-on: 'in something where you're forming a sales decision while talking, you can't afford to be wrong').</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ What replaces it</h4>
+      <p>Replaceable for an individual, not for a team. Hands-on: 'replaceable — other free meeting recorders can substitute, but they differ in recognition stability; teams with tight timing and close demands can't switch, and the free version gets better the more you use it.' So retention isn't 'can't leave' — it's 'no reason to leave'.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>What Metrics They Actually Optimize For</h3>
+    <span class="pill">[Inferred] north-star + guardrails</span>
+  </div>
+  <p class="section-intro">No operating metrics are disclosed. What follows separates verifiable public facts (prices, review counts, rating distribution) from [inferred] 'what it should watch' — not real data.</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">North Star</span>
+      <h5>Meetings processed into action items per week ([inferred])</h5>
+      <p>[inferred] It charges per seat and delivers per meeting: meeting volume sets depth of use, action-item yield sets whether it is actually adopted. North star shouldn't be signups — free is unlimited, so signups inflate.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 1</span>
+      <h5>Free → team conversion (measured by first colleague added to a workspace)</h5>
+      <p>Individuals almost never need to pay (hands-on: free is already strong); the revenue step change happens the moment one person pulls a colleague into a shared workspace. That conversion rate is the lifeline.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 2</span>
+      <h5>Seat expansion velocity (Team → Business → Enterprise)</h5>
+      <p>Prices run 15 → 25 → 35, a narrow span, but each step is bound to a new capability (CRM sync, SSO/SCIM, custom retention). Expansion velocity shows whether this is 'a personal tool teams happen to use' or 'team infrastructure'.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 3</span>
+      <h5>CRM write-back success rate and Tracker hit rate</h5>
+      <p>The Business tier sells a closed loop: results must actually land in CRM fields, Trackers must actually catch competitors and objections. When those fail, renewal talks collapse into 'we only use it as a voice recorder'.</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">Guardrail</span>
+      <h5>Human edit rate on summaries + recording-consent and compliance complaints</h5>
+      <p>The hands-on verdict is 'you can't afford to be wrong': one wrong commitment in the notes and everything downstream bends. Edit rate is the most honest proxy for recognition quality; recording consent (two-party consent jurisdictions) is the one legally fatal surface in this category.</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">Blindspot</span>
+      <h5>No public retention curve, paid-seat churn, or unit ASR/inference cost [inferred]</h5>
+      <p>[inferred] Unlimited free recording means free users keep burning ASR and inference spend; watching only signups and reviews hides that 'the more popular free gets, the thinner the margin'. Separately, post-acquisition integration into Superhuman won't show in any product metric yet determines its pricing power in three years.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>Friction & Weaknesses</h3>
+    <span class="pill">Critical PM lens</span>
+  </div>
+  <p class="section-intro">Explicit and opinionated. Where the system leaks, breaks, or over-designs.</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">Free is too good, so the upgrade case has to be built by teams</span><span class="sev">高 · High</span></div>
+      <div class="body">One review: dropped from the Pro trial to free after two weeks because value fell off, later switched to another note taker; another complains it wanted to join every call without delivering value. For a PLG product this isn't a pricing complaint — it's structural: individuals should never pay, so the payment decision is pushed to teams, and the growth curve's slope is handed to someone else.</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">Free native substitutes</span><span class="sev">高 · High</span></div>
+      <div class="body">Google Meet's Gemini, Teams' Copilot and Zoom's AI Companion do the same job with no new account, no permissions, no bot. Listing Gemini under Competitors is Fathom admitting the threat itself.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Unstable Chinese and overlapping-speech recognition</span><span class="sev">中 · Medium</span></div>
+      <div class="body">The hands-on verdict lands squarely here: the barrier is recognition accuracy. Interruptions, accents and mixed Chinese-English are where this category shows its seams; once the transcript is wrong, summaries and action items go wrong together — and an action item pointing the wrong way costs more than no action item at all.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Mobile and phone calls aren't closed</span><span class="sev">中 · Medium</span></div>
+      <div class="body">'No mobile app' appears 3 times in Cons, with reviewers asking for native iPhone call capture or at least easy upload of call recordings. For salespeople and consultants, many decisive conversations happen on a phone — miss those and the meeting archive is incomplete.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>Risk Matrix</h3>
+    <span class="pill">Severity × Likelihood</span>
+  </div>
+  <p class="section-intro">Risks ordered by likelihood × impact; severity is my judgement, not a company disclosure.</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>Risk</th><th>Category</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Native free capability swallows the category</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>Hold the three things platforms won't do: cross-meeting retrieval, CRM and toolchain write-back, open API/MCP. And make weak-language markets (Chinese) genuinely good — native tools are only adequate in major languages.</td></tr>
+      <tr><td><strong>Post-acquisition independence and pricing power</strong></td><td>Business</td><td class="sev-high">High</td><td>Medium</td><td>For users, the only reliable hedge is a data exit (API and export). For the company, integration periods need explicit free-tier and pricing commitments — otherwise the 'acquired means more expensive' expectation drives team customers out before any change lands.</td></tr>
+      <tr><td><strong>Unstable Chinese and multilingual recognition</strong></td><td>Product</td><td class="sev-med">Medium</td><td>Medium</td><td>Evaluate and select models per language, show visible confidence and per-sentence replay; when recognition is shaky, label it 'needs checking' instead of producing a plausible-looking summary.</td></tr>
+      <tr><td><strong>Free tier too strong, conversion structurally weak</strong></td><td>Business</td><td class="sev-med">Medium</td><td>High</td><td>Move the paywall from features to collaboration and governance: shared workspaces, audit, retention policy, two-way CRM sync — things an individual never needs, an organisation always demands, and downgraders in reviews never complain about.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>Opportunities & Redesign Ideas</h3>
+    <span class="pill">Actionable PM thinking</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">Improvement · 1</div>
+      <h5>(My judgement) Make Chinese overlapping speech a first-class citizen</h5>
+      <div class="desc">How: treat Chinese meetings (interruptions, accents, mixed CN/EN, domain terms) as a separate evaluation set and a selectable model tier, letting users switch recognition strategy by meeting type. Why: that is exactly where the hands-on test found the barrier, and the Chinese market currently has almost nothing but free native capture — whoever stabilises this takes the gap.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 2</div>
+      <h5>(My judgement) Copy the 'authorise first, download last' onboarding as a template</h5>
+      <div class="desc">How: signup → stepwise permissions → install the client only at the end, so the first launch already shows results. Why: it was the most instructive craft detail in the hands-on run; for any AI product that only becomes valuable once it connects an external data source, this order deletes the 'empty screen' moment.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 3</div>
+      <h5>(My judgement) Make action items a signed review step</h5>
+      <div class="desc">How: every action item carries its source timestamp and speaker; nothing enters the CRM or goes to a client until one click confirms it, and unconfirmed items stay marked as drafts. Why: the only safety net in the hands-on test was the phrase 'human confirmation', and one wrong commitment can be fatal — making the signature explicit turns 'can't afford to be wrong' into 'can't be wrong'.</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">Strategic shift</div>
+      <h5>Its bet: free tier owns the individual, teams and compliance pay, MCP makes it someone else's data source</h5>
+      <div class="desc">Three moves stacked: a free tier generous enough that individuals never need to pay (buying word of mouth and penetration), team tiers starting at shared workspace and Trackers (buying ARPU), and API/MCP to insert itself into ChatGPT's and Claude's workflows (buying relevance). The first two are standard PLG; the third is its only counter to free native capture — because platforms will never hand their meeting records to someone else's AI. The price is that it must keep winning on recognition quality, which is precisely where it is easiest to catch up.</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 Moonshot</div>
+      <h5>Endgame: when the meeting ends, the work is already assigned</h5>
+      <div class="desc">If it can close the loop from meeting → action item → assignment → tracking → review, the 'meeting notetaker' category dissolves and what remains is a meeting execution system. The distance is not summary quality (that layer is already oversupplied) but two things: recognition and diarisation stable enough to skip human review, and an authorisation chain that answers 'who may commit the company externally'. The hands-on test already found the second one is the bottleneck — AI can only draft; signing still belongs to a person.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>Final PM Verdict</h3>
+    <span class="pill">Synthesis</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>Why it wins</h5>
+      <p>A free tier thick enough to erase trial friction, bot-free capture that removes in-meeting social friction, cross-meeting retrieval and MCP that make it someone else's data source, and seven competitor comparison pages forming a high-intent SEO matrix.</p>
+    </div>
+    <div class="final-col break">
+      <h5>Where it breaks</h5>
+      <p>Heavy Chinese-language meetings needing high accuracy (the hands-on barrier verdict); customers who won't allow a third party in the room (a bot joining is the only capture objection named in Cons); industries requiring on-prem or data that never leaves the intranet; enterprises needing room hardware and in-person audio capture.</p>
+    </div>
+    <div class="final-col moat">
+      <h5>Long-term moat</h5>
+      <p>The moat is weak-to-moderate: only three real moats, all coverable — free-tier thickness (subsidies can match it), bot-free capture (Granola already does it), and meeting-data accumulation plus exits (void the day platforms open export). Its actual asset is the 'individuals get fluent, teams pay' path and seven comparison pages of search real estate — not the model.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>Competitive map</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Missing piece first: the Product Hunt listing was blocked by Cloudflare this round, so only the review count (316) and 8 latest excerpts were captured — <strong>the More alternatives block was not obtained</strong>. This map therefore does not use PH; its names come from three places: the site's own Competitors menu (seven rivals), the sales-intelligence layer its Business tier collides with, and the substitutes reviewers say they actually moved to.</p><table class="risk-table"><thead><tr><th>Who</th><th>Same need</th><th>Same link in the chain</th><th>Where users actually go</th></tr></thead><tbody><tr><td>Fireflies.ai</td><td>Meeting-heavy sales and teams</td><td>Bot joins + transcript + summary + assistant (AskFred)</td><td>The most direct peer: claims 1,000,000+ companies, 100+ languages, from $10/mo annual — cheaper and broader in language, its hardest rival on price</td></tr><tr><td>Granola</td><td>Individuals and small groups who refuse a bot</td><td>Local system audio + no bot + summary</td><td>Attacks the exact bot-free selling point, and more thoroughly (fully local, Mac-first); its pricing page was JS-rendered, so no price comparison is made here</td></tr><tr><td>Otter.ai</td><td>General users spanning meetings and voice recorders</td><td>Home-grown ASR + OtterPilot auto-join</td><td>The long-standing generalist with deep education and public-sector reach; the threat is brand default, not features</td></tr><tr><td>Gong</td><td>The revenue signal inside calls, for sales managers</td><td>Call scoring + sales methodology + revenue intelligence</td><td>Its Business tier ($25, with Deal View and AI Scorecards) walks straight into Gong's home ground: pushing up hits Gong's depth, pushing down hits Fireflies' price — its narrowest stretch</td></tr><tr><td>Read AI / ZoomMate</td><td>Meeting summaries and meeting insight</td><td>Bot join + summary + meeting analytics</td><td>Commodity competition settled by integrations and free tier; listing them on comparison pages is admitting there is no technical moat here</td></tr><tr><td>Platform-native (Meet's Gemini / Teams' Copilot / Zoom AI Companion)</td><td>Everyone already in a meeting</td><td>Recording and summary inside the meeting app</td><td>The most dangerous path: no permissions, no install, no bot, zero marginal cost. Listing Gemini under Competitors is its own admission</td></tr></tbody></table><p class="section-intro">Reading it: the position is awkward — squeezed from below on price and languages (Fireflies), cut from the side by more thorough bot-free products (Granola), blocked from above by sales-intelligence depth (Gong), and covered from outside by free native capture (Gemini / Copilot). Its only open slot is the combination of a generous free tier, cross-meeting retrieval and open interfaces — exactly what platforms won't build and peers can't build well.</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>Competitors' technical base</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <table class="risk-table"><thead><tr><th>Product</th><th>Base</th><th>The seam between meeting and action</th></tr></thead><tbody><tr><td>Fathom</td><td>Third-party ASR plus in-house summarisation and structured extraction; a bot joins via meeting-platform SDKs, bot-free captures desktop system audio; public API and MCP; CRM via official connectors (Salesforce / HubSpot)</td><td>The seam is after the meeting: summary → action items → CRM fields → Slack/Notion/Asana. It made the seam part of the product instead of making users carry it</td></tr><tr><td>Fireflies.ai</td><td>Bot-first, hybrid ASR, AskFred retrieval; private storage and regional options</td><td>The seam is integration breadth: dozens of native integrations plus API — it wins by connecting</td></tr><tr><td>Granola</td><td>Desktop local audio plus cloud-model summaries, no bot</td><td>The seam is 'turn the meeting into something readable', deliberately skipping CRM and team governance</td></tr><tr><td>Otter.ai</td><td>Years of in-house ASR, OtterPilot auto-join, meetings plus voice-recorder entry points</td><td>The seam is the recorder-era installed base, extended through hardware and partnerships</td></tr><tr><td>Gong</td><td>Call capture plus in-house semantic analysis plus revenue models plus deep two-way CRM integration</td><td>The seam is putting sales methodology into practice: not recording, but scoring and coaching</td></tr><tr><td>Platform-native (Gemini / Copilot / AI Companion)</td><td>Direct audio from the meeting app plus the platform's own models plus one account system</td><td>The seam disappears: no capture step means no permission friction — at the cost of working only inside its own meeting app</td></tr></tbody></table><p class="section-intro">[inferred] <strong>The real moat is neither ASR nor summarisation</strong> — both are commoditised and anyone can buy equal quality. The three hard-to-copy things are: (1) <strong>capture entry</strong> (a bot must clear meeting-platform access and compliance; bot-free means building desktop audio — neither is easy); (2) <strong>meeting-data accumulation</strong> (more history means better retrieval and a higher cost to leave); (3) <strong>integration depth</strong> (CRM field mapping and write-back rules are dirty work that never ends, because the other side's API keeps changing). The more it looks like 'AI that writes notes', the more replaceable by native tools; the more it looks like the 'meeting source of truth', the harder to replace — and MCP picks the latter.</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>Transferable opportunities (my judgement)</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <ol><li><strong>Turn 'authorise first, download last' into standard onboarding</strong> — signup → stepwise permissions → install only at the end, so the first launch already has results. That is the sequence the hands-on run recorded, and it deletes the empty-screen moment. Any AI product that only becomes valuable once an external source is connected should copy this order; installing a client before asking for permissions forces the user to stare at a shell. <em>Lightest: a process change, not an architecture change.</em></li><li><strong>Make 'AI drafts, human signs' an explicit confirmation step</strong> — each action item carries its source timestamp and speaker; nothing enters the CRM or reaches a client until confirmed, and unconfirmed items stay drafts. The hands-on line is that it extracts next actions and has a human confirm them — the right design, but the confirmation step is not prominent enough in the product, and one wrong commitment is the failure mode that matters. <em>Most valuable, because it buys trust directly.</em></li><li><strong>Meter the free tier by features, not by quota</strong> — unlimited recording and transcription produced only 10 complaints across 316 reviews. For any product with per-use inference cost this is counter-intuitive but effective: put the wall on team collaboration, compliance and integrations rather than on minutes, because a quota wall makes people count money before they feel value.</li><li><strong>Make comparison pages part of the product</strong> — seven rivals, seven pages, eating 'X vs us' searches. This is positioning work, not marketing work: stating each rival's difference precisely proves you know what you sell. <em>Slowest, longest compounding.</em></li></ol><p class="section-intro">Which first? <strong>Number 2</strong> — it adds no features, only clarity about who is accountable, and accountability is where this category's entire risk sits. Which gets ignored? <strong>Number 3</strong> — most teams reach for a quota because it is safer financially, and slower for growth.</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>Traffic and monetisation breakdown</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">Money comes from three places: individuals (Premium $16), teams (Team $15 / Business $25 per user per month) and enterprise (Enterprise $35, annual only). Cash flow doesn't really come from individuals — free already includes unlimited recording and transcription — the step change happens when one person pulls a colleague into a shared workspace.</p><table class="risk-table"><thead><tr><th>Stage</th><th>What it does</th><th>Why it works / where it leaks</th></tr></thead><tbody><tr><td>Acquisition</td><td>Free tier + seven competitor comparison pages + integration directories (Salesforce, HubSpot, Slack, Asana, Zapier, ChatGPT, Claude)</td><td>Works: zero-cost trial, high-intent search. Leak: native is free, so many users never search for an 'alternative' at all</td></tr><tr><td>Activation</td><td>Signup → permissions → download → join → summary</td><td>Works: the first launch already has a result. Leak: the permission step asks for the meeting entry point — the only place users hesitate</td></tr><tr><td>Retention</td><td>Searchable meeting history + Trackers + CRM write-back</td><td>Works: the thicker the archive, the harder to leave. Leak: individual retention isn't paid retention — many are satisfied on free</td></tr><tr><td>Monetisation</td><td>$16 individual / $15–35 per seat for teams, 25%+ off annual, 90-day guarantee</td><td>Works: teams and compliance are hard requirements. Leak: the ladder is only 15 → 25 → 35, so each step must carry something only an organisation needs, or nobody climbs</td></tr><tr><td>Expansion</td><td>Seats grow with headcount; Business adds CRM sync and coaching metrics; Enterprise adds SSO/SCIM, custom retention, custom BAA</td><td>[inferred] The brake isn't price but procurement: the moment SSO and a BAA become mandatory, the cycle goes from one click to IT and legal queueing</td></tr></tbody></table><p class="section-intro">One line: <strong>the funnel is cleanly designed; the exit is the problem</strong> — free is too good, so individuals have no reason to pay; native is too close, so teams have no reason to switch. It has exactly one answer, and is already executing it: become the meeting source of truth that other AIs read through API and MCP, so it no longer fights the meeting app for the same screen.</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>Sources：</strong>Every factual claim comes from the public pages below; first-hand observations come from the hands-on test.
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://fathom.video/" target="_blank" rel="noopener">Official homepage (positioning, 'Now available bot-free', Superhuman ownership banner)</a></li>
+    <li><a href="https://fathom.ai/product" target="_blank" rel="noopener">Product page (source of the summary and audio/video screenshots)</a></li>
+    <li><a href="https://fathom.ai/pricing" target="_blank" rel="noopener">Pricing page (individual 0/16, teams 15/25/35, 25%+ annual saving, 90-day guarantee)</a></li>
+    <li><a href="https://fathom.ai/enterprise" target="_blank" rel="noopener">Enterprise page (SSO/SCIM, custom retention, BAA, SLA, success manager)</a></li>
+    <li><a href="https://fathom.ai/security" target="_blank" rel="noopener">Security and compliance page (SOC 2 Type II / GDPR / HIPAA)</a></li>
+    <li><a href="https://fathom.ai/competitors/fireflies" target="_blank" rel="noopener">Competitor comparison pages (Fireflies, Granola, Gong, Otter, Read AI, ZoomMate, Google Meet's Gemini)</a></li>
+    <li><a href="https://superhuman.com/blog/superhuman-acquires-fathom" target="_blank" rel="noopener">Superhuman acquisition announcement (2026-04-15)</a></li>
+    <li><a href="https://www.producthunt.com/products/fathom" target="_blank" rel="noopener">Product Hunt listing (316 reviews; review bodies blocked by Cloudflare, only 8 latest excerpts captured, More alternatives unavailable)</a></li>
+    <li><a href="https://www.g2.com/products/fathom/reviews" target="_blank" rel="noopener">G2 reviews (4.6 / 177; the page is dominated by a same-named financial product, no quotes used this round)</a></li>
+    <li><a href="https://fireflies.ai/pricing" target="_blank" rel="noopener">Fireflies pricing (Free 0 / Pro 18 (10 annual) / Business 29 (19 annual) / Enterprise 39, 100+ languages)</a></li>
+    <li><a href="https://otter.ai/pricing" target="_blank" rel="noopener">Otter pricing (only the student-discount FAQ was readable this round; list price not fully captured)</a></li>
+    <li><a href="实测.md" target="_blank" rel="noopener">Hands-on test sheet (2026-11-19, 20 minutes, signed RanBing)</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 100 AI Product Teardowns.</div>
+      <div class="brand-sub">— Product Teardown · Principal PM Analysis</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>
