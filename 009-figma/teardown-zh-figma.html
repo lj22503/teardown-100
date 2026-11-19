@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · Figma — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-18</span>
+  <span class="dot"></span>
+  <span>产品：Figma</span>
+</div>
+
+<h1>Figma<span class="tag">它卖的不是 AI，是「一个链接让设计、产品、开发同时进同一个文件」；AI 是后加的一层加速，不是产品本体。</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">设计工具 / 协作式界面设计平台（Design Tools）</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">可核实：Product Hunt 产品页 4.9 分、1,609 条评价、15K 关注、36 次 Launch（2026-11-18 抓取元数据）；G2 4.7 分 / 1,598 条（本次直接抓取，5 星 82%、4 星 16%、3 星及以下 0%）。社区转述：Figma 论坛帖引用 Finance Yahoo，称 2024 年营收 7.49 亿美元（同比 +48%），并计划 IPO 最高募资 15 亿美元——这是社区转述，不是官方披露。官方未公开 ARR、付费席位数、团队数，本卡不编。</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">按席位订阅，一档三类席位：Professional 年付 Full 16 美元 / Dev 12 / Collab 3；Organization 55 / 25 / 5；Enterprise 90 / 35 / 5（以上为本次定价页抓到的美元原价，年付口径）。每席位附赠 AI credits：Full 3,000（Starter 为每日 150、每月上限 500），Org 3,500、Enterprise 4,250，Dev 与 Collab 席位 500；credits 全团队共享，超出可加购或按量付费（官网原文：AI add-ons 在 Professional 给 2 倍 credits，Org 与 Enterprise 给 1.6 倍）。</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成熟期。产品面已从单一设计工具长成十余条线：Design、Make、Draw、Dev Mode、FigJam、Slides、Sites、Buzz、Motion、Specs、Figma Agent，另有对外开放的 MCP server（mcp.figma.com/mcp）；其中 Sites、Buzz、Motion、Specs 在官网页标 beta（Sites 的 beta 仅 Full seat 可用，Buzz / Motion 全席位可用）。商业面为四档：Starter / Professional / Organization / Enterprise。</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. 应用层六维</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会（我的判断）</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 可核实：官网产品线与 beta 标记、四档定价与三类席位金额（美元原价，年付口径）、每席位 credits 数量与加购规则、MCP 端点、Product Hunt 产品页元数据（4.9 / 1,609 / 15K / 36 次 Launch）、G2 4.7 分 / 1,598 条与 10 条负面反馈原话（dislike 字段，含 4–5 星用户）、实测（燃冰）六维记录。推断并已标注：营收与 IPO 传闻（社区转述 Finance Yahoo）、留存与席位流失、毛利结构、竞品价格（第三方口径且互相冲突）、北美星与护栏指标的选择。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>它是设计行业的默认工作台，护城河是「同事都在这儿」的协作网络与文件标准，不是 AI；而它现在最疼的地方不是能力，是席位账单、权限与账号安全。</h2>
+    <div class="sub">作为「嵌入型」产品，拔掉 AI 它照常干活（实测结论：嵌入）——所以门槛不写在模型上，写在软件与生态上：组件、设计系统、开发交付、以及团队协作的默认路径。评论里的撕裂也很清楚：G2 4.7 分夸的是实时协作与易上手，负面反馈几乎全砸在「席位被自动升级」「重复收费不退」「Team Admin 改不了文件权限」「账号被关三年稿子没了」这四件事上，与设计能力无关。</div>
+  </div>
+  <div class="stars">
+    <div class="row"></div>
+    <div class="label">5 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>AI 是后加的一层，不是产品本体</strong> — 官网现在把 Figma Agent 与 MCP 摆在显眼位置，但实测（燃冰）走完一圈的结论是：它替掉的是找组件、摆版式的那段时间（我做一次页面花了 132 积分），不是判断。拿掉 AI，它还是那个设计工具——能画、能改、能交付。</li>
+    <li><strong>门槛在软件，不在模型</strong> — 实测原话：它的门槛在于设计和原型编辑。这句和 007 Framer 正好互为镜像——一个的门槛在软件（设计判断），一个在软件（SEO 与托管），都不在模型。这也解释了它为什么敢把 AI 做成 credits 附加项：核心价值不靠它。</li>
+    <li><strong>最脆的梁是席位账单与权限</strong> — Free 档封掉 inspector（Dev Mode），付费档按三类席位分别计价；G2 的负面反馈里有三条互相独立的投诉：外部协作者被系统自动升成 full member 并计费 14 个月、错误计费被承认却拒退款、Team Admin 拿不到文件的权限。这些都不是设计问题，是计费与权限模型的问题。</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">未测</div>
+    <div class="desc">实测只记「发一个页面进去、出来一版能用的稿」，未做计时，不换算成分钟</div>
+  </div>
+  <div class="num-card">
+    <div class="label">一次生成的成本</div>
+    <div class="big">132<small> 积分</small></div>
+    <div class="desc">实测（燃冰）改一版页面所耗；免费额度四次出头即用完</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分</div>
+    <div class="big">8<small>/10</small></div>
+    <div class="desc">我的评分，不是测量；扣分全在账单与权限</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">Figma 是一个跑在浏览器里的协作式界面设计平台：设计、原型、白板、幻灯片、开发交付、AI 生成与站点发布，都挂在同一套文件与权限模型上。</div>
+      <h4>核心用户承诺</h4>
+      <p>官方一句话（Product Hunt 产品页原文）：The collaborative interface design tool。翻成用户语言：一个链接发出去，设计师、产品、开发同时在同一个文件上说话，不用再导出、不用再对版本。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>它站在两条货架的交叉口：设计工具（Sketch、Penpot）与「设计到上线」的建站工具（Framer、Webflow），再加上 AI 生成（Lovable、v0）。位置上它偏设计侧但更靠协作与交付：比设计工具多了 Dev Mode 与社区，比建站工具少了自主发布与 SEO 深度，比 AI 生成工具多了可维护的组件体系。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>[推断] 本次定价页返回的是美元原价、年付口径；第三方评测另称月付为 20 美元、单人档含无限文件与 Dev Mode——两套口径并存，本卡以官方页为准，其余只作量级参考。</li>
+        <li>[推断] 付费核心是「团队里有 1–3 个真正做设计的人 + 一堆只评论的人」：席位分三类、评论免费、编辑收费的结构，只在这种团队构成下才成立，也解释了为什么席位会误升级。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/135d2170e6a27e5d4249b3e4029bc9cd1e512457-2400x1260.jpg" alt="Figma Design：画布、图层面板与工具栏同屏，右侧是属性与设计细节（取自 figma.com/design 官方主图）" loading="lazy"/><figcaption><span class="fig-num">图 01</span>Figma Design：画布、图层面板与工具栏同屏，右侧是属性与设计细节（取自 figma.com/design 官方主图）</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/511d69d75e8e6d33e7726943ac626b50d24a1140-2400x1260.jpg" alt="Figma Make：自然语言生成界面，左侧是对话与代码，右侧是预览（取自 figma.com/make 官方主图）" loading="lazy"/><figcaption><span class="fig-num">图 02</span>Figma Make：自然语言生成界面，左侧是对话与代码，右侧是预览（取自 figma.com/make 官方主图）</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/639b7e582896bc71137e8e5a7356eab6d92d6a2b-2400x1260.jpg" alt="Dev Mode：同一份文件切到开发视角，出代码层级与移动端规格（取自 figma.com/dev-mode 官方主图）" loading="lazy"/><figcaption><span class="fig-num">图 03</span>Dev Mode：同一份文件切到开发视角，出代码层级与移动端规格（取自 figma.com/dev-mode 官方主图）</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/0e55b80fb23bb49792f7fecc92cd64353783bfa5-2400x1260.jpg" alt="Figma AI：代码生成与 prompt 增强等 AI 能力的面板（取自 figma.com/ai 官方主图）" loading="lazy"/><figcaption><span class="fig-num">图 04</span>Figma AI：代码生成与 prompt 增强等 AI 能力的面板（取自 figma.com/ai 官方主图）</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/a301b12d815816a505d6836b7ab1d30860df8b0b-2400x1260.jpg" alt="Figma Motion：动效编辑界面，时间轴与画布同屏（取自 figma.com/motion 官方主图）" loading="lazy"/><figcaption><span class="fig-num">图 05</span>Figma Motion：动效编辑界面，时间轴与画布同屏（取自 figma.com/motion 官方主图）</figcaption></figure>
+    <figure class="shot"><img src="https://cdn.sanity.io/images/599r6htc/regionalized/164c17b3a5cf2873477d6b65a9bbe1f2c435ccd3-1130x636.png" alt="移动端界面帧与右侧设置面板：官网首页配图，展示手机尺寸画板上的图层与属性（取自 figma.com 首页）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>移动端界面帧与右侧设置面板：官网首页配图，展示手机尺寸画板上的图层与属性（取自 figma.com 首页）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>产品设计团队与设计系统负责人</strong> — 官网 Solutions 与客户案例都围绕团队协作展开；G2 好评原话集中在 collaboration、real-time collaboration、comments and dealing with the comments are very handy。他们要的不是更快出图，是「同一个文件里没有人拿错版本」。</li>
+        <li><strong>独立设计师与一人公司</strong> — Professional 单人档 16 美元/月就能拿无限文件与 Dev Mode（第三方评测口径，本次未逐项核实），对一人公司是最低门槛的专业工具。实测（燃冰）就是这一层：一个人改自己产品的界面，不需要别人授权。</li>
+        <li><strong>开发与交付侧</strong> — Dev seat 12 美元/月，Dev Mode 出代码与规格，把「标注—切图—沟通」这一段压掉。但评论里也有开发者直接抱怨 Free 档封掉 inspector（原话：Free version blocks inspector mode, now renamed to dev node）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 手上有一个具体的、已经在用的页面，越看越不对——要改导航结构、要换卡片样式、要更像一个正经产品。实测（燃冰）的触发点就是这个，不是「我想学 Figma」。</p>
+      <p><strong>使用频次：</strong> 项目期高频（改版、上新、评审循环），平时低频（维护组件与设计系统）。官方未披露使用频次数据。</p>
+      <p><strong>使用场景：</strong> 浏览器为主，另有桌面端；协作发生在同一个文件里（多人光标、评论、分支）；交付侧走 Dev Mode 与 MCP；生成侧走 Make 与 Figma Agent。</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">把一个界面想法变成可评审、可交付的稿：能改到像素级、能点得动、能交给开发照着做。 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">不想再被问「这是最新版吗」；也不想承认自己画的界面丑——实测（燃冰）的原话就是：我觉得我现在设计的太丑了，可能不符合用户的使用习惯。 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">在团队里显得专业：有组件库、有设计系统、有交付规范，而不是丢一堆截图。 <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">这版看着不对</div>
+      <div class="why">触发点不是「我要用 AI」，而是「这个界面不符合使用习惯」。实测（燃冰）的原话：这个是一个桌面投资工作台，我觉得我现在设计的太丑了……我希望调整成左侧抽屉，然后展示要符合金融卡片的样式。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">发页面、说要求、让它出一版</div>
+      <div class="why">实测（燃冰）的做法：直接把线上那个不合适的页面发给它，用自然语言说清要什么（左侧抽屉式导航、金融卡片布局、红涨绿跌）。它的回应是给一版按原稿改的稿子，并附 node 链接。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">拿到一版能直接改图层的稿</div>
+      <div class="why">实测（燃冰）记录：它保留了奶油底色与芒果橙，也保留了未录入持仓状态、演示数据说明与免责声明——也就是说，它给的不是一张效果图，是一份可继续编辑的文件。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">下一次改版，组件已经在库里</div>
+      <div class="why">第二轮的起点不是空白画布，而是上一次沉淀下来的组件与状态。这是它和「一次性生成」类工具最大的差别：资产留下来了，所以回来有复利。</div>
+    </div>
+  </div>
+  <div class="loop-note">"它真正教用户的是「把界面拆成组件与状态」的思维方式——一次做完，留下的不是这一版稿，是以后每一版都能用的零件。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p>入口有三条同时跑：Community 里的公开文件与插件（照着一个现成的改，比自己从零画快）、团队内一人带入后整组渗透、以及设计教育与作品集文化。第三条的反证在评论里：外部协作者被系统自动算成成员并计费——渗透太顺，所以账单会漏。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>第一次看见同事的鼠标在同一个文件里移动、评论直接钉在图层上。这一下之后，「传文件—等回复—对版本」这套旧流程就回不去了。</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>文件沉在账号里：稿子、组件、评论历史都在，迁移不是换工具，是搬家。</li>
+        <li>组件库与设计系统一旦成规模，新项目绕不开它——复用比重建便宜。</li>
+        <li>流程绑定：评审、交付、Dev Mode 都长在文件上，换工具等于改流程。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>有，而且写在定价页上：付费档可以让人查看与评论而不必再买席位（原文：If you're on a paid plan, you can let others view and comment on your files without purchasing extra seats）。分享链接即传播，收钱在后面——但这也正是席位误计费的来源。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">画布（Canvas）</span><div class="desc">产品本体。中间是无限画布与 Frame，左边图层树，右边属性面板，顶上是工具栏与协作头像——设计对象在这里就是交付对象。</div></div>
+    <div class="surface"><span class="name">图层树与属性面板</span><div class="desc">对象模型的外显：Frame 套 Frame，组件与实例在树里可见，改父级还是改实例一眼能看出来。实测（燃冰）能直接用，靠的就是这一层——可以改图层。</div></div>
+    <div class="surface"><span class="name">Dev Mode</span><div class="desc">给开发的阅读模式：代码片段、规格标注、组件映射。它把「设计到代码」这一段从口头沟通变成可复制的东西；Free 档封掉的正是这里的 inspector。</div></div>
+    <div class="surface"><span class="name">Figma Make / Figma Agent</span><div class="desc">生成面：用自然语言描述出一版可编辑的界面或原型，按 credits 计量。实测（燃冰）一次页面 132 积分就是花在这一层。</div></div>
+    <div class="surface"><span class="name">Community 与插件</span><div class="desc">分发面：公开文件、设计系统、UI kit、图标与插件。它是拉新入口，也是「不用从零开始」的默认答案。</div></div>
+    <div class="surface"><span class="name">团队与权限（Team / Project / File）</span><div class="desc">钱与权都在这一层：席位类型、项目权限、文件所有者。G2 的负面反馈大半落在这里——Team Admin 改不动别人名下的文件，所有者一离职就成了孤儿文件。</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">File（一个设计文件，协作与权限的最小单位）</span>
+    <span class="entity">Frame / Page（画布上的容器与页面）</span>
+    <span class="entity">Component / Instance / Variant（组件、实例与变体）</span>
+    <span class="entity">Seat（Full / Dev / Collab 三类席位，计费单位）</span>
+    <span class="entity">Team / Project（团队与项目，权限与账单的边界）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>主轴是「文件」：进团队 → 进项目 → 进文件 → 进页面与图层。所有能力（原型、Dev Mode、Make、Sites）都挂在文件上，而不是另开一个产品壳。这个结构的代价是权限必须两级（团队级与文件级），而两级之间有一个洞：文件归个人所有，团队管理员未必能接管——评论里「所有者离职就丢文件」就是从这个洞掉下去的。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>对设计师几乎零学习成本：左树、中画布、右属性，与 Sketch 时代一脉相承；对非设计师有词汇门槛（Frame、Auto layout、Component、Variant、Seat），实测（燃冰）没卡在界面上，卡在「怎么把想法说清楚」这一步。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">先让团队愿意在同一个文件里工作，再谈 AI 能生成多少。它所有 AI 都长在文件上，而不是另开一个聊天窗口——这决定了它的 AI 是「加速已有流程」，不是「替代流程」。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">同一个文件，多人同时在场</span><div class="body">实时协作不是功能清单里的一行，是产品的底层假设：光标、评论、分支、版本都在文件里。它把「对齐版本」这件事从流程里删掉了——这是它最难被替代的地方。</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">组件与变体：把设计做成系统</span><div class="body">组件、实例、变体让「改一处、全站生效」成立。这一层决定了它的用户会越用越重：库越大，搬家的成本越高。</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">生成的仍是可编辑图层</span><div class="body">实测（燃冰）最关键的一条：它的产出不是一张图，而是能继续改图层的稿，连未录入持仓状态、演示数据说明、免责声明这些细节都保留。生成类工具里，这一点仍然稀缺。</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">Dev Mode：把交付做成阅读模式</span><div class="body">同一份文件切一个模式给开发看，代码与规格就近可得；再加 MCP，外部 agent 也能读进来。它卖的不是「设计更好看」，是「设计到代码少一次翻译」。</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">把 AI 做成 credits，而不是做成入口</span><div class="body">AI 能力（Make、Agent、图像与本地化）挂在 credits 上，按席位附赠、超出加购。这是个克制的设计：不改变主路径，只给重度用户加一层计价——代价是重度用户会觉得每一次生成都在花钱（实测：一次页面 132 积分）。</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">价值到达时间：本次未测（实测只记录「发一个页面进去、出来一版能用的稿」，未做计时）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">认知负荷：中（设计师低，非设计师中高；词汇门槛在 Frame / Auto layout / Component / Variant / Seat / Credits）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">惊喜点：可编辑的生成 + 零成本协作 + 抄得动的社区</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">信任：产品层稳（G2 4.7、82% 五星），但信任事件集中在三处——席位误计费与退款、文件权限归属、账号被封导致资产丢失（G2 原文：my account was closed, resulting in the loss of three years of work）。</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">摩擦：席位误计费、权限归属、大文件性能</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>生成之后还能改图层，连状态与免责声明都保留（实测原话：可以改图层）。</li>
+        <li>分享链接就能评论，且不必为评论者买席位（定价页原文）——协作的门槛被压到很低。</li>
+        <li>Community 里的公开文件与设计系统可以直接抄改（G2 好评原话：thousands of open-source design systems, UI kits, wireframes, and icons），起手速度极快。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>席位计费会自己长出来：外部协作者被系统升成 full member 并计费 14 个月；同一文件多人却各自开账号导致重复收费，官方承认是他们的错误却拒绝退款（G2 原话两条）。</li>
+        <li>权限模型有洞：Team Administrator 也改不了别人名下文件的权限，所有者离职即失去文件；原话里那句自嘲很扎心——I am the team administrator. I guess I contact myself?</li>
+        <li>大文件会卡：组件库多、画板复杂时明显掉帧与吃内存，多人协作重度时甚至崩标签页（G2 原话）。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>按席位订阅 + AI credits 加购</h5><p>四档订阅（Starter 免费 / Professional / Organization / Enterprise），每档三类席位分别定价（Full / Dev / Collab），每席位附赠定量 credits；AI 能力超出即加购或按量付费，组织版另售安全与合规能力。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>免费停在哪</h5><p>Starter：草稿不限、正式设计文件与团队能力受限，AI credits 每日 150、每月上限 500，inspector（Dev Mode）不可用（G2 原话点名此限制）。Professional 起才有无限文件、高级 Dev Mode 与 MCP Server、3,000 credits/月（Full seat）。付费档可让非付费者查看与评论，不必买额外席位——这条是它的传播机制，也是误计费的源头。</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>入口免费，钱收在「席位类型」上</h5><p>Starter 免费且不限草稿、可无限评论；一旦要无限文件、Dev Mode 与团队权限就进 Professional。真正精细的地方是把席位拆成三类：只做设计的买 Full，只看代码的买 Dev（12 美元），只评论的买 Collab（3 美元）——同一团队可以按角色付不同的钱，这是它比「按人头一刀切」更聪明、也更容易算错的地方。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>体验与变现是对齐的，还是打架的？</h5><p>局部对齐，结构上打架。对齐的一面：协作免费、评论免费，先把人拉进同一个文件，再按角色收席位——收费点正好落在「这个人开始真正干活」的时刻。打架的一面：分享即协作，协作即可能计费，于是「拉人进来看看」这个最自然的行为会悄悄变成账单（14 个月那条投诉就是它），而权限又卡在文件所有者手里，用户在同一个模型上同时感到「方便」和「说不清」。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">名单取自两处：官方产品线里与自己重叠的环节（Make / Sites / Dev Mode 各自有对手），以及 G2 与第三方评测里用户实际提到换去的地方（Sketch、Penpot、Framer、Lovable 系）。Product Hunt 的产品页元数据本次抓到，但**评论区正文 0 条（抓取失败）**，所以本卡不引用 PH 评论原话，只用 G2 直接抓到的评论——这一点如实说明，不拿别的站点的评论冒充。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>Figma</th>
+          <th>Sketch</th>
+          <th>Framer</th>
+          <th>Penpot</th>
+          <th>Lovable / v0 / Claude Code</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>主战场</th><td class="own">团队协作式界面设计与交付</td><td>同一批人（Mac 时代的设计师）</td><td>设计做完想直接上线的人</td><td>要自主可控与开源的团队</td><td>一句话出可跑的界面（AI 侧翼）</td></tr>
+        <tr><th>技术形态</th><td class="own">浏览器多人实时协作 + 组件系统 + Dev Mode + AI 生成 + MCP</td><td>本地文件 + 插件生态，协作需外挂</td><td>自研画布 + 自建托管 + CMS，设计即生产</td><td>开源、可自托管，浏览器协作</td><td>LLM 直接生成 React / Tailwind 代码，源码可导出</td></tr>
+        <tr><th>分发位置</th><td class="own">Community 公开文件与插件、设计教育、团队内渗透</td><td>老牌 Mac 设计圈存量</td><td>设计师社区与模板市场</td><td>开源社区与政企自建需求</td><td>开发者与 AI 早期采用者渠道</td></tr>
+        <tr><th>价格可见性</th><td class="own">首页不放价；定价页四档 × 三类席位 + credits 加购，单项金额清楚、总价需自算</td><td>订阅 12 美元/编辑/月起，无免费档（第三方口径，未逐项核实）</td><td>官网首页不标价，定价页四档 + 附加包；第三方口径 10 / 30 美元起，量级不一</td><td>免费开源自托管，商业版另计（第三方口径）</td><td>订阅 + 用量，含免费层（未逐项核实）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 两件事别人短期补不上：一是多人实时同文件（这是网络效应，不是功能），二是组件与变体构成的资产沉淀——用得越久越难走。Dev Mode 把交付也留在同一个文件里，等于把开发也拉进了它的网络。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 三条缝：要源码与自由部署的团队流向 Lovable / v0 / Claude Code（它们直接从代码起手）；预算敏感或要自主可控的流向 Penpot / Sketch；要「设计完直接上线」的流向 Framer。加上席位计费与权限归属的抱怨，被咬的都不是设计能力，而是钱与权。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>社区与作品集：公开文件、设计系统、插件构成可搜索的长尾入口，作者发布即分发。</li>
+        <li>产品发布驱动：Product Hunt 36 次 Launch、15K 关注、4.9 分（1,609 条评价），每次新能力（Agent、Specs、Code Layers、Motion）都自带一次曝光。</li>
+        <li>自下而上的团队渗透：一个人把文件发给同事，评论免费、编辑收席位——增长最快的一条，也是账单最容易出错的一条。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>团队渗透环</strong> — 一个人拉一个文件 → 别人只能进来评论 → 评论者变成编辑 → 席位增加。这条环很有效，也很容易失控：G2 那条「外部人被算成 full member 收了 14 个月」就是这个环的反面。</li>
+        <li><strong>社区文件环</strong> — 公开文件与插件被复制使用 → 作者获得曝光 → 更多人把作品放上来 → Community 成为搜索入口。G2 好评原话：What stands out most is the Figma Community… thousands of open-source design systems, UI kits, wireframes, and icons。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>从设计到交付：Dev Mode、Code Layers、Specs、MCP——把开发也拉进同一个文件。</li><li>从设计到生成与上线：Make、Sites、Buzz、Motion、Draw——把「做完设计之后」的事也接住（[推断] 这是它对 Framer 与 Lovable 的正面回应）。</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>产品与互联网团队：设计系统、组件库、设计到开发交付；代理商按客户项目协作。</li><li>品牌与营销物料：Buzz 批量出品牌素材，Slides 出提案——把非产品设计的场景也吃进来。</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>开放接口已存在：MCP server（mcp.figma.com/mcp）让外部 agent 读设计上下文、写代码与内容；插件生态与 REST API 多年积累。</li><li>[推断] 平台策略是「文件即协议」：不做交易抽成，靠文件格式、权限模型与插件接口把第三方能力长在自己身上；MCP 是把这个协议开放给 AI 的那一步。</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>应用层六维</h3>
+    <span class="pill">模型用得好不好</span>
+  </div>
+  <p class="section-intro">六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。</p>
+  <p class="section-intro">本片判为 **嵌入**。拔电测试：拿走 AI，产品照常卖 → AI 嵌入。（依据：传统工具，AI 属后加能力）</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① 替掉哪一步</h4>
+      <p>它替掉的是「把想法变成可评审的稿」这一段里最耗人的部分：找组件、摆版式、对齐状态。原来设计师做（现在也还是设计师做），只是从几轮来回压成一次生成 + 手改；成本从人工时间变成 16 美元订阅加 132 积分一次。实测（燃冰）的原话是：省的是设计师找组件模板这一段。</p>
+    </div>
+    <div class="info-card">
+      <h4>② 脏活谁干</h4>
+      <p>脏活它啃掉了一半：页面结构、状态保留、颜色体系、免责声明这类「照原稿来」的活它自己处理；甩回来的是一句——甩回来的是设计师自己的判断。所以它要求人把「我要什么」说清楚（左侧抽屉、金融卡片、红涨绿跌），说不清就做不对。这道门槛不是软件的，是表达与审美的。</p>
+    </div>
+    <div class="info-card">
+      <h4>③ 出来能不能用</h4>
+      <p>能用。实测结论：能用，可以改图层；但会不会有人拿它直接对外发——不会，我觉得还是需要专业人士的。也就是说，它交回的是「可继续加工的成品」，不是「终稿」。</p>
+    </div>
+    <div class="info-card">
+      <h4>④ 错了怎么兜</h4>
+      <p>兜底很薄：它会提示这是假数据、需要接入真实数据，但对「你给的前提就是错的」这件事它不管（实测原话：它不管这个），给错前提它会顺着做，还会提示将新开页面操作。没有来源标注、没有置信度，最终靠人工复核。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ 错一次多贵</h4>
+      <p>错得起。结构可拆到图层，能撤回，也有历史记录（实测：能撤回）；真正的成本是 credits——一次页面 132 积分，免费额度四次出头就用完。所以「错一次多贵」在它这里不是数据风险，是额度消耗。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ 不用它的替代</h4>
+      <p>换得掉，但习惯在那。实测的原话：换得掉，但习惯在那——它相对 Framer 更偏设计资料沉淀、能导出代码原型；插件也能调用，但有使用个数限制。明天它消失，顶上来的还是设计师本人。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方未公开运营指标。以下分两类：能核实的公开事实，与标注 [推断] 的「它应该看什么」，不是真实数据。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>周活跃文件数 × 每文件每周多人协作次数（[推断]）</h5>
+      <p>[推断] 它按席位收费、按文件承载协作：文件数决定席位上限，多人协作次数决定席位会不会真的被买。所以北美星不是「注册设计师数」，而是「同时在同一个文件里干活的人数」。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>免费档到付费席位的转化（按席位类型拆）</h5>
+      <p>Starter 不限草稿、可无限评论，付费墙立在「无限文件 + Dev Mode + 团队权限」上；Full / Dev / Collab 三类席位的转化率分开看，才知道收入是从设计师来还是从旁观者来。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>credits 消耗与加购率</h5>
+      <p>AI 收入全压在 credits 上（3,000 / 3,500 / 4,250 起，超出加购）。实测一次页面 132 积分，免费额度四次出头就用完——加购率高说明 AI 真在用，也预告账单抱怨会同步上升。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>席位误升级率与退款申请率</h5>
+      <p>这是它独有的关键指标：分享即可能计费，所以「自动升成成员」的比例直接决定口碑与客服成本。G2 那两条投诉说明这个数字曾经很高。</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>账单类投诉占比 + 权限/资产类工单量</h5>
+      <p>G2 4.7 分与成堆的负面反馈同时存在（该字段连 4–5 星用户也会填），说明产品满意不等于商业满意。这两条是唯一能区分「设计口碑」与「收钱口碑」的护栏。</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>没有公开的留存曲线、席位流失率、毛利率，也没有 credits 的单位推理成本 [推断]</h5>
+      <p>[推断] 它同时卖订阅与卖推理：只盯营收不盯单位成本，会看不见「AI 越普及毛利越薄」的风险。另一边，权限与账号风控造成的资产损失不进入任何公开指标，却是最伤留存的一类事件。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">席位账单会自己长出来</span><span class="sev">高</span></div>
+      <div class="body">G2 原话两条：一条是外部协作者被系统升成 full member，14 个月后才被会计发现；另一条是同一文件多人各自开账号导致超额收费，官方承认错误但拒绝退款。用户不是不愿付钱，是算不出也看不到钱怎么长出来的——这类抱怨对「按席位订阅」是致命的，因为它同时伤害财务与信任。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">权限与资产归属说不清</span><span class="sev">高 · High</span></div>
+      <div class="body">Team Administrator 也改不了别人名下文件的权限；所有者离职或失联，文件就成了孤儿（原话：you basically lose the whole file）。更极端的一条是账号被关闭、三年工作无法取回。对代理商与外包协作场景，这是硬伤。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">大文件性能掉队</span><span class="sev">中</span></div>
+      <div class="body">组件库大、画板多、多人同时编辑时明显卡顿与高内存占用，重度协作甚至崩标签页（G2 原话：Even on high-end machines… trigger browser tab crashes）。对大型设计系统团队，这是日常摩擦。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">免费与消费端体验被削</span><span class="sev">中 · Medium</span></div>
+      <div class="body">Free 档封掉 inspector（Dev Mode），被老用户直接骂 unusable now；而「设计师发链接给别人看」这一侧体验也差（原话：horrible consumption experience when designers want to share with others to consume and understand the click through）。它的产品为创作者优化，对旁观者不友好。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">风险按「可能性 × 影响」排序，严重度是我的判断，不是公司披露。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>席位与 credits 计费持续损伤信任</strong></td><td>Business</td><td class="sev-high">High</td><td>High</td><td>加入即提示席位类型与费用、默认「只评论」、退款政策对承认的错误自动执行。这条不改，ARPU 越高、口碑越差，最后靠企业合同兜住。</td></tr>
+      <tr><td><strong>权限与资产归属事故</strong></td><td>Operations</td><td class="sev-high">High</td><td>Medium</td><td>团队级接管、停用前导出提醒、封号前的申诉与取回窗口。对代理商与外包场景，这是留或走的决定项。</td></tr>
+      <tr><td><strong>AI 生成类工具从代码侧绕开它</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>守住「可编辑 + 组件沉淀 + 交付链路」三条，把 MCP 与 Code Layers 做成入口而不是威胁；真正要防的是新团队从代码起手、根本不进设计工具。</td></tr>
+      <tr><td><strong>大文件性能与消费端体验拖累口碑</strong></td><td>Product</td><td class="sev-med">Medium</td><td>Medium</td><td>对超大设计系统给专门的性能档（分片加载、只读模式），并把「给非设计师看」的播放器体验单独做一版——那是决策者第一次接触它的地方。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>（我的判断）把「谁让我多付了钱」做成事前提示</h5>
+      <div class="desc">怎么做：有人被拉进文件时，先显示「加入后会占哪类席位、会影响本月多少钱」，并给一个「只评论」的默认值。为什么：G2 的席位投诉不是价格太高，是不知道什么时候开始计费；这一改不需要动产品架构，是最便宜的信任修复。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>（我的判断）把「132 积分一次」变成可见的预算条</h5>
+      <div class="desc">怎么做：生成前面板显示本次预估消耗与剩余 credits，接近上限时提示「这一版会用掉剩下的一半」。为什么：实测（燃冰）第一次用完免费额度时是没预警的；对一人公司，可预期比便宜更重要。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>（我的判断）把文件所有权从「个人」解耦成「团队」</h5>
+      <div class="desc">怎么做：允许团队管理员强制接管离职成员名下的文件与权限，并在成员停用时给出导出提醒。为什么：G2 那条「账号被关、三年工作没了」是最贵的一类失败——它损失的不是一个用户，是这个人所有的作品与口碑。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>它的赌注：用协作网络锁住团队，用 AI 把「做完设计之后」也吃下来</h5>
+      <div class="desc">两个赌注同时下：一是把设计、交付、生成、上线全部挂到同一个文件上（Dev Mode、MCP、Make、Sites），让「换工具」等于「换协作方式」；二是把 AI 做成 credits 型附加收入，而不是主路径替代。第一个赌注加固护城河，第二个保住毛利——但两者叠加会让「账单为什么这么高」变成长期问题，因为 AI 用得越多，账单越难解释。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>终局：让「设计」这个环节不再需要交接</h5>
+      <div class="desc">如果 agent 能读懂设计意图、生成可维护的组件、直接产出可上线代码与规格，那么设计师、前端、产品之间的三次翻译会塌缩成一次。距离不在模型能力，在「谁负责审」——实测（燃冰）已经指出：它不纠错前提，判断仍归人。所以终局的瓶颈是信任与责任，不是生成质量。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>多人实时同文件的网络效应、组件与设计系统的资产沉淀、Dev Mode 把交付拉进同一份文件、Community 与插件构成的分发长尾。</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>要源码主权、必须自己部署的团队（会去 Lovable / v0 / Claude Code）；预算极紧或要求自主可控的（Penpot / 自托管）；只需要「设计完直接上线」的（Framer）；以及把文件所有权安全当硬要求的代理商——所有者离职就丢文件这条，足以否掉一单。</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>护城河真实存在，但位置很具体：不在模型，在「协作网络 + 组件沉淀 + 交付标准」三件套。前两件是时间与习惯堆出来的，第三件是行业默认值。AI 只加固了第三件的一小段。所以它的护城河不会被模型追平，只会被「新人从代码起手、压根不用设计工具」这种路径变化绕开。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">缺件先说：Product Hunt 的评论正文本次抓取失败（0 条），所以这张地图不引用 PH 的 Similar Products，名单来自两处——<strong>官方产品线自身的重叠</strong>（Make / Sites / Dev Mode 各有一段对手），以及 <strong>G2 与第三方评测里用户说实际换去的地方</strong>。</p><table class="risk-table"><thead><tr><th>谁</th><th>抢同一个需求</th><th>抢同一段链路</th><th>用户实际迁移</th></tr></thead><tbody><tr><td>Sketch</td><td>Mac 上做设计稿</td><td>画布 + 组件 + 切图</td><td>存量还在，但协作要外挂；老用户被 Figma 的多人同文件拉走（评论里几乎不提 Sketch，说明它已不是主要比较对象）</td></tr><tr><td>Penpot</td><td>要自主可控的设计协作</td><td>开源 + 自托管 + 浏览器协作</td><td>预算与合规敏感段被它接走；[推断] 政企与自建需求是它的主场</td></tr><tr><td>Framer</td><td>设计完想直接上线</td><td>画布 → 托管 → CMS</td><td>双向：要上线的人在 Framer，要团队协作的人在 Figma；实测（燃冰）原话点明差异——Framer 偏落地，Figma 偏设计资料沉淀与代码原型导出</td></tr><tr><td>Webflow</td><td>营销站与专业建站</td><td>画布 + 托管 + CMS + SEO 深度</td><td>技术 SEO 有硬要求的团队留在 Webflow（robots.txt、静态文件可控）</td></tr><tr><td>Lovable / v0 / Claude Code</td><td>一句话出可跑的界面</td><td>语言 → 代码 → 部署</td><td>增量团队可能从代码起手，压根不进设计工具——这是唯一能「绕开」而不只是「抢走」的一路</td></tr><tr><td>Canva</td><td>非设计师要做图</td><td>模板 + 拖拽 + 品牌套件</td><td>营销物料段的分流；Figma 用 Buzz 反向切进去（[推断]）</td></tr></tbody></table><p class="section-intro">读法：Figma 在地图正中，四面都有对手，但没有一个对手同时具备「多人同文件 + 组件体系 + 交付链路」三件套。真正危险的不是被抢，是被绕开。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <table class="risk-table"><thead><tr><th>产品</th><th>底座</th><th>设计到落地的接缝</th></tr></thead><tbody><tr><td>Figma</td><td>自研的浏览器渲染引擎（WebGL/Canvas 混合）+ 实时协作同步（CRDT 系思路）+ 云端文件存储 + 插件沙箱 + Dev Mode 代码映射 + MCP 服务</td><td>接缝在「导出之后」：同一文件切 Dev Mode 给代码与规格，Sites 想直接把设计发上线（beta）</td></tr><tr><td>Sketch</td><td>macOS 原生（Metal）+ 本地 .sketch 文件 + 插件；协作需第三方（如 Abstract）</td><td>接缝是文件交换，版本靠人工约定</td></tr><tr><td>Penpot</td><td>Web 技术栈（Clojure/ClojureScript）+ SVG 原生 + 可自托管</td><td>接缝是自建部署与内网合规</td></tr><tr><td>Framer</td><td>自研画布 + 自建托管与 CDN + 内置 CMS / 分析 / 本地化</td><td>接缝被抹平：画布即生产环境，没有导出这一步（也因此没有代码导出）</td></tr><tr><td>Webflow</td><td>自研可视化 CSS 引擎 + 托管 + 更强导出</td><td>接缝在 CSS 语义可控 + 可导出</td></tr><tr><td>Lovable / v0</td><td>LLM 生成 React / Tailwind，跑在托管预览环境，源码可导出</td><td>接缝就是代码：生成物天生是工程产物</td></tr></tbody></table><p class="section-intro">[推断] <strong>真护城河不在模型层</strong>（模型能力外部可得，Make 的生成质量不是它最难复制的东西），而在「实时协作的同步内核 + 文件格式成为行业默认 + 组件资产沉淀」三者的耦合。这三样都得靠时间与用户习惯堆，买不到也追不快。反过来说，AI 生成这条能力最容易被追平，所以它把 AI 做成 credits 而不是主卖点——这是清醒的。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会（我的判断）</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <ol><li><strong>把「加入即计费」做成事前提示</strong>——有人被拉进文件之前，先显示他会占哪类席位、本月多花多少，默认只给评论权。G2 两条独立投诉（14 个月、重复收费不退）都出在这里；对一个一人的投资工具产品，这就是「用户不知道钱怎么涨的」那一类失败，最伤信任。<em>最轻，一个弹层加一次确认。</em></li><li><strong>把 credits 变成可见预算条</strong>——生成前显示预估消耗与余额，接近上限时警告。实测（燃冰）第一次用完免费额度是没有预警的；一人公司可预期比便宜重要。</li><li><strong>把「生成」做成带 diff 的审阅</strong>——每次 agent 改动列出动了哪些组件与状态。实测的关键一句是「可以改图层」，但没告诉人改了什么；审阅能力决定人敢不敢放手。</li><li><strong>把文件所有权与个人解耦</strong>——团队可强制接管离职成员的文件，停用前给导出提醒。这条对代理商是成交门槛。</li></ol><p class="section-intro">四个里哪个最轻？<strong>第 1 个</strong>：不需要动产品架构，只改一个默认值和一句提示。哪个最贵也最值？<strong>第 4 个</strong>：它决定的是「敢不敢把整个设计资产放进来」，而这正是订阅制最想要的答案。</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">钱从三方出：做设计的人（Full 席位 16 / 55 / 90 美元）、只读代码的人（Dev 12 / 25 / 35）、只评论的人（Collab 3 / 5 / 5）；再叠一层按量计费的 AI credits（Full 席位 3,000 / 3,500 / 4,250，Dev 与 Collab 500；超出加购或按量）。</p><table class="risk-table"><thead><tr><th>产品</th><th>计价单位</th><th>起步价（本次可核实口径）</th><th>免费档</th><th>口径说明</th></tr></thead><tbody><tr><td>Figma</td><td>席位（Full / Dev / Collab）</td><td>Professional 年付 16 / 12 / 3 美元每月；Org 55 / 25 / 5；Ent 90 / 35 / 5</td><td>有（Starter：草稿不限、credits 150/日上限 500/月）</td><td>官方定价页，本次直接抓取</td></tr><tr><td>Framer</td><td>站点 + 席位 + credits</td><td>第三方口径 10–15 美元（Basic）/ 30–45（Pro），编辑器约 20 美元</td><td>有</td><td>第三方转述，月付与年付口径混用，只作量级</td></tr><tr><td>Webflow</td><td>站点</td><td>第三方口径约 15 美元/月起</td><td>有（受限站点）</td><td>第三方转述</td></tr><tr><td>Sketch</td><td>编辑席位</td><td>第三方口径约 12 美元/编辑/月（年付）</td><td>无免费档（试用）</td><td>第三方转述</td></tr><tr><td>Penpot</td><td>自托管 / 云</td><td>开源免费，商业版另计</td><td>有</td><td>项目公开信息</td></tr><tr><td>Lovable / v0</td><td>订阅 + 用量</td><td>含免费层，具体档位未逐项核实</td><td>有</td><td>未核实，不编数字</td></tr></tbody></table><p class="section-intro"><strong>价格结论（我的判断）</strong>：单人场景下 Figma 的 16 美元与 Framer 的 10–15、Sketch 的 12 是同一量级，不贵；贵在「按人涨」。五个人的团队按 Figma 算 5×16＝80 美元，按站点计价的 Framer 只要一个站点加一两个编辑席位；但 Framer 的编辑席位也按人收，团队一多同样陡。所以真正的差别不是单价，是<strong>计价轴</strong>：Figma 按人头，Framer 按站点。谁的团队里「做设计的人少、看的人多」，谁的账单就轻——这恰好解释了 Figma 为什么要拆出 Dev 与 Collab 两类席位。<br><br>流量吃长尾：Community 公开文件与设计系统是可搜索的入口，作品集与设计教育持续供人，产品发布（PH 36 次 Launch、15K 关注）负责波峰。变现三段：<strong>订阅（广度）→ 席位类型（厚度）→ credits 与加购（深度）</strong>。<strong>最脆的一根梁</strong>是「分享免费、协作可能计费」与「文件归个人所有」这两条同时成立：前者让账单自己长出来，后者让资产归属说不清——G2 的低分几乎全落在这两根梁上。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://www.figma.com/" target="_blank" rel="noopener">官网首页（产品线、Figma Agent 与 MCP 入口原文）</a></li>
+    <li><a href="https://www.figma.com/pricing/" target="_blank" rel="noopener">定价页（四档 × 三类席位金额、credits 数量、加购与按量付费原文）</a></li>
+    <li><a href="https://www.figma.com/design/" target="_blank" rel="noopener">Figma Design 产品页</a></li>
+    <li><a href="https://www.figma.com/make/" target="_blank" rel="noopener">Figma Make（自然语言生成可编辑界面）</a></li>
+    <li><a href="https://www.figma.com/dev-mode/" target="_blank" rel="noopener">Dev Mode（交付与 inspector）</a></li>
+    <li><a href="https://www.figma.com/ai/" target="_blank" rel="noopener">Figma AI</a></li>
+    <li><a href="https://www.figma.com/motion/" target="_blank" rel="noopener">Figma Motion（beta）</a></li>
+    <li><a href="https://www.figma.com/sites/" target="_blank" rel="noopener">Figma Sites（beta，Sites 页本次 404，beta 说明见定价页席位脚注）</a></li>
+    <li><a href="https://mcp.figma.com/mcp" target="_blank" rel="noopener">MCP server 端点（供外部 agent 接入）</a></li>
+    <li><a href="https://www.producthunt.com/products/figma" target="_blank" rel="noopener">Product Hunt 产品页（4.9 分、1,609 条评价、15K 关注、36 次 Launch；评论正文本次抓取失败 0 条）</a></li>
+    <li><a href="https://www.g2.com/products/figma/reviews" target="_blank" rel="noopener">G2 评论页（4.7 分 / 1,598 条；抓 10 条负面反馈原话，来自 dislike 字段，含 4–5 星用户）</a></li>
+    <li><a href="实测.md" target="_blank" rel="noopener">实测表（2026-11-18，20 分钟，署名 实测（燃冰））</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

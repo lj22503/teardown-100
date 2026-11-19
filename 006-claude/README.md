@@ -49,7 +49,26 @@
   3. **要它扛重活的人**：G2 一位付费超 $600 的用户原话 the project approaches completion, Claude Code attempts to fix one problem, and suddenly something that was already working stops functioning；PH 1★ 更狠——自动编辑删掉整个数据库，且"it denies that it did that"。
   4. **要被当客户对待的人**：G2 差评原话 If you aren't an enterprise customer, good luck getting any support（5 天无回应）；另一条写 billing function does not work… all they can do is allow their chatbot, Fin, to answer you with the same stiff nonsense answer 100 times in a row。
 
-## 四、我的实测（2026-11-15 整理；实际使用发生在 2026 年 4 月，20 分钟实测表）
+## 四、应用层六维（主框架）
+
+> 不看它堆了多少 AI 功能，只看它替掉了哪一步、把哪些麻烦甩回来。证据：实测（燃冰）受限实测、PH 1.1K 条 / G2 1,907 条评论原文、官网与定价页脚注。
+
+| 维度 | 结论 | 具体证据 |
+|---|---|---|
+| ① 替掉哪一步 | 「先把问题想清楚，再直接动手」这一步。原执行者：资深同事 / 外包开发 / 自己加班 | 用户自述：85 次开发会话里 Claude Code 写了 90% 的 Next.js 应用；一个人运营 Instagram 每周省 10+ 小时。实测（燃冰）：让它通读 GitHub 项目挑问题，原本要自己 review 或找同行。多少钱：官方金额未取到，只记结构——按订阅卖，不按任务结算 |
+| ② 脏活谁干 | 接口层自己啃，身份层与记忆层原样退回 | 自己啃：MCP 直连外部工具（原话 no glue code）、长文档上下文（contextual understanding 64 次）。退回三类：账号与区域资格（实测原话「我卡在账号上」，甩回 1 次即止步）；跨会话记忆（长会话压缩丢决策，新会话要重述架构）；执行权限与回滚（删库后由人兜） |
+| ③ 出来能不能用 | 诊断类能用且好用；产出类看谁接，我这一轮没测到定论 | 实测确认「能主动指出我的问题」；PH Pros reasoning 57 / code generation 78。反证：G2 付费超 $600 用户原话越修越坏。T1 原话「没测到」，所以只给区间——改一两处到基本重做 |
+| ④ 错了怎么兜 | 几乎不兜，靠人兜 | 不标来源、不给置信度；PH 1★ 原话删库后 it denies that it did that；官方材料无自动回滚与事务级撤销披露。人能用的只有版本控制 + 逐步审阅；企业侧的合同与合规是给客户的，不是给错误的 |
+| ⑤ 错一次多贵 | 对话层便宜，执行层与账号层不可逆 | 对话层重问一次；删库不可逆；账号层——实测几天内被封、提示「账号有问题」、无可用申诉路径，订阅与攒下的会话一起归零 |
+| ⑥ 不用它的替代 | 同层替代，迁移成本几乎为零 | 评论去向：图像 → ChatGPT / Banana；写代码 → Cursor、Codex、Copilot、Gemini；拿不到服务的用国产模型。实测现状：Claude CLI + 其他大模型并用。搬不走的只有写进仓库的工作流与企业合同 |
+
+**三个必答结论**
+
+1. **值不值这个价**：按能力值，按可达性不值。你付的钱买的是能力（实测 T5：省的是能力，它比我强），但可能在门口就被拦下——这一条比任何功能对比都更早决定体验。
+2. **门槛在模型还是在别处**：能力门槛在模型层，能不能用的门槛在账号与区域层。**后者比前者更早挡住人**，而它恰恰是产品最不愿意承认的一层。
+3. **会不会留下**：会，但换形态——留在 CLI 里，不留在网页里（实测现状就是 Claude CLI 加其他大模型并用）。留下的是能力管道，不是那个 App。
+
+## 五、我的实测（2026-11-15 整理；实际使用发生在 2026 年 4 月，20 分钟实测表）
 
 > 署名：实测（燃冰）。原始记录：`实测.md`。**注意：这份实测是"受限实测"——账号在第 3 天被封，四段里有三段没测完，本卡不替它补结论。**
 
@@ -67,7 +86,7 @@
 
 **实测之外的一条判断**（我的判断）：我原以为它是给"普通人用的聊天工具"（实测第 1 问原话），用完发现真正被它服务的是**已经在写代码、且愿意把判断权交出去的人**。这个偏差不是我用错，而是它的产品叙事（对公众讲"AI 助手"）和它的付费现实（评论里全是 Claude Code）之间本来就有一道缝。**这道缝是它最大的机会，也是它最大的风险：对公众讲得太好，公众进来被限额和封号劝退，口碑由"没付费的人"决定。**
 
-## 五、用户评论证据（原话，未改写）
+## 六、用户评论证据（原话，未改写）
 
 **Product Hunt（5.0 / 1.1K；采集到 8 条最新 + 2 条 1★ + 1 条 2★）**
 
@@ -95,7 +114,7 @@
 | "I dislike that AI is being used for unnecessary surveillance of ordinary people… I have replaced claude with a similar AI service"（1★） | 存在一类用户的迁移动机与产品体验无关，纯价值观——这是模型厂才有的风险 |
 | "Sometimes I like a more direct answer and the empathetic responses don't hit the mark."（2★） | 它的人格设定（共情、铺垫）对一部分人是减分项，不是加分项 |
 
-## 六、附录四段摘要
+## 七、附录四段摘要
 
 - **16 对标竞品地图**：PH 评论里用户实际点名过的替代品是 ChatGPT（OpenAI）、Gemini（Google）、Codex 3.0、Grok、Perplexity、DeepSeek、Cursor、GitHub Copilot——**它们抢的不是同一个需求**：ChatGPT / Gemini / Grok 抢"通用问答"，Codex / Cursor / Copilot 抢"写代码的那双手"，Perplexity 抢"查资料"，DeepSeek 抢"便宜"。真正抢走 Claude 付费用户的是 **ChatGPT（一位 G2 1★ 用户原话：I had already moved to ChatGPT）** 和 **Codex（PH 评论：I use Codex more for research, content images, and tasks that involve connected tools）**。`[推断]` 名单之外最大的威胁不在名单里：**系统级助手**（操作系统自带的对话入口）与**IDE 内置的 agent**——它们不争品牌，争默认位。
 - **17 竞品技术底座**：Claude＝自研前沿模型家族（Mythos/Fable、Opus、Sonnet、Haiku）+ 多云分发（AWS、Google Cloud、Microsoft Foundry、Managed Agents）+ **MCP 协议**（开放给第三方 agent 调用）。ChatGPT＝自研模型 + 自有应用与插件生态；Gemini＝自研模型 + Google 账号与 Workspace 分发；Codex / Cursor / Copilot＝**别人模型的壳 + 极致的编辑器集成**。`[推断]` 护城河结论：真护城河有两层——**模型层（最难，也最容易被追平）** 与 **协议层（MCP，最容易被采纳，也最难被独占）**；壳层（界面、人格、模板）没有护城河，这正是它相对 Cursor 类产品的处境反过来的地方。

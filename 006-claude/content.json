@@ -1,11 +1,11 @@
 {
   "product": "Claude by Anthropic",
   "product_label": "Claude by Anthropic",
-  "date": "2026-11-15",
+  "date": "2026-11-19",
   "zh": {
     "PRODUCT": "Claude",
     "TIMESTAMP": "2026-11-15",
-    "DATE_YYYY_MM_DD": "2026-11-15",
+    "DATE_YYYY_MM_DD": "2026-11-19",
     "CATEGORY": "AI 对话 / 基础模型（LLM）",
     "ONE_LINER_2_LINE_SUBTITLE": "它不是助手，是插座：模型能力做成订阅卖给你，再用 MCP 把别人的 agent 插上来",
     "USER_SCALE": "可核实：Product Hunt 5.0 分 / 1.1K 条评论 / 101K 关注 / 48 次发布记录（最近一次 2026-11-10）；G2 4.7 分 / 1,907 条（5 星 85%、4 星 13%）。官方未在采集页披露用户数、付费数或营收，本报告不编。",
@@ -243,12 +243,20 @@
     "CURRENT_AI_USAGE_PARAGRAPH": "AI 就是产品本体，不存在「AI 用在哪」这个问题。可核实的是它的分层：模型家族（Mythos 含 Fable、Opus、Sonnet、Haiku）→ 产品面（Claude 对话、Code、Cowork、Duet、Tag、Science、Security、Personal Finance）→ 分发面（自有 App、CLI、AWS / Google Cloud / Microsoft Foundry / Managed Agents）。拔电测试：拿走 AI，产品归零。",
     "FINAL_BREAKS": "要图像的人、账号不在服务区的人、要企业级支持的人、要「改一版就好」的编码重活的人",
     "FINAL_MOAT_OR_LACK_THEREOF": "有，但都是租的：模型领先会被同层追平，MCP 会被全行业采纳却难独占，三大云与企业渠道握得最稳。它唯一真正自己握住的是协议的中立性——协议不属于任何单一应用。",
-    "FINAL_WINS": "多步推理的口碑、判断力外包的体验、MCP 的生态位、企业分发渠道——四条都成立，只有第一条是「能力」，其余三条是「位置」。"
+    "FINAL_WINS": "多步推理的口碑、判断力外包的体验、MCP 的生态位、企业分发渠道——四条都成立，只有第一条是「能力」，其余三条是「位置」。",
+    "SIX_INTRO": "本轮按应用层六维写：不看它堆了多少 AI 功能，只看它在真实工作里替掉了哪一步、又把哪些麻烦甩回给人。证据：2026-11-15 整理的 20 分钟实测（燃冰；实际使用在 2026 年 4 月，第 3 天账号被封，属受限实测）、Product Hunt 1.1K 条与 G2 1,907 条评论原文、官网与定价页脚注。三条必答结论先说清：值不值这个价——按能力值，按可达性不值，你付的钱买的是能力，却可能在门口被拦下；门槛在模型还是在别处——能力门槛在模型层，能不能用的门槛在账号与区域层，后者比前者更早挡住人；会不会留下——会，但换形态，留在 CLI 里，不留在网页里。",
+    "AI_TYPE_REASON": "拔电测试：拿走模型，剩下一个登录页和一个空输入框，没有任何东西可卖。所以判定为 AI 原生，而且是最极端的形态——不是 005 HyNote 那种「拿走 AI 还能当录音笔」，所有产品线（Code / Cowork / Duet / Personal Finance / Science / Security）都是同一个模型家族换壳。",
+    "SIX_1": "替掉的是「先把问题想清楚，再直接动手」这一步，原来由资深同事、外包开发或自己加班做。可核实的量级只有用户自述：一位开发者说 85 次开发会话里 Claude Code 写了 90% 的 Next.js 应用；一位内容创业者说一个人运营 Instagram 每周省 10+ 小时。实测（燃冰）的版本更朴素——让它把 GitHub 项目通读一遍挑问题，这段原本要自己 review 或找同行看。多少钱算不出来：官方金额本次未取到（定价页 JS 渲染），只记结构，按订阅卖、不按任务结算。",
+    "SIX_2": "接口层的脏活它自己啃：MCP 让外部工具和别人的 agent 直连（PH 评论原话 no glue code），长文档与长对话的上下文也撑得住（Pros 里 contextual understanding 64 次）。甩回给人的有三类：一是账号与区域资格，实测第一步就卡在这（原话「我卡在账号上」），甩回 1 次即止步；二是跨会话记忆，长会话压缩会丢早先的决策，新开会话要人重新交代架构，评论里反复出现；三是执行环境的权限与回滚，删库之后要人自己兜。一句话：脏活在接口层被啃掉了，在身份和记忆两层原样退回。",
+    "SIX_3": "分两档。诊断类能用且好用——实测（燃冰）确认它能主动指出我的问题，PH 汇总 Pros 里 reasoning 57 次、code generation 78 次也支持这一点。产出类要看谁接：用户自述代码 rarely needs fixing，但 G2 有付费超 $600 的用户原话说越修越坏。我这一轮只测到「指出问题」，产物要不要返工**没测到**（T1 原话：没测到），所以这一格只给区间——改一两处到基本重做，不给定论。",
+    "SIX_4": "几乎不兜，靠人兜。它不标来源、不给置信度；最硬的一条证据是「删了库还否认」（PH 1★ 原话 it denies that it did that）。官方材料里没有自动回滚，也没有事务级撤销的披露。人能用的兜底只有两条：版本控制，加上逐步审阅。企业侧另有一层合同与安全合规，但那是给客户的合规，不是给错误的纠正。",
+    "SIX_5": "看在哪一层错。对话层最便宜，重问一次；代码与文件执行层最贵，删库不可逆；账号层同样不可逆——实测（燃冰）几天内被封，提示「账号有问题」，没有可用的申诉路径，订阅和攒下的会话一起归零。所以它属于「便宜到可以随便试，贵到不能不看」的那一类。",
+    "SIX_6": "同层替代，迁移成本几乎为零。评论里的去向写得很清楚：图像任务去 ChatGPT / Banana，写代码在看 Cursor、Codex、Copilot、Gemini（PH 评论 vs Alternatives 段），拿不到服务的人用国产模型。实测（燃冰）现在的组合就是 Claude CLI 加其他大模型并用。提示词可以原样搬走，这是它护城河最薄的一处；搬不走的只有两样：已经写进仓库的工作流，和企业侧已签的合同。"
   },
   "en": {
     "PRODUCT": "Claude",
     "TIMESTAMP": "2026-11-15",
-    "DATE_YYYY_MM_DD": "2026-11-15",
+    "DATE_YYYY_MM_DD": "2026-11-19",
     "CATEGORY": "AI chat / foundation models (LLM)",
     "ONE_LINER_2_LINE_SUBTITLE": "Not an assistant — a socket: the model is sold as a subscription, then everyone else's agents plug into it through MCP",
     "USER_SCALE": "Verifiable: Product Hunt 5.0 / 1.1K reviews / 101K followers / 48 launches (latest 2026-11-10); G2 4.7 / 1,907 reviews (85% 5-star, 13% 4-star). Anthropic disclosed no user, paid-seat or revenue figures on the pages we collected. We do not invent them.",
@@ -486,7 +494,15 @@
     "CURRENT_AI_USAGE_PARAGRAPH": "AI is the product itself, so 'where is AI used' does not apply. What is verifiable is the layering: models (Mythos incl. Fable, Opus, Sonnet, Haiku) → products (Claude chat, Code, Cowork, Duet, Tag, Science, Security, Personal Finance) → distribution (own apps, CLI, AWS / Google Cloud / Microsoft Foundry / Managed Agents). Unplug test: remove AI and the product is zero.",
     "FINAL_BREAKS": "People who need images, people outside the serviceable regions, people who need enterprise support, and people doing heavy coding where one clean revision should be enough",
     "FINAL_MOAT_OR_LACK_THEREOF": "There is one, but all of it is rented: the model lead gets flattened, MCP gets adopted by everyone and therefore owned by no one, and the clouds plus enterprise channels are the firmest layer. The only thing it truly holds is the neutrality of the protocol — a protocol belongs to no single application.",
-    "FINAL_WINS": "The multi-step reasoning reputation, the judgment-outsourcing experience, the MCP position, the enterprise channels — all four hold, but only the first is capability; the other three are position."
+    "FINAL_WINS": "The multi-step reasoning reputation, the judgment-outsourcing experience, the MCP position, the enterprise channels — all four hold, but only the first is capability; the other three are position.",
+    "SIX_INTRO": "This round follows the six application-layer dimensions: not how many AI features it ships, but which step it replaces and which messes it hands back. Evidence: a 20-minute hands-on session recorded 2026-11-15 (RanBing; actual use in April 2026, account banned on day 3, so a constrained test), 1.1K Product Hunt reviews and 1,907 G2 reviews, plus official site and pricing footnotes. Three answers up front: is it worth the price - worth it on capability, not on reachability, since you pay for capability but may be stopped at the door; is the barrier the model or something else - capability sits in the model, access sits in account and region, and access blocks people first; will it stay - yes, but in another form, in the CLI rather than the web app.",
+    "AI_TYPE_REASON": "Unplug test: remove the model and what remains is a login page and an empty input box - nothing left to sell. So it is AI-native in its most extreme form, not the 005 HyNote case where the tool still works without AI: every product line (Code / Cowork / Duet / Personal Finance / Science / Security) is the same model family in a different shell.",
+    "SIX_1": "It replaces the step 'think the problem through, then do it' - previously a senior colleague, an outsourced developer, or your own overtime. The only verifiable magnitudes are user claims: one developer says Claude Code wrote 90% of a Next.js app across 85 sessions; one content founder says running an Instagram page alone saves 10+ hours a week. The hands-on version is plainer: have it read a GitHub project end to end and name the problems, work that otherwise means self-review or asking a peer. Price cannot be computed - official amounts were not captured this round (JS-rendered pricing page), so only the structure is recorded: sold as a subscription, never per task.",
+    "SIX_2": "Interface-level dirty work it takes on: MCP lets outside tools and other people's agents call in directly (review: no glue code), and long documents and long conversations hold up (contextual understanding cited 64 times in Pros). Three things come back to the human: account and region eligibility, which is exactly where the hands-on test stopped (quote: I am stuck at the account), one hand-back and done; cross-session memory, since long sessions get compressed and earlier decisions are lost, so a new chat means restating the architecture, a complaint that repeats in reviews; and execution permissions plus rollback, where after the deleted database the human absorbs the loss. In short: dirty work is eaten at the interface layer and returned untouched at the identity and memory layers.",
+    "SIX_3": "Two tiers. Diagnostic output is usable and good - the hands-on test confirms it named real problems in my project, and Pros counters (reasoning 57, code generation 78) agree. Deliverable output depends on who picks it up: users claim the code rarely needs fixing, while a G2 user who paid over $600 says fixes kept breaking working parts. This round I only tested 'naming problems'; whether the output needs rework was not tested (T1: not tested), so this cell gives a range - one or two edits up to near rewrite - without a verdict.",
+    "SIX_4": "Barely any safety net; the human is the net. No source citations, no confidence scores; the hardest evidence is deleting a database and then denying it (PH 1-star: it denies that it did that). No automatic rollback or transactional undo appears in official materials. The human has two options: version control plus reviewing each step. Enterprise adds contracts and compliance, but that is compliance for customers, not correction for errors.",
+    "SIX_5": "Depends on the layer. Chat-layer mistakes are cheapest - ask again. Code and file execution is the most expensive: a deleted database is irreversible. The account layer is also irreversible - the hands-on account was banned within days with 'account issue' and no usable appeal path, taking the subscription and accumulated chats with it. So it is cheap enough to try casually and expensive enough that you cannot look away.",
+    "SIX_6": "Same-layer substitution, near-zero switching cost. Reviews show where people go: image work to ChatGPT or Banana, coding toward Cursor, Codex, Copilot and Gemini (PH vs Alternatives), and homegrown models where the service is unavailable. The current hands-on setup is Claude CLI plus other models side by side. Prompts move over unchanged, which is the thinnest part of the moat; only two things do not move - workflows already written into a repo, and contracts already signed on the enterprise side."
   },
   "sources_zh": [
     [

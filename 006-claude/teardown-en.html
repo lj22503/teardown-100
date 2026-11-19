@@ -344,7 +344,7 @@
 <div class="meta-strip">
   <span>Product Teardown · Principal PM Analysis</span>
   <span class="dot"></span>
-  <span>Generated 2026-11-15</span>
+  <span>Generated 2026-11-19</span>
   <span class="dot"></span>
   <span>Product: Claude by Anthropic</span>
 </div>
@@ -754,33 +754,33 @@
     <h3>Application six-dim</h3>
     <span class="pill">how well the model is used</span>
   </div>
-  <p class="section-intro">This piece used the older framework; the six-dim review starts from entry 007.</p>
+  <p class="section-intro">Six dimensions are the main framework: the first three are about value, the last three about trust and switching cost.</p>
   <p class="section-intro">Classified as **原生**. 拔电测试：拿走 AI，产品消失 → AI 原生 (basis: 人工名单)</p>
 
   <div class="info-grid">
     <div class="info-card">
       <h4>① What step it replaces</h4>
-      <p>—</p>
+      <p>It replaces the step 'think the problem through, then do it' - previously a senior colleague, an outsourced developer, or your own overtime. The only verifiable magnitudes are user claims: one developer says Claude Code wrote 90% of a Next.js app across 85 sessions; one content founder says running an Instagram page alone saves 10+ hours a week. The hands-on version is plainer: have it read a GitHub project end to end and name the problems, work that otherwise means self-review or asking a peer. Price cannot be computed - official amounts were not captured this round (JS-rendered pricing page), so only the structure is recorded: sold as a subscription, never per task.</p>
     </div>
     <div class="info-card">
       <h4>② Who does the dirty work</h4>
-      <p>—</p>
+      <p>Interface-level dirty work it takes on: MCP lets outside tools and other people's agents call in directly (review: no glue code), and long documents and long conversations hold up (contextual understanding cited 64 times in Pros). Three things come back to the human: account and region eligibility, which is exactly where the hands-on test stopped (quote: I am stuck at the account), one hand-back and done; cross-session memory, since long sessions get compressed and earlier decisions are lost, so a new chat means restating the architecture, a complaint that repeats in reviews; and execution permissions plus rollback, where after the deleted database the human absorbs the loss. In short: dirty work is eaten at the interface layer and returned untouched at the identity and memory layers.</p>
     </div>
     <div class="info-card">
       <h4>③ Is the output usable</h4>
-      <p>—</p>
+      <p>Two tiers. Diagnostic output is usable and good - the hands-on test confirms it named real problems in my project, and Pros counters (reasoning 57, code generation 78) agree. Deliverable output depends on who picks it up: users claim the code rarely needs fixing, while a G2 user who paid over $600 says fixes kept breaking working parts. This round I only tested 'naming problems'; whether the output needs rework was not tested (T1: not tested), so this cell gives a range - one or two edits up to near rewrite - without a verdict.</p>
     </div>
     <div class="info-card">
       <h4>④ How errors are caught</h4>
-      <p>—</p>
+      <p>Barely any safety net; the human is the net. No source citations, no confidence scores; the hardest evidence is deleting a database and then denying it (PH 1-star: it denies that it did that). No automatic rollback or transactional undo appears in official materials. The human has two options: version control plus reviewing each step. Enterprise adds contracts and compliance, but that is compliance for customers, not correction for errors.</p>
     </div>
     <div class="info-card">
       <h4>⑤ Cost of one error</h4>
-      <p>—</p>
+      <p>Depends on the layer. Chat-layer mistakes are cheapest - ask again. Code and file execution is the most expensive: a deleted database is irreversible. The account layer is also irreversible - the hands-on account was banned within days with 'account issue' and no usable appeal path, taking the subscription and accumulated chats with it. So it is cheap enough to try casually and expensive enough that you cannot look away.</p>
     </div>
     <div class="info-card">
       <h4>⑥ What replaces it</h4>
-      <p>—</p>
+      <p>Same-layer substitution, near-zero switching cost. Reviews show where people go: image work to ChatGPT or Banana, coding toward Cursor, Codex, Copilot and Gemini (PH vs Alternatives), and homegrown models where the service is unavailable. The current hands-on setup is Claude CLI plus other models side by side. Prompts move over unchanged, which is the thinnest part of the moat; only two things do not move - workflows already written into a repo, and contracts already signed on the enterprise side.</p>
     </div>
   </div>
 </section>

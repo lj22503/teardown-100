@@ -1,3 +1,14 @@
+---
+AIGC:
+    Label: "1"
+    ContentProducer: 001191440300708461136T1XGW3
+    ProduceID: 1c835e55ba3b06878e6538b2edadf703_6cf56cc6e35111f18c5752540024e231
+    ReservedCode1: LEBU8IdRxU+kDz2zTaR12FtyJveaZL+w++8ZvYDj49Ilb56zgBKNPS2k6AF6pYPmnRdhhStNXuoVXw2h/1yrxm5RQb8IO+iO9UXICepxF7xX7doB2xDe2n6GfVWvAZK1AOGVt9dhOqdXGa7KA9AFE5JaO6T4prAtRTcvFD3+lVLmN3BmWsTYnDSB4yw=
+    ContentPropagator: 001191440300708461136T1XGW3
+    PropagateID: 1c835e55ba3b06878e6538b2edadf703_6cf56cc6e35111f18c5752540024e231
+    ReservedCode2: LEBU8IdRxU+kDz2zTaR12FtyJveaZL+w++8ZvYDj49Ilb56zgBKNPS2k6AF6pYPmnRdhhStNXuoVXw2h/1yrxm5RQb8IO+iO9UXICepxF7xX7doB2xDe2n6GfVWvAZK1AOGVt9dhOqdXGa7KA9AFE5JaO6T4prAtRTcvFD3+lVLmN3BmWsTYnDSB4yw=
+---
+
 # 009 图 Figma
 
 > 三方材料：**① 我的真实体验**（2026-11-18 整理，20 分钟实测表 `实测.md`，署名实测（燃冰））｜**② 用户评论**（Product Hunt 产品页元数据抓到，评论正文本次抓取失败 0 条，故不引用 PH 原话；G2 抓到 4.7 分 / 1,598 条与 10 条负面反馈原话，来自「What do you dislike」字段，含 4–5 星用户）｜**③ 公开材料**（figma.com 官网原文、figma.com/pricing 四档 × 三类席位与 credits 规则、mcp.figma.com/mcp、各产品页 hero 图）
@@ -105,3 +116,4 @@
 10. Product Hunt 产品页（元数据；评论正文本次 0 条）https://www.producthunt.com/products/figma
 11. G2 评论页（4.7 / 1,598，10 条负面反馈原话来自 dislike 字段）https://www.g2.com/products/figma/reviews
 12. 实测表（2026-11-18，20 分钟，实测（燃冰））`实测.md`
+*（内容由AI生成，仅供参考）*
