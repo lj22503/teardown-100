@@ -227,6 +227,8 @@ def cmd_build(args):
 def cmd_commit(args):
     row = queue_row(args.no)
     name = row["name"] if row else args.no
+    # 先剥掉公众号 AIGC 声明，避免污染仓库卡片
+    run([PY, os.path.join(TOOLS, "sanitize.py")])
     rc, out = run(["git", "add", "-A"])
     if rc != 0:
         fail("git add 失败：" + out[-300:])

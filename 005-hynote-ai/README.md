@@ -1,16 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1c835e55ba3b06878e6538b2edadf703_48abdd0fdf0b11f1bc42525400638852
-    ReservedCode1: ur8U4V690Dyununl8O/fBGnCbdfU83vnk8uQFP3zWeFH8hgYsiGn6nhZ9cP2bsH/0wsPWE5slzgDzXXkTiQm+8jZD78SqGDVvRHIe1CNwhMuEUgDjavweeYaxBU8FKV7pFXUSxvWFJQK+Y9oa2xgfiZZal2lGw+vo70fLSCi0YWEPyTwDVsq/Mtr7MU=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1c835e55ba3b06878e6538b2edadf703_48abdd0fdf0b11f1bc42525400638852
-    ReservedCode2: ur8U4V690Dyununl8O/fBGnCbdfU83vnk8uQFP3zWeFH8hgYsiGn6nhZ9cP2bsH/0wsPWE5slzgDzXXkTiQm+8jZD78SqGDVvRHIe1CNwhMuEUgDjavweeYaxBU8FKV7pFXUSxvWFJQK+Y9oa2xgfiZZal2lGw+vo70fLSCi0YWEPyTwDVsq/Mtr7MU=
----
-
-
-
 # 005 · HyNote AI
 
 > 三方材料：**① 我的真实体验**（2026-11-13 完成 20 分钟实测，原始表 `实测.md`）｜**② 用户评论**（PH 39 条，4.8 分；G2 本次 0 条）｜**③ 公开材料**（官网首页与定价页、PH 产品页与五次发布记录、App Store / Google Play 商店条目、官网 MCP 入口）

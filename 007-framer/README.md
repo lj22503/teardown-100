@@ -1,14 +1,3 @@
----
-AIGC:
-    Label: "1"
-    ContentProducer: 001191440300708461136T1XGW3
-    ProduceID: 1c835e55ba3b06878e6538b2edadf703_04d2aa81e27011f19919525400638852
-    ReservedCode1: +n7y2Xvrdw6QOQywOkcDZkLMMMdPoDXNzXVoHCb24k6voKQNkEFBugwdxZd30da75SyMLQ/mKq+5QTR7CPvmJJ5ymhpGX6G89RkFkgxzNp/w8GYbP3nZwCTHV0UqTft5C12HIAY0qloeSPLBG9ardczqqa8Fgpr89W1PzO066apoigPKoqpNJmD2zYk=
-    ContentPropagator: 001191440300708461136T1XGW3
-    PropagateID: 1c835e55ba3b06878e6538b2edadf703_04d2aa81e27011f19919525400638852
-    ReservedCode2: +n7y2Xvrdw6QOQywOkcDZkLMMMdPoDXNzXVoHCb24k6voKQNkEFBugwdxZd30da75SyMLQ/mKq+5QTR7CPvmJJ5ymhpGX6G89RkFkgxzNp/w8GYbP3nZwCTHV0UqTft5C12HIAY0qloeSPLBG9ardczqqa8Fgpr89W1PzO066apoigPKoqpNJmD2zYk=
----
-
 # 007 · Framer
 
 > 三方材料：**① 我的真实体验**（2026-11-17 整理，20 分钟实测表 `实测.md`）｜**② 用户评论**（Product Hunt 与 G2 页面本次抓取被拦/失败，改用第三方评测站点转述的 G2 / Trustpilot / r/framer 原话，逐条标明转述）｜**③ 公开材料**（framer.com 官网原文、framer.com/pricing 四档与附加包、MCP 端点、Marketplace、Compare 页竞品清单）

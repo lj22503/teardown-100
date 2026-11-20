@@ -119,3 +119,4 @@
 11. 实测表（2026-11-19，20 分钟，实测（燃冰））`实测.md`
 12. 官网 OG 主图与产品截图（可热链原图，见 content.json 的 SHOT_1–6）https://cdn.prod.website-files.com/6899da9beccbdbe92be49b5d/68f20f5cd1c6d0de365b8849_Fathom-Visual_Identity_Concepts-Stage_07-Website_Thumbnail-01.jpg
 *（内容由AI生成，仅供参考）*
+*（内容由AI生成，仅供参考）*

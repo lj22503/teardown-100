@@ -125,3 +125,4 @@ python _tools\daily.py commit <no>
 
 | `Error: Unexpected string` / `ModuleLoader` | 生成器写坏脚本（语法错误） | 停下报给老板修生成器，**不许自己改脚本重试** |
 | 实测表 frontmatter 被改 | 有人把 `状态: 已完成` 写上了，但正文全空 | **实测表只读**，不许改它的 frontmatter；填不填由老板决定 |
+| 卡片头部出现 AIGC: | 公众号发布声明被粘进了仓库 | commit 前会自动剥离；**以后先粘到公众号稿，不要粘卡片** |
