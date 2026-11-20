@@ -1,0 +1,47 @@
+{
+ "slug": "elevenlabs",
+ "name": "ElevenLabs",
+ "total": "236",
+ "summary": "Pros high-quality voice generation (46) realistic voice cloning (22) text-to-speech technology (21) API integration (14) multilingual support (15) voice cloning (10) extensive voice library (11) fast performance (7) user-friendly interface (14) competitive pricing (5) +2 more Cons voice cloning issues with numbers (3) poor Chinese language support (2) Dropbox Sign API Build eSignatures into your app with less work. Try Dropbox Sign API",
+ "latest": [
+  {
+   "id": "267550",
+   "text": "• 17 reviews The voice quality of ElevenLabs is exceptionally professional and high-end, quickly enhancing our efficiency in producing brand and product videos. Since our team is product-focused, the video content needed for marketing and operations requires human narration and guidance. After discovering ElevenLabs, we can edit the voiceover in our videos just like editing a script. This has condensed the multiple workflows of planning, script design, recording, and post-production into a single step during the post-production phase, reducing the time from 2 days to half a day. It is an incredibly efficient tool and is one of the best tools for PLG startup teams. What's great fast performance (7) high-quality voice generation (46) Helpful Share Report 322 views 2yr ago"
+  },
+  {
+   "id": "674021",
+   "text": "• 2 reviews Every morning, OX212 tells each trader where they stand, out loud, in the OX Briefing. ElevenLabs gives OX its voice in English and Spanish, and it sounds like a person who knows you. Proud to be part of ElevenLabs Grants. Alternatives Considered Helpful Share Report 1 view 2d ago"
+  },
+  {
+   "id": "338520",
+   "text": "• 10 reviews We chose ElevenLabs because of how natural and expressive the voices are. Cloning a voice takes just a few samples, and the output is incredibly human. It allowed us to give each assistant a unique, personal, and professional voice instantly. What's great voice cloning (10) realistic voice cloning (22) high-quality voice generation (46) Helpful Share Report 175 views 1yr ago"
+  },
+  {
+   "id": "526152",
+   "text": "• 1 review What's great Tried ElevenLabs recently for voiceovers and honestly the realism is impressive. The emotional tone and pauses sound much more natural compared to most TTS tools I’ve tested. I especially liked how easy the API integration and multilingual support were for experimenting with AI agent workflows and narration projects. One thing I noticed is that long-form consistency can still vary slightly, especially with numbers or certain pronunciations, but overall it feels like one of the strongest voice AI products out there right now. What needs improvement The biggest improvement area is consistency in longer generations. Sometimes the tone, pronunciation, or pacing shifts slightly between outputs, especially with numbers, abbreviations, or non-English words. More fine-grained control over accents and pronunciation handling would make the platform even stronger for multilingual and professional production workflows. vs Alternatives I also explored alternatives like Amazon Polly, Google Cloud Text-to-Speech, and PlayHT. While those platforms are solid for basic TTS use cases, ElevenLabs stood out because the voices felt significantly more natural and expressive, especially for storytelling, narration, and AI agent interactions. The balance between voice quality, ease of use, and API flexibility made it the better choice for my experiments. Ratings Ease of use Reliability Value for money Customization Read more Helpful (2) Share Report 348 views 6mo ago"
+  },
+  {
+   "id": "396990",
+   "text": "• 1 review What's great Best text-to-speech for production use. The voice quality is unmatched—natural, expressive, and convincing. That said, it's not perfect yet: voice tone consistency across multiple calls/sessions can vary. You might notice subtle differences in the same voice between sessions, which matters if you're building customer-facing applications that need predictable behavior. Bottom line: Despite the consistency quirk, ElevenLabs is still the gold standard. No other TTS provider comes close to this level of quality. What needs improvement Voice tone consistency across sessions—even with stability parameters configured correctly. The same voice can still have subtle variations in energy, pacing, or emotional tone between calls. For customer-facing applications, this inconsistency is noticeable. vs Alternatives Cartesia Sonic It's the only proven, production-ready TTS solution. Voice quality is unmatched—natural, expressive, and reasonably stable performance. Cartesia Sonic-3 is a promising alternative worth watching. If you're shipping to real users, Elevenlabs is the choice. Ratings Ease of use Reliability Value for money Customization Read more Helpful Share Report 595 views 1yr ago"
+  },
+  {
+   "id": "518102",
+   "text": "• 29 reviews What's great voice cloning (10) realistic voice cloning (22) text-to-speech technology (21) The voice quality is genuinely hard to tell apart from a real person. I've tried a few TTS tools and nothing comes close to how natural ElevenLabs sounds, especially with longer passages. The API is clean and well documented, which made integrating it into our workflow pretty painless. Voice cloning with just a short sample is wild. What needs improvement Pricing tiers could be more flexible for smaller teams who need decent volume but don't need enterprise features. Voice output can sometimes stumble on numbers and abbreviations, which means you have to spell things out manually. Would also love better accent control, right now you're mostly working with what the base voice gives you. vs Alternatives PlayHT Looked at PlayHT, Amazon Polly and Google Cloud TTS. Polly and Google felt robotic for anything longer than a sentence. PlayHT was decent but the voice cloning wasn't as accurate. ElevenLabs just sounded the most human out of the box without needing to tweak a bunch of settings. Ratings Ease of use Reliability Value for money Customization Read more Helpful Share Report 362 views 6mo ago"
+  },
+  {
+   "id": "234411",
+   "text": "• 2 reviews I’ve been using ElevenLabs since the early beta, and the leaps in quality are wild. Their instant voice cloning nails my vocal tone in seconds and even lets me speak in 29 languages out of the box ￼. The brand-new standalone voice-generation app makes studio-grade voices portable–perfect for audiobook edits or on-the-go content creation ￼. Now they’ve rolled out 11 ai, a voice-first assistant that hooks into tools like Slack and Notion, so voices can actually trigger real workflows. Huge props to the ElevenLabs crew! What's great multilingual support (15) realistic voice cloning (22) voice-first assistant (1) Helpful Share Report 254 views 1yr ago"
+  },
+  {
+   "id": "161470",
+   "text": "• 6 reviews ElevenLabs has been a game-changer for my video marketing efforts! Its ability to create natural AI voices instantly in both Spanish and English has streamlined the production of my video ads significantly. The realistic voice-overs generated by ElevenLabs enhance the clarity and appeal of the transcripts, making the ads much more engaging for a diverse audience. This tool has not only saved me time but has also improved the quality and effectiveness of my bilingual advertising campaigns. I highly recommend ElevenLabs to anyone looking to elevate their video content with professional, multilingual voice-overs. What's great multilingual support (15) realistic voice cloning (22) high-quality voice generation (46) Helpful Share Report 97 views 2yr ago"
+  }
+ ],
+ "one": [
+  {
+   "id": "254633",
+   "text": "• 1 review ❗ Extremely disappointing — feels like a scam. This was my first time trying to create an audiobook, and I honestly believed ElevenLabs would be a reliable platform. I subscribed to what was clearly labeled as a monthly plan, not a credit-based plan. But after signing up, I was shocked to find that the system actually uses credits, not unlimited monthly usage as advertised. I created about 10 short voices, which used around 3,000 credits — fine. But just a few hours later, when I made only two voices slightly over two minutes each, the system deducted 50,000 credits — half of my entire balance (100,000). I immediately contacted support. They said they would reply within 48 hours, but I never received a single response. The pricing is deceptive, the system is unclear, and the customer service is non-existent. It’s absolutely unacceptable for a company of this scale to mislead paying customers this way. I truly believe this platform should be investigated and potentially sued for fraudulent practices. I’m writing this review to warn others — do not waste your money on this app until they become transparent and accountable. Read more Helpful (3) Share Report 113 views 1yr ago"
+  }
+ ],
+ "two": []
+}

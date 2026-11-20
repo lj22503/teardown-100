@@ -1,0 +1,1075 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · ElevenLabs — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-20</span>
+  <span class="dot"></span>
+  <span>产品：ElevenLabs</span>
+</div>
+
+<h1>ElevenLabs<span class="tag">它卖的不是「配音」，是「一段声音可以被复制、编辑、搬进任何场景」；音质是它的城墙，积分制是最常被骂的那道门槛。</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">AI 语音生成 / 语音智能体（ai-voice-agents · text-to-speech）</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">可核实：官网自述 90+ 语言、17,500+ 声音；Product Hunt 4.9 分 / 236 条评论 / 44K 关注 / 29 次发布（2023 年上线）；官网 Enterprise 区列出的客户可核实到 Twilio、Disney、Stripe、Cisco、NVIDIA、Meta、Zoom、Klarna、Salesforce、Adobe、IBM、Deutsche Telekom 等。口径提醒：PH 描述写 70+ 语言、官网写 90+，两者不一致，本卡各自按原文引用。G2 本次抓取失败，不引用其分数；官方未披露 ARR、用户数与付费数，本卡不编。</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">积分制订阅 + 企业年框 + 创业扶持。六档：Free $0（10k 积分/月）、Starter 首月 $1 后 $6（30k）、Creator 首月 $11 后 $22（121k，推荐位）、Pro $99（600k）、Scale $299（1.8M，3 席位）、Business $990（6M，10 席位），Enterprise 另议；年付黑五最高省 55%；创业项目 12 个月免费、33M 字符。</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成熟期。产品已切成三块：ElevenCreative（TTS、声音克隆、配音、音乐、音效，另有图片与视频工具）、ElevenAgents（电话 / 网页 / WhatsApp 的语音智能体，带测试、护栏、工作流、分析）、ElevenAPI（语音、音乐、音效、配音、转写接口，含 MCP 服务）。模型线从 2023-08 的 Multilingual v2 走到 2026-09 的 Eleven v4，中间有 Turbo v2、Flash v2.5、Scribe 转写系列、Music v2 与 Dubbing v2（2026-05）。</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. 应用层六维</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会（我的判断）</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 可核实：官网与文档的功能清单、三块产品线、90+ 语言与 17,500 声音、模型时间线与版本日期、定价六档金额与积分、并发与音色槽位对照、企业客户名单、Provenance 与内容审核、PH 4.9 / 236 与评论计数。未核实 / 不引用：G2 分数（本次抓取失败）、竞品定价原文（未逐一读取）、官方 ARR 与用户数（未披露）。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>它是语音这一层的「模型 + 组件库 + 插座」：声音可克隆、可复用、按字符计费。墙不在功能表，在音质最后那点「像人」，以及中文场景里别人更便宜。</h2>
+    <div class="sub">按拔电测试判为原生型：拿走语音模型，只剩编辑器、声音库、接口与计费——产品立刻空壳化。所以门槛同时写在两侧：模型侧是音色、情绪、韵律的保真度；价格侧是积分换算成分钟、越用越便宜但要先预付。实测（燃冰）一句话最准：它像声音组件库——组件越全，越说明它卖的是零件而不是成品。</div>
+  </div>
+  <div class="stars">
+    <div class="row"></div>
+    <div class="label">4.9 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>音质是它唯一不可替代的东西</strong> — 评论里夸得最多的三件事指向同一个点：自然（60 次计数）、克隆真实（22）、多语种（15）。而抱怨最具体的一条也指向它：长文本、跨会话的同一把声音会漂，数字与缩写要手动拼成字母才读对。用户愿意为「像」付钱，也会因为「不像同一个」立刻走人。</li>
+    <li><strong>门槛在模型，不在界面</strong> — 实测三问的结论：值这个价，因为声音可复制、还能在声音市场里交易；门槛在模型与声音数据的积累，不在交互设计。界面只负责让你把稿子贴进去，决定成败的是模型对情感、口音、长句的处理。这和 010 Fathom（门槛在识别）是同一类结论：AI 产品的墙都在模型那一侧。</li>
+    <li><strong>最脆的梁有三根：积分计费、中文本地化、开源与大厂追平</strong> — 第一根：1 星差评集中在积分——页面写按月，实际按积分扣，两条 2 分钟语音扣 50,000 积分，客服 48 小时未回。第二根：中文要外挂（实测原话：中文配音 MiniMax 更便宜、更符合中文习惯）。第三根：Deepgram、Cartesia Sonic、Fish Audio 都在同一栏，差距在缩小，价格在往下走。</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">未测</div>
+    <div class="desc">实测只记流程顺序（看懂场景 → 进工作台 → 选声音 → 贴稿 → 出音频），未计时，不换算成分钟</div>
+  </div>
+  <div class="num-card">
+    <div class="label">免费额度</div>
+    <div class="big">10k<small> 积分 / 月</small></div>
+    <div class="desc">定价页原文：Free $0 含 10,000 积分/月；Starter 首月 $1 后 $6（30k），Creator 首月 $11 后 $22（121k）</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分</div>
+    <div class="big">7<small>/10</small></div>
+    <div class="desc">我的评分，不是测量；扣分在模型被追平、中文本地化与计费认知</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote">ElevenLabs 是一个 AI 语音公司：用文本转语音、声音克隆、配音、音乐与转写模型，把文字变成可复用的人声，再把能力拆成三种交付——创作者用的网页工作台（ElevenCreative）、企业用的语音智能体（ElevenAgents）、开发者用的接口（ElevenAPI，含 MCP 服务）。</div>
+      <h4>核心用户承诺</h4>
+      <p>官方一句（PH 描述原文）：Create natural AI voices instantly in any language。翻成用户语言：一段稿子贴进去，几秒出来一段能直接播的人声，还能换成经授权的任何音色、任何语言。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>它站在两条货架的交叉口：一边是语音合成（云厂 TTS、开源模型），一边是语音智能体（Vapi 这类编排层）。位置上它两边都做，并用同一套模型供给三种人——创作者买界面，开发者买接口，企业买号码与合规。好处是没有单一对手能整块压过来；坏处是每条线都有一个更强的专才。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>[推断] 积分与字符的换算随模型档位不同而异（v3 / v4 比 Flash 贵），定价页只给「额外一分钟约 $0.36 → $0.17」这种区间，任何按积分反推的 ARR 都不可信。</li>
+        <li>[推断] 付费主力是创作者档（$22）与开发者用量，而非企业；依据是 PH 评论里创作者口吻占多数、定价页把 Creator 放在推荐位，官方未披露结构。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://elevenlabs.io/cover.png" alt="ElevenLabs 官网封面主图（OG 图，取自 elevenlabs.io 元数据）" loading="lazy"/><figcaption><span class="fig-num">图 01</span>ElevenLabs 官网封面主图（OG 图，取自 elevenlabs.io 元数据）</figcaption></figure>
+    <figure class="shot"><img src="https://eleven-public-cdn.elevenlabs.io/payloadcms/em4cn4nlbxm-v4-cover.png" alt="Eleven v4 封面图：官网产品页与智能体页均在引用（取自 elevenlabs.io 官方 CDN）" loading="lazy"/><figcaption><span class="fig-num">图 02</span>Eleven v4 封面图：官网产品页与智能体页均在引用（取自 elevenlabs.io 官方 CDN）</figcaption></figure>
+    <figure class="shot"><img src="https://eleven-public-cdn.elevenlabs.io/payloadcms/eep6rnyfbu-Agent.webp" alt="语音智能体（ElevenAgents）页面配图（取自 elevenlabs.io/agents）" loading="lazy"/><figcaption><span class="fig-num">图 03</span>语音智能体（ElevenAgents）页面配图（取自 elevenlabs.io/agents）</figcaption></figure>
+    <figure class="shot"><img src="https://eleven-public-cdn.elevenlabs.io/payloadcms/2qjalgx6ohx-voices-for-video-games-cover.webp" alt="游戏配音场景封面图（取自 elevenlabs.io/text-to-speech）" loading="lazy"/><figcaption><span class="fig-num">图 04</span>游戏配音场景封面图（取自 elevenlabs.io/text-to-speech）</figcaption></figure>
+    <figure class="shot"><img src="https://eleven-public-cdn.elevenlabs.io/payloadcms/12374812384-BentoCover.webp" alt="文本转语音页的 Bento 概览图（取自 elevenlabs.io/text-to-speech）" loading="lazy"/><figcaption><span class="fig-num">图 05</span>文本转语音页的 Bento 概览图（取自 elevenlabs.io/text-to-speech）</figcaption></figure>
+    <figure class="shot"><img src="https://eleven-public-cdn.elevenlabs.io/payloadcms/s74wyvms6k-v4-banner-icon.png" alt="Eleven v4 发布标识图（已验证可访问，取自 elevenlabs.io 官方 CDN）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>Eleven v4 发布标识图（已验证可访问，取自 elevenlabs.io 官方 CDN）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>个人创作者（播客、有声书、短视频、解说）</strong> — 原来要自己录或花钱请配音，改稿就要重录。实测（燃冰）就落在这一层，判断是「定位更多地面向创作者」：免费 1 万积分够试，主推档 $22。评论也在这层最密：把 plan → script → recording → post 压成一步，两天的活变半天。</li>
+        <li><strong>开发者与产品团队（API 优先）</strong> — 不买界面，买接口：语音、转写、配音、音乐与智能体的 API，加 MCP 服务（api.elevenlabs.io/v1/mcp）。评论里 API 集成被提及 14 次，是他们选它的主因之一；这一层买的是延迟（Flash 75ms）与并发（档位 10 → 6000）。</li>
+        <li><strong>企业（客服、游戏、媒体、无障碍）</strong> — 看三样：合规（内容审核、责任归属、出处标识 Provenance，能判断一段音频是否 AI 生成）、语音智能体能不能接电话与 WhatsApp、大客户名单带来的采购安全感（官网列 Twilio、Disney、Stripe、Cisco、NVIDIA、Meta、Zoom、Salesforce、Adobe 等）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 稿子改了一个字却要重录整段；或者要做多语言版本，而自己只会中文。</p>
+      <p><strong>使用频次：</strong> 按内容生产节奏走：创作者一周几次到每天；智能体场景是 7×24 常驻（[推断] 依据是 Agents 按并发与分钟计费，官方未披露调用频次）。</p>
+      <p><strong>使用场景：</strong> 网页工作台里贴稿、选声音、调参数、导出；开发者在自己的产品里调 API；企业把声音接进电话客服、游戏对白、视频本地化与有声书流水线。</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">把一段文字变成能播的人声，并且能换人、换语言、换情绪，不用重录。 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">改稿不用重录——不用再对着麦克风把同一句念第五遍。 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">作品听起来像有预算的团队做的；一个人也能给出「有配音」的成品。 <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">稿子定稿了</div>
+      <div class="why">触发点不是「我要用 AI」，而是「这段词要变成声音，但我不想录」——录制这件事的边际成本是嗓子。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">贴稿 → 选声音 → 调 → 生成</div>
+      <div class="why">实测路径：先在 landing page 看懂它卖什么，再进工作台；选库里的声音或克隆自己的，贴稿生成。摩擦很具体：流程里老报错，而且常在关键动作前撞到收费提示（原话：老是触发收费）。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">几秒后拿到一段能直接播的音频</div>
+      <div class="why">实测结论：可以直接用；要改也能改，但要收费。要改的往往是「性格」这一块——录了自己的声音，生成出来却不像自己。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">声音存下来了，下次不用重配</div>
+      <div class="why">回来不是「再生成一次」，而是「我的声音、我的项目、我的历史稿子都在这儿」。克隆一次可长期复用，这是它留人的真实机制，也是它与「一次性配音外包」的分界。</div>
+    </div>
+  </div>
+  <div class="loop-note">"它真正教用户的是「声音可以存成资产」——用过一次之后，人会开始为不同栏目养不同的嗓子，而不是每次去找配音。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p>三条同时跑：口碑与作品外溢（用它的声音做出来的内容自带「这声音哪来的」）；模型发布节奏（29 次发布、44K 关注，每次新模型都是一次事件）；开发者生态与集成目录（API、MCP、以及用户讨论替代方案时它总被提名）。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>第一次听到自己的声音说另一种语言——克隆与多语种叠加的那一下。实测没计时，但记录的第一反应是「可以提取我的声音覆盖到不同场景」。</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>克隆的声音与历史项目沉在账号里，迁走等于把声音资产重做一遍。</li>
+        <li>团队工作区与 API key 一旦接进产品，替换成本是改代码与重新调参，不是点几下。</li>
+        <li>模型迭代带来「越用越好听」——同一把声音在 v3、v4 上重生成会更自然，老用户有理由回来重做旧内容（[推断] 依据：官网模型时间线与版本升级公告）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>有，但属于作品型传播：做出来的音频在播客、短视频、游戏里被听到，听的人问「这是谁配的」。它不是靠分享链接拉新（生成结果不天然带入水印式入口），[推断] 官网未披露分享带来的转化。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">文本转语音工作台（TTS）</span><div class="desc">主入口。贴稿、选声音、调稳定性与相似度、生成、导出；模型档位（v3 / v4 / Flash / Turbo）决定延迟与自然度，实测里最常撞到收费提示的也是这一层。</div></div>
+    <div class="surface"><span class="name">声音克隆与声音库</span><div class="desc">护城河所在。17,500+ 声音可直接用，克隆把自己的声音变成可复用资产；实测说它像声音组件库，指的就是这一层。</div></div>
+    <div class="surface"><span class="name">配音与本地化（Dubbing）</span><div class="desc">把音视频整段换语言并保留原说话人的音色与节奏，Dubbing v2 是 2026-05 的更新。这一层卖的是「不用重录就能出海」。</div></div>
+    <div class="surface"><span class="name">音乐与音效（Eleven Music / SFX）</span><div class="desc">从人声扩到「声音的一切」：配乐与音效，2025-08 上线 Music、2026-05 出 Music v2。对创作者是省一笔版权费，对它是抬 ARPU。</div></div>
+    <div class="surface"><span class="name">语音智能体（ElevenAgents）</span><div class="desc">从生成内容转向实时对话：电话、网页、WhatsApp，带测试、护栏、工作流与分析。这一层收分钟与并发，是它把 To C 工具变成 To B 基础设施的那一步。</div></div>
+    <div class="surface"><span class="name">接口与计费（API / MCP / Credits）</span><div class="desc">钱与锁都在这层：按字符与分钟计费、并发与席位分档、MCP 让 Claude 与 ChatGPT 直接调。定价页的槽位切分（3 / 10 / 30 / 160 / 660 / 2200 个音色位）比功能表更能说明商业意图。</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">Voice（一把可复用的声音，克隆或库选）</span>
+    <span class="entity">Project / Generation（一次生成，可回听、可导出）</span>
+    <span class="entity">Credit（积分，钱的最小单位，由字符与分钟折算）</span>
+    <span class="entity">Agent（一个能接电话的语音智能体）</span>
+    <span class="entity">Workspace / Seat（团队、并发与权限的边界）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>主轴是「声音」：库里的声音或自己的克隆进项目，项目里出生成结果，结果按用途（视频、有声书、游戏、电话）分流。好处是复利——声音越攒越值钱；代价是产品没有天然终点，用户永远停在生成，要自己去外面拼成成品。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>实测（燃冰）路径：landing page 先看懂场景（官网按游戏、对话、旁白、角色、教育等切）→ 进工作台 → 选声音或克隆 → 贴稿生成。界面学习成本低，卡点在两处：流程里偶发报错，以及频繁撞到付费墙（原话：老是触发收费）。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">先把「像人」做到没人怀疑，再谈工作流。所有工艺选择都在减少「一听就知道是 AI」的那一下，而不是增加功能按钮。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">按用途定价的问卷式入口</span><div class="body">定价页先问「你想用它做什么」（创作者、播客有声书、营销广告、影视、音乐音效、游戏、教育可及性、配音、个人），再给档位。实测注意到了这一点：它不让你比价格，而是先让你认领场景——把「贵不贵」换成「够不够用」。</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">把「像不像本人」做成两个旋钮</span><div class="body">稳定性与相似度分开给，是这类产品最实用的设计：要稳（长文本不变调）就牺牲一点相似，要像就接受偶尔漂移。实测的抱怨（听起来不像自己）本质上就是这两个旋钮没调对，而产品把它交给用户自己解。</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">出处标识（Provenance）</span><div class="body">能判断一段音频是否 AI 生成。实测的评价是「这点挺好」——在一个会被滥用的品类里主动给输出打标记，是对长期信任的投资，也是企业采购的入场券。</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">先给够用的免费，再按用量收紧</span><div class="body">免费 10k 积分/月，刚好够验证几条；一旦日更就必然撞墙。它不是按功能设墙（功能基本全开），而是按用量设墙——试用体验完整，但「什么时候该付钱」变模糊，1 星的积分困惑就长在这儿。</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">声音市场把用户变成供给方</span><div class="body">实测记下一个细节：它建了可交易的声音市场，创作者的作品能在那里获得收入。意义不在抽成，在把「声音供给」外包给用户，让自己从工具变成交易所（[推断] 网络效应强弱取决于分成与授权规则，官网未披露条款）。</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:0%"></div></div><span class="val">价值到达时间：本次未测（实测只记流程顺序：看懂场景 → 进工作台 → 选声音 → 贴稿 → 出音频，未计时）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:30%"></div></div><span class="val">认知负荷：低（工作台直观，贴稿即出；难点在「调哪个旋钮」而不是「在哪」）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:80%"></div></div><span class="val">惊喜点：声音资产化 + 多语种即取即用 + 主动标识 AI 生成</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:70%"></div></div><span class="val">信任：产品层有 4.9 分 / 236 条评论撑着，合规侧有内容审核、责任归属与出处标识；短板是计费透明度——1 星差评说页面写按月、实际按积分扣，客服 48 小时未回。</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:55%"></div></div><span class="val">摩擦：积分计费、长文本一致性、中文与口音</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>克隆一次，长期复用：录一段自己的声音，之后所有稿子都能用这把嗓子。</li>
+        <li>一个人干出一支配音团队的活：多语种、多角色、多情绪，不用约棚。</li>
+        <li>出处标识与内容审核都在，不做「假装看不见」的生意（实测评价：这点挺好）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>计费困惑：写按月、按积分扣；两条 2 分钟语音扣 50,000 积分（1 星差评原话方向）。</li>
+        <li>长文本与跨会话一致性：同一把声音在不同段落、不同会话里会漂；数字与缩写要手动拼写才读对（评论 Cons）。</li>
+        <li>中文与口音：中文支持弱被点名 2 次；实测的替代方案是 MiniMax（更便宜、更符合中文习惯）。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>积分订阅 + 企业年框 + 生态</h5><p>六档订阅（$0 / 6 / 22 / 99 / 299 / 990，Starter 首月 $1、Creator 首月 $11）+ 企业年框；单位价格随档位下降（额外一分钟约 $0.36 → $0.17），音色槽位 3 → 2200，并发 10 → 6000。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>免费停在哪</h5><p>免费：10k 积分/月、声音库可用、克隆有额度限制、商用需按档位授权；付费：更高积分、更多音色槽位、更高并发、192kbps 高保真、商用授权、团队与优先支持。墙不在功能，在「量」与「授权」。</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>入口便宜到 1 美元，钱收在用量与企业上</h5><p>首月 $1 的 Starter 与 $11 的 Creator，本质是把「试」变成「订」；真正的钱在 Pro 以上的用量档、Scale 与 Business 的席位与并发、以及企业年框。积分制让收入随用量自然增长，也让「用超了」成为常态投诉点。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>体验与变现是对齐的，还是打架的？</h5><p>半对齐。对齐的一面：生成动作零学习成本，免费额度刚好让人尝到「像人」的甜头，付费点落在量、并发、授权这些「用起来才会缺」的东西上。打架的一面：所有高级动作（改性格、重生成、导出高品质）都在付费墙后，实测的感受是「老是触发收费」——顺滑与克制在这里是反向的。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">名单取自三处：PH 的 Similar Products（Deepgram、Cartesia Sonic、Fish Audio、Vapi、Rask AI）、评论里用户自己说的替代（Amazon Polly、Google Cloud TTS、PlayHT、Cartesia Sonic）、实测（燃冰）点的中文替代（MiniMax、HeyGen）。竞品定价页本次未逐一读取，没读到的价格一律不写。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>ElevenLabs</th>
+          <th>Deepgram</th>
+          <th>Cartesia（Sonic）</th>
+          <th>Fish Audio</th>
+          <th>云厂 TTS（Amazon Polly / Google Cloud TTS / PlayHT）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>主战场</th><td class="own">AI 语音生成与语音智能体</td><td>开发者与企业，要 ASR / 语音接口的那批人</td><td>要低延迟实时语音的开发者</td><td>想便宜、想自己部署的声音克隆用户</td><td>已经在云上的企业与开发者</td></tr>
+        <tr><th>技术底座</th><td class="own">自研 TTS / STT / 音乐 / 配音模型 + 声音克隆 + 17,500 声音库 + 智能体编排 + API / MCP</td><td>ASR 起家（转写为主），TTS 是补位；PH 产品页一句 Voice AI platform for developers</td><td>自研实时语音模型，卖点是快（PH 一句 Sonic is the fastest human-like voice API；具体毫秒数未在官网核实）</td><td>开源 TTS 路线（PH 一句 Expressive Text-to-Speech and Voice Cloning），可自托管</td><td>通用 TTS，稳但不追求「像人」；评论里被点名为它的替代</td></tr>
+        <tr><th>分发位置</th><td class="own">作品外溢、PH 29 次发布、开发者接口、企业客户名单</td><td>开发者文档与云市场，接口侧口碑</td><td>开发者社区与实时对话场景</td><td>GitHub 与开源社区</td><td>云平台的既有账单与目录，零获客成本</td></tr>
+        <tr><th>价格可见性</th><td class="own">官网明码标价六档（0 / 6 / 22 / 99 / 299 / 990），黑五年付最高省 55%</td><td>按用量计价为主；本次未读取其定价页原文，不编价格</td><td>本次未读取定价页，不编价格</td><td>开源免费 + 托管付费；本次未读原文，不编价格</td><td>按字符计价、随云账单出，用户感知为「本来就有」</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 两处短期难补：一是音质与情感表现（好评集中在自然与克隆真实，这是模型与数据积累的差）；二是三种交付形态同时存在——创作者买界面、开发者买接口、企业买号码与合规，同一套模型卖三种人。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 三条缝：价格（开源 Fish Audio 与云厂 Polly 把低端成本压到接近零）；延迟（Cartesia 以「最快」为卖点，实时对话里延迟比音质更硬）；本地化（中文场景 MiniMax 更便宜更顺口——实测原话）。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>模型发布节奏即营销：v3、v4、Music、Dubbing 每次更新都是一次 PH 发布与媒体事件，29 次发布攒出 44K 关注。</li>
+        <li>作品外溢：用它声音做出的播客、短视频、游戏对白，自带「这声音怎么来的」的问句。</li>
+        <li>开发者与生态：API、MCP、集成目录；企业名单带来采购背书（Twilio、Cisco、Meta、Salesforce 等）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>模型发布环</strong> — 新模型（v3 → v4、Music v2、Dubbing v2）→ 老用户回来重做 → 作品外溢 → 新用户试用 → 免费 10k 积分撞墙 → 转付费。这条环的强度押在「每次升级都听得出来」上。</li>
+        <li><strong>开发者嵌入环</strong> — 开发者先用 API 做一个小功能（一条 TTS）→ 上线后用量涨 → 并发与字符额度不够 → 升档或谈企业价。一旦接进产品，它就是基础设施，替换成本从「不喜欢」变成「要排期」。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>从人声到所有声音：音乐、音效、配音——把「声音」这一整类需求收进来。</li><li>从生成到对话：ElevenAgents 接电话、接网页、接 WhatsApp，把一次性生成变成持续实时服务。</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>媒体与出版：有声书、播客、视频本地化（Dubbing v2，2026-05）。</li><li>游戏、教育、无障碍与企业客服：官网按场景切的九个入口就是它的行业地图。</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>开放接口已存在：REST API、MCP 服务（api.elevenlabs.io/v1/mcp）、iOS 与 Android 应用。</li><li>[推断] 它的平台策略是「做所有产品的嗓子」——不争入口，争「声音这一层的默认供应商」，这也是它先做 API 再做界面的原因。</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>应用层六维</h3>
+    <span class="pill">模型用得好不好</span>
+  </div>
+  <p class="section-intro">六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。</p>
+  <p class="section-intro">本片判为 **原生**。拔电测试：拿走 AI，产品消失 → AI 原生。（依据：人工名单）</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① 替掉哪一步</h4>
+      <p>替掉「开口录」这一步：原来要自己念或约配音，改一个字就得重录；现在录一段就能复用到不同场景（实测原话：原来是直接说 / 录，现在提取声音覆盖不同场景）。成本从录音棚工时变成 10k 免费额度 + $6 起。</p>
+    </div>
+    <div class="info-card">
+      <h4>② 脏活谁干</h4>
+      <p>它啃掉配音、多语种、多角色、音效与配乐；甩回两件：录一段干净的声音样本（克隆要样本）、选声音与调参——而选声音本来就得人做（实测原话：脏活不用手动补，本来就得做的是录声音、选声音）。它更像声音组件库：零件它给，组装还是你。</p>
+    </div>
+    <div class="info-card">
+      <h4>③ 出来能不能用</h4>
+      <p>能直接用，但要改就得付钱（实测原话：可以直接用，也提供修改机会但要收费）；要改的往往是「性格」——录了自己的声音，听着却不像自己。对外单发没意义，它的产出是素材不是成品（用于有声书、视频、个人分身）。</p>
+    </div>
+    <div class="info-card">
+      <h4>④ 错了怎么兜</h4>
+      <p>兜底有三层但都不在内容上：出处标识能判断一段音频是否 AI 生成（实测评价：挺好）、内容审核、以及积分本身形成的刹车。但实测的判断是「没有兜底机制」——它不校验你念的内容对不对，错的话照样读得很好听。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ 错一次多贵</h4>
+      <p>错得起。每次生成都消耗积分（错了要重花），支持实时声音转换，改稿成本低（实测原话：错得起）。真正贵的一次是把不像自己的声音发出去——那是声誉成本，产品兜不了。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ 不用它的替代</h4>
+      <p>换得掉。实测原话：其他声音模型可以替代，中文用 MiniMax 更好更便宜；结论是「模型它最好，但换得掉」。做产品的人换的成本在接口与调参，创作者换的成本在一把新声音要重新养。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方未公开运营指标。以下分两类：能核实的公开事实（价格、评论计数、模型时间线），与标注 [推断] 的「它应该看什么」，不是真实数据。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>每周被播放的生成音频时长（[推断]）</h5>
+      <p>[推断] 它按字符与分钟收费，收入随「生成后被使用」增长：只有被播出去的音频，用户才会继续生成。注册数与生成次数都会虚高——生成一次听三秒就删的人，不该算进北极星。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>免费 → 首付的转化（第一次生成后 7 天内付费）</h5>
+      <p>免费额度刚好够验证「像不像」，付费决定发生在「我要拿它做正事」那一刻。这个窗口的转化率决定它的 PLG 效率。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>声音留存数（克隆 + 收藏的音色）</h5>
+      <p>[推断] 存下来的声音越多，迁移成本越高。这是它最诚实的留存先行指标，比月活更接近真实黏性。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>开发者账户的调用量与并发触顶率</h5>
+      <p>开发者接进产品后用量会自然涨，触顶（并发 / 字符）就是升档信号。这条线决定它是「创作者工具」还是「基础设施」。</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>版权与声音滥用的投诉数 + 生成内容的审核拦截率</h5>
+      <p>声音克隆是这个品类唯一可能致命的一面：未经授权克隆真人、伪造语音。它有内容审核、责任归属与出处标识，但投诉数与拦截率才是真实护栏。</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>没有公开的留存、付费流失、单位字符推理与训练成本 [推断]</h5>
+      <p>[推断] 只看注册与评论，会看不见「免费额度越受欢迎、推理成本越重」，也看不见模型迭代（v3 → v4）的训练开销何时能摊平。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">积分计费与「按月订阅」的认知冲突</span><span class="sev">高</span></div>
+      <div class="body">1 星差评的核心：页面写按月，实际按积分扣；两条 2 分钟语音扣掉 50,000 积分，客服 48 小时未回。对一个靠「多试几次才敢用」的产品，计费不透明等于把试错成本变成情绪成本。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">长文本与跨会话的声音一致性</span><span class="sev">高 · High</span></div>
+      <div class="body">最具体的一条：长文本里数字与缩写要拼成字母才读对；跨段落、跨会话同一把声音会漂。对有声书这种「一小时不能换人」的场景这是硬伤——不是「不够像」，是「不像同一个」。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">中文与本地化的短板</span><span class="sev">中</span></div>
+      <div class="body">评论点名中文支持弱（2 条）；实测的替代结论更直接：中文配音 MiniMax 更便宜、更符合中文习惯。中文的声调、语气词、断句与英文不是一套问题，靠通用多语种模型覆盖，会在「像外国人念中文」这一步露馅。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">免费额度与「什么时候该付钱」说不清</span><span class="sev">中 · Medium</span></div>
+      <div class="body">免费 10k 积分够玩不够做；付费墙不在功能而在量，于是用户会在一次生成前突然撞墙（原话：老是触发收费），却说不清自己买的是哪一项能力。这不是价格问题，是价值刻度问题。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">风险按「可能性 × 影响」排序，严重度是我的判断，不是公司披露。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>模型商品化：开源与云厂追平音质</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>守住三件：情感与长文本的稳定性（开源短期难稳）、授权与溯源（企业采购的硬门槛）、实时对话的工程可靠性（延迟、并发、打断处理）。</td></tr>
+      <tr><td><strong>声音克隆的滥用与法律风险</strong></td><td>Legal / Trust</td><td class="sev-high">High</td><td>Medium</td><td>强制授权声明与本人验证、出处标识默认开启、对企业客户做 KYC 与审计日志；把「未经授权克隆」的投诉处理时限写成 SLA。</td></tr>
+      <tr><td><strong>计费认知与客服体验</strong></td><td>Product / Business</td><td class="sev-med">Medium</td><td>High</td><td>积分换算成「成品分钟」直接显示，生成前预估消耗，超限前提示替代方案；客服首响写进公开 SLA——1 星差评里有两条都是「没人回」。</td></tr>
+      <tr><td><strong>中文与本地化市场的份额流失</strong></td><td>Market</td><td class="sev-med">Medium</td><td>Medium</td><td>中文独立模型档与口音选项，价格对齐本地竞品（实测：MiniMax 更便宜）；本地化不止语言，还有语气习惯与分发侧平台（抖音、视频号、微信读书）。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>（我的判断）把中文做成第一等公民，而不是第 30 个语种</h5>
+      <div class="desc">怎么做：中文独立评测集（声调、语气词、断句、中英混读）+ 单独模型档与口音选项 + 价格对齐本地竞品。为什么：实测的替代结论就落在这——中文 MiniMax 更便宜、更符合中文习惯；中文是最大的内容生产市场之一，谁解决「不像外国人念中文」，谁拿走这块。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>（我的判断）把积分翻译成用户能算的账</h5>
+      <div class="desc">怎么做：页面上直接把积分换算成「约多少分钟成品音频」，生成前显示本次消耗与余额，超限前给替代方案（更快的模型或更短的文本）。为什么：1 星差评的根不是贵，是算不清；实测的「老是触发收费」也是同一个病——价值刻度不清，付费就变成惊吓。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>（我的判断）把声音资产做成可授权的合约层</h5>
+      <div class="desc">怎么做：每把克隆声音绑定用途授权（商用 / 二次分发 / 期限）与出处标识，市场上可转让可分成。为什么：它已有声音市场与 Provenance，缺的是「授权条款产品化」；做完这步，它从工具变成声音资产的基础设施，也是唯一能挡住开源免费模型的墙。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>它的赌注：用模型领先占住「像人」，用接口变成默认，用智能体把生成变成持续计费</h5>
+      <div class="desc">三个动作叠在一起：模型迭代保音质领先（换口碑与溢价）、API 与 MCP 把自己塞进别人的产品（换分发）、ElevenAgents 把语音从内容变成服务（换 ARPU 与续费）。最锋利的是第三个——生成是一次性的，对话是每分钟都在计费的。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>终局：任何内容都能换嗓子，任何服务都能开口</h5>
+      <div class="desc">如果它把声音做成像字体一样的基础设施——任何文本、任何语言、任何角色，随时可用且可授权——配音这个行业会像排版一样消失，剩下的是「声音的授权与检索」。距离不在音质（快过剩了），在两件事：授权与溯源的法律基建，以及实时对话的可靠性（电话里错一句，比录音里错一句贵得多）。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>音质与情感的自然度、克隆的可用性、三种交付形态（界面 / 接口 / 智能体）、出处标识与合规先行、企业客户名单。</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>要绝对稳定同一把声音的长篇有声书（评论：长文本会漂）；中文为主且预算敏感的项目（实测：MiniMax 更便宜更合适）；需要私有化部署、数据不出内网的行业；要求零 AI 痕迹且不接受任何标识的场景。</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>护城河「中偏强」，强在模型与生态，不强在锁定：音质领先（可被追平但需要时间）、17,500 声音库与声音市场（网络效应偏弱）、API 与 MCP 的分发（接入后替换要排期）、企业名单背书。真正薄的一环是中文与本地化——那里它只是「多语种之一」。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">缺件先说：Product Hunt 产品页正文受 Cloudflare 限制，只拿到元数据（4.9 / 236 / 44K 关注）与评论计数，<strong>没拿到 More alternatives 栏目</strong>；竞品定价页本次也未逐一读取。所以这张地图的名单不来自「顺手抓取」，而来自三处——PH 的 Similar Products、评论里用户自己说的替代、以及实测（燃冰）点的中文替代。</p><table class="risk-table"><thead><tr><th>谁</th><th>抢同一个需求</th><th>抢同一段链路</th><th>用户实际迁移</th></tr></thead><tbody><tr><td>Deepgram</td><td>要 ASR 与语音接口的开发者</td><td>转写 + 语音接口（TTS 为补位）</td><td>它的邻居而非对手：一个把语音转成字，一个把字转成语音；PH 4.9 分 86 条，开发者口碑扎实</td></tr><tr><td>Cartesia（Sonic）</td><td>要低延迟实时语音的开发者</td><td>实时 TTS 与语音对话</td><td>最直接的性能对手：以「最快」为卖点，实时对话里延迟比音质更硬；PH 5.0 分 25 条</td></tr><tr><td>Fish Audio</td><td>想便宜、想自托管的声音克隆用户</td><td>开源 TTS + 克隆 + 托管</td><td>价格侧最狠的一刀：开源免费可自部署，PH 4.7 分 15 条</td></tr><tr><td>Vapi</td><td>想快速搭语音 agent 的团队</td><td>智能体编排层（可接各家 TTS）</td><td>抢的是「入口」而不是「嗓子」：它把你的模型当零件用，PH 4.9 分 25 条</td></tr><tr><td>Rask AI</td><td>要视频本地化的团队</td><td>配音 + 字幕 + 多语种分发</td><td>抢 Dubbing 这一层，PH 4.8 分 28 条；对它是「单点更专」的对手</td></tr><tr><td>云厂 TTS（Polly / Google Cloud）</td><td>已在云上的企业</td><td>通用 TTS，按字符计费</td><td>评论里被点名的替代：稳定、便宜、不用新签一家供应商，但不追求「像人」</td></tr></tbody></table><p><strong>结论</strong>：它的位置特殊——既被当「零件」卖给别人（Vapi 这类编排层接它的模型），又要自己卖「整机」（Agents）。这决定了它的对手不只是同类，还包括「把它当零件」的平台。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">这一段只写能站住的：自家底座按官网与文档原文，别人的底座按 PH 一句话与公开定位；具体毫秒数、参数量、价格一律不猜。</p><ul><li><strong>ElevenLabs</strong>：自研 TTS / STT / 音乐 / 配音模型 + 声音库 + 智能体编排 + API / MCP。接缝在「模型换代」：每换一版（v3 → v4），旧内容要重生成才好听，这既是黏性也是成本。</li><li><strong>Deepgram</strong>：ASR 起家的语音平台，转写是主场、TTS 是补位；优势在接口的成熟度与开发者信任。</li><li><strong>Cartesia</strong>：自研实时语音模型，一切围绕延迟；[推断] 这类底座在电话客服、实时对话里比「更自然」更能决定体验。</li><li><strong>Fish Audio</strong>：开源 TTS + 托管，用户可自己部署；护城河反过来压在自己身上——价格被开源锚定。</li><li><strong>云厂 TTS</strong>：长在既有账单与目录里，零获客成本；技术上不追「像人」，追可用性与合规。</li></ul><p><code>[推断]</code> 这个品类真正的护城河不在「能不能生成」，在「一把声音跨文本、跨语言、跨会话还是同一个人」——靠的是数据与评测体系，不是参数量。这也解释了为什么评论里最具体的抱怨全是「不一致」。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会（我的判断）</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">四条，按「能不能一个人做」排序，不是按想象力排序。</p><ol><li><strong>把积分翻译成「成品分钟」</strong>：页面上直接显示「这次生成约几十分钟音频、余额还能做几条」，超限前给替代方案（更快的模型 / 更短的文本）。<em>最轻</em>——纯产品文案与预估逻辑，一个人一周能做完。</li><li><strong>中文独立模型档</strong>：声调、语气词、断句、中英混读单独评测与调优，口音可选项，价格对齐本地竞品。<em>最值</em>——中文是最大的内容生产市场之一，而现在的通用多语种模型会在「像外国人念中文」这一步露馅。</li><li><strong>授权条款产品化</strong>：每把克隆声音绑定用途授权（商用 / 二次分发 / 期限）与出处标识，市场上可转让可分成。最重，但也最难被开源免费追平。</li><li><strong>「粘贴即预览」的配音闭环</strong>：把配音与对口型 / 剪辑串起来，别让用户拿着素材去别处拼。这是把「素材」变「成品」的那一步，也是它现在最明显的产品断点。</li></ol>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">钱从三层人的兜里出，窗口在收窄。</p><p><strong>钱从谁的兜里出</strong>：原本付给配音员、录音棚、本地化公司的预算——本质是替掉「人声这份工时」。创作者每月 $22 换的是「不用约棚」，企业年框换的是「不用招人」。</p><p><strong>还能拿多久</strong>：窗口在收窄。开源 TTS 与云厂 TTS 正在把「能生成」变成免费默认，溢价只能压在「像人」的最后那段与生态上。它自己的应对是把重心往 Agents 移——从按字符卖内容，转到按分钟卖服务。</p><p><strong>凭什么你拿到</strong>：模型代际领先 + 29 次发布攒的关注 + API / MCP 变成别人的默认嗓子 + 企业名单背书。四件事缺一件，价格就守不住。</p><p><strong>流量吃三段</strong>：作品外溢（用它的声音做出来的内容自带问句）、模型发布（每次新版即 PH 与媒体事件）、开发者目录（API、MCP、云市场）。<strong>变现三层</strong>：订阅（广度）→ 用量与并发（厚度）→ 企业年框与合规（深度）。</p><p><strong>最脆的梁</strong>：积分制与「按月」的认知落差——1 星差评全在这儿；再叠一层：中文一侧它只是「多语种之一」，本地竞品更便宜更顺口。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://elevenlabs.io/" target="_blank" rel="noopener">官网首页（三块产品线、90+ 语言、17,500 声音、企业客户名单、Provenance 与内容审核）</a></li>
+    <li><a href="https://elevenlabs.io/pricing" target="_blank" rel="noopener">定价页（Free 10k 积分 / Starter 首月 $1 后 $6 / Creator 首月 $11 后 $22 / Pro $99 / Scale $299 / Business $990；槽位、并发、音质对照；黑五最高省 55%）</a></li>
+    <li><a href="https://elevenlabs.io/text-to-speech" target="_blank" rel="noopener">文本转语音页（TTS 能力、场景图与模型档位说明；本报告 4、5 号截图来源）</a></li>
+    <li><a href="https://elevenlabs.io/agents" target="_blank" rel="noopener">语音智能体页（电话 / 网页 / WhatsApp、护栏、工作流、分析；3 号截图来源）</a></li>
+    <li><a href="https://elevenlabs.io/voice-cloning" target="_blank" rel="noopener">声音克隆页（克隆流程与授权说明）</a></li>
+    <li><a href="https://elevenlabs.io/docs" target="_blank" rel="noopener">文档页（API 与模型参数、MCP 入口 api.elevenlabs.io/v1/mcp）</a></li>
+    <li><a href="https://www.producthunt.com/products/elevenlabs" target="_blank" rel="noopener">Product Hunt 产品页（4.9 分 / 236 条评论 / 44K 关注 / 29 次发布；正文受 Cloudflare 限制，只取元数据与评论计数）</a></li>
+    <li><a href="https://www.producthunt.com/products/elevenlabs/reviews" target="_blank" rel="noopener">Product Hunt 评论区（好评与抱怨计数、1 星差评原话方向、用户提到的替代）</a></li>
+    <li><a href="https://www.g2.com/products/elevenlabs/reviews" target="_blank" rel="noopener">G2 评论页（本次抓取失败，仅记录失败，不引用分数与原话）</a></li>
+    <li><a href="https://elevenlabs.io/cover.png" target="_blank" rel="noopener">官网封面主图（OG 图，可热链，1 号截图来源）</a></li>
+    <li><a href="https://eleven-public-cdn.elevenlabs.io/payloadcms/em4cn4nlbxm-v4-cover.png" target="_blank" rel="noopener">Eleven v4 封面图（官网产品页与智能体页引用，可热链，2 号截图来源）</a></li>
+    <li><a href="实测.md" target="_blank" rel="noopener">实测表（2026-11-20，20 分钟，实测（燃冰））</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>
