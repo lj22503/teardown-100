@@ -1,0 +1,109 @@
+{
+ "slug": "slack",
+ "name": "Slack",
+ "dist": [
+  "5 star75%",
+  "4 star20%",
+  "3 star3%",
+  "2 star0%",
+  "1 star0%"
+ ],
+ "overall": [
+  "4.5",
+  "40,606"
+ ],
+ "lowRated": [
+  {
+   "rating": null,
+   "title": "",
+   "like": "Giphy integration is the one saving feature I've found! Also useful for outage updates",
+   "dislike": "Slack is designed as a stream of consciousness communication tool, which makes it incredibly hard to follow and use unless you are on it 24x7. The larger your organisation grows the hard it is to use.\n\n\nRecommendations to others considering Slack:\n\nI would probably look at forum software instead, the main benefit being that you will over time accrue knowledge within the platform rather than these transient update shares"
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I do think it's a great tool to loop people into different chat groups and have continuous conversation.",
+   "dislike": "Pretty much everything else. I didn't find Slack very useful - at least not in comparison to Lync. It was just another tab or window I had to keep open and often times I wasn't aware when someone was sending a message. Additionally, I was checking messages that were being sent that weren't relevant to me just because I was still part of the group.\n\n\nRecommendations to others considering Slack:\n\nIf you're looking to send a quick message and then end a conversation, Slack isn't really the best tool. There are too many groups and places to store conversations, and if you're not logged in, you might be missing content."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I like that our whole company was able to get together and discuss the intricacies of day to day operations.",
+   "dislike": "The interface was too hard to use. Not user-friendly enough.\n\n\nRecommendations to others considering Slack:\n\nUse GroupMe; it's easier to use and does the same thing."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "It's the least painful multi-platform chat application",
+   "dislike": "If you had actual process, personal organization, individual responsibility, and trust, you wouldn't ever use trust.\n\n\nRecommendations to others considering Slack:\n\nDo not implement a chat system in your company. Do not do it. Before chat, if you wanted to get an answer to a question, you had a moment in which you could try to figure it out yourself. Maybe you might email someone else, but that wouldn't be instant. With chat, you just bug a colleague.\n\nChat destroys any sense of individual responsibility. It also encourages people to check up on each other. If you're bored, you might type something into chat and distract countless other people. Do not use chat. Don't fall into the trap.\n\nInstead, encourage individuals to be responsible and self-sufficient. Have them look things up in your "
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I can't say there is anything I like best about slack. Of all the things I can't stand about slack, it's easy signing in.",
+   "dislike": "Having some colleagues that chose to use Slack over a more professional medium like email makes for very inefficient use of time. I find it hard to believe that there is no integration with email so you don't have to switch back and forth.\n\n\nRecommendations to others considering Slack:\n\nAVOID! This is not an efficient way to conduct business. Unless you never deal with important files, or mission critical projects - stick with a more professional tool."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I honestly do not like anything about this app. I can not even think of one single thing. I would suggest using any other app than this one for your companies messaging needs. This app is the worst and go with something else.",
+   "dislike": "I dislike that I never receive notifications when someone messages me on this app. My push notifications are on they just hardly ever work. It makes it difficult when you have to manually check the app to see if someone has messaged you. The interface is also very ugly.\n\n\nRecommendations to others considering Slack:\n\nUse GroupMe instead! Or literally any other product. The push notifications do not work on this and it is not a good product. Also the interface is ugly."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "To be honest, I don't really find this to be useful. I think there are other ways to communicate rather than an additional app",
+   "dislike": "Pretty much everything. I think it is unnecessary and useless. The same thing could be accomplished with Google hangouts or something similar\n\n\nRecommendations to others considering Slack:\n\nDon't consider it. Consider using another product that integrates with something you're already using - such as Google Hangouts, Google chat, or something like that"
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "Like the fact my company stopped using it",
+   "dislike": "Everything. Not user friendly. The notifications are not alerting enough."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "At least Slack offers everyone a free version without discriminating.",
+   "dislike": "I had been a big fan of Slack until recently. I approached them about education institution pricing because the organization I work for is a fully accredited higher education institution. They chose not to give us educational pricing (offered to every major higher education institution in the USA) because once they looked at our website they found things they disagreed with. I offered accreditation documentation but they declined.\n\n\nRecommendations to others considering Slack:\n\nLook at other options, especially if your organization does not align with their political and social views. They are one of the worst at hiding their discrimination."
+  },
+  {
+   "rating": null,
+   "title": "",
+   "like": "I think the idea and concept behind it are great. But I see no benefit to using it over even something like Facebook Messenger. In the end, our team ended up using something different to maintain communication.",
+   "dislike": "The notifications almost never pop up. When they do pop up, they often are hours or even days late. Totally unreliable. Because it was unreliable, we were unable to count on it for important communication.\n\n\nRecommendations to others considering Slack:\n\nI would not recommend this product to everyone."
+  }
+ ],
+ "default": [
+  {
+   "rating": "5",
+   "title": "",
+   "like": "One of the reasons I like using Slack is that everything related to communication and discussion of a project is in one place. It enables me to exchange messages, post questions, share files, and discuss other things without switching between various programs. I also appreciate the use of channels, which allow staying more organized in case there are several projects at hand and several people involved.",
+   "dislike": "It is often challenging for me to keep up with critical updates when there are several communication channels open at once. There are a lot of updates and sometimes I need to go back and search for a specific one. I believe that there is some room for improvement in the area of notifications management, especially when working on several tasks at once."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "What I like best is how clean channels and threads keep team discussions, different projects don't turn into one giant messy group chat. Also huddles are super handy when you just need a quick 2-minute voice call or screen share to debug something with a teammate without setting up a whole calendar invite.",
+   "dislike": "The notification overload can get pretty overwhelming once you're in a few active channel, important updates get buried fast, and it's easy to lose track of older context. Also, the 90-day message history limit on the free tier is really annoying if you need to look back at old discussions or links, and the desktop app eats up way more RAM than a chat tool should."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "What I like best about Slack is its easy-to-use interface and ability to make team communication quick and efficient. It helps me stay connected with colleagues, share updates, ask questions, resolve work-related queries, and collaborate on tasks in real time. I also like the channel-based communication, file sharing, and quick notifications, which make it easier to manage multiple projects and stay updated on important discussions.",
+   "dislike": "What I dislike about Slack is that managing multiple channels and conversations can sometimes become overwhelming. Important messages or updates can easily get buried in busy channels, and frequent notifications can interrupt work. Searching for older discussions or specific information could also be more intuitive. Better notification management and improved message organization would make the overall experience more efficient."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "What I like most about Slack is how it keeps team communication organized without having to rely on long email threads. I use separate channels for development updates, project discussions, bug reports, and general team communication, which makes it easy to find the right conversation later. Threads are especially helpful because replies stay tied to the original message instead of cluttering up the main channel. I also appreciate being able to share files, screenshots, code snippets, and links directly with teammates in the same place. Integrations with tools like GitHub and Jira make it easier to keep up with development updates without constantly switching between different applications.",
+   "dislike": "The volume of notifications can get distracting, especially when several project channels are active at the same time. At times, important messages end up buried under everyday conversations, and tracking down older discussions can take a bit of effort. I also find that managing multiple channels and keeping notifications under control takes some initial setup and adjustment."
+  },
+  {
+   "rating": "5",
+   "title": "",
+   "like": "What I like most about Slack is how easy it makes it to be part of a technical community. I've used an open-source community's workspace, and it is great having discussions, questions, updates, and knowledge shared by people in the same field and in the same org all in one place. I can follow conversations that are relevant to me, learn from what others are working on, and participate whenever I have something to contribute. The channels and threads are some of the features I really like, as they make it easier to keep track of discussions without getting lost in one big chat.",
+   "dislike": "Honestly, I don't have many major complaints. If I had to pick something, it would be that Slack can feel a little overwhelming in very active communities. With so many ongoing discussions and notifications, it's easy to miss something interesting or lose track of conversations you want to revisit. I would also like to have a bit better search experience when it comes to bringing up old discussions when looking for a specific topic."
+  }
+ ]
+}
