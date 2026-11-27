@@ -1,0 +1,258 @@
+{
+  "product": {
+    "no": "011",
+    "slug": "elevenlabs",
+    "name": "ElevenLabs",
+    "category": "AI 语音生成 / 语音智能体（ai-voice-agents · text-to-speech）",
+    "one_liner": "它不是「配音工具」，是「声音的组件库＋插座」",
+    "icp_primary": "个人创作者（播客、有声书、短视频、解说）",
+    "icp_secondary": "开发者与产品团队（买 API）；企业（客服、游戏、媒体、无障碍）",
+    "jtbd": "一段声音可以被复制、编辑、搬进任何场景——录一次，换语言、换情绪、随便改稿",
+    "core_scenarios": "贴稿→选声音或克隆→调稳定性与相似度→生成→导出→进播客／视频／有声书／游戏／电话客服/TTS、STT、克隆、配音本地化、音乐与音效/API 与 MCP/ElevenAgents 接电话、网页、WhatsApp",
+    "ai_mode": "原生（AI-native，整机原生，壳就是脑）",
+    "pricing_model": "积分制订阅（六档）＋企业定制＋生态；首月 1 美元与 11 美元把「试」直接变成「订」",
+    "free_tier": "Free $0（10k 积分/月）",
+    "paid_tiers": "Starter 首月 $1 后 $6（30k）；Creator 首月 $11 后 $22（121k）；Pro $99（600k）；Scale $299（1.8M、3 席位）；Business $990（6M、10 席位）；Enterprise 另议；年付最高省 55%；额外一分钟约 $0.36→$0.17",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "模型发布节奏即营销（29 次发布、44K 关注）＋作品外溢＋开发者与生态（API／MCP／集成目录／企业名单背书）",
+    "moat_hypothesis": "中偏强：强在模型与生态、不强在锁定；最薄的一环是中文与本地化，那里它只是「多语种之一」",
+    "evidence_urls": "https://elevenlabs.io/; https://elevenlabs.io/pricing; https://elevenlabs.io/docs",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-011-01",
+      "product": "elevenlabs",
+      "atom_name": "Voice",
+      "atom_type": "资源",
+      "what_it_does": "声音（库/克隆/设计）",
+      "composable_with": "TTS/agent",
+      "evidence_url": "https://elevenlabs.io/voice-library"
+    },
+    {
+      "atom_id": "H-011-02",
+      "product": "elevenlabs",
+      "atom_name": "TTS",
+      "atom_type": "动作",
+      "what_it_does": "文本转语音",
+      "composable_with": "voice",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "atom_id": "H-011-03",
+      "product": "elevenlabs",
+      "atom_name": "Voice Clone",
+      "atom_type": "工具",
+      "what_it_does": "克隆声音",
+      "composable_with": "voice",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "atom_id": "H-011-04",
+      "product": "elevenlabs",
+      "atom_name": "STT",
+      "atom_type": "工具",
+      "what_it_does": "语音转文字",
+      "composable_with": "transcript",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "atom_id": "H-011-05",
+      "product": "elevenlabs",
+      "atom_name": "Dubbing",
+      "atom_type": "工具",
+      "what_it_does": "多语言配音",
+      "composable_with": "voice/transcript",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "atom_id": "H-011-06",
+      "product": "elevenlabs",
+      "atom_name": "Music / SFX",
+      "atom_type": "工具",
+      "what_it_does": "音乐/音效生成",
+      "composable_with": "voice",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "atom_id": "H-011-07",
+      "product": "elevenlabs",
+      "atom_name": "Agent",
+      "atom_type": "身份",
+      "what_it_does": "语音 agent（电话/网页）",
+      "composable_with": "voice/workflow",
+      "evidence_url": "https://elevenlabs.io/agents"
+    },
+    {
+      "atom_id": "H-011-08",
+      "product": "elevenlabs",
+      "atom_name": "Workflow",
+      "atom_type": "编排",
+      "what_it_does": "对话流程/护栏",
+      "composable_with": "agent",
+      "evidence_url": "https://elevenlabs.io/agents"
+    },
+    {
+      "atom_id": "H-011-09",
+      "product": "elevenlabs",
+      "atom_name": "API",
+      "atom_type": "协议",
+      "what_it_does": "接进产品",
+      "composable_with": "tts/stt/agent",
+      "evidence_url": "https://elevenlabs.io/docs"
+    },
+    {
+      "atom_id": "H-011-10",
+      "product": "elevenlabs",
+      "atom_name": "MCP",
+      "atom_type": "协议",
+      "what_it_does": "外部 agent 调语音能力",
+      "composable_with": "api",
+      "evidence_url": "https://elevenlabs.io/docs"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-011-W1",
+      "product": "elevenlabs",
+      "workflow_name": "脚本 → 选声 → 生成 → 导出",
+      "input": "一段稿子",
+      "atoms_used": "TTS/Voice",
+      "steps": "贴稿 → 选声 → 调参 → 生成 → 导出",
+      "output": "音频",
+      "who_uses": "创作者",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "workflow_id": "H-011-W2",
+      "product": "elevenlabs",
+      "workflow_name": "克隆 → 生成",
+      "input": "一段样本",
+      "atoms_used": "Voice Clone/TTS",
+      "steps": "上传样本 → 克隆 → 生成",
+      "output": "自己的声音",
+      "who_uses": "创作者",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "workflow_id": "H-011-W3",
+      "product": "elevenlabs",
+      "workflow_name": "配音本地化",
+      "input": "一段视频/音频",
+      "atoms_used": "Dubbing/Voice",
+      "steps": "上传 → 选语言 → 生成",
+      "output": "多语言版本",
+      "who_uses": "媒体",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "workflow_id": "H-011-W4",
+      "product": "elevenlabs",
+      "workflow_name": "语音 agent 接电话",
+      "input": "一个客服场景",
+      "atoms_used": "Agent/Workflow/Voice",
+      "steps": "配 agent → 接电话/网页 → 护栏",
+      "output": "自动语音客服",
+      "who_uses": "企业",
+      "evidence_url": "https://elevenlabs.io/agents"
+    },
+    {
+      "workflow_id": "H-011-W5",
+      "product": "elevenlabs",
+      "workflow_name": "API → 产品内语音",
+      "input": "产品请求",
+      "atoms_used": "API/TTS/STT",
+      "steps": "接 API → 实时生成/识别",
+      "output": "产品内语音能力",
+      "who_uses": "开发者",
+      "evidence_url": "https://elevenlabs.io/docs"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-011-1",
+      "product": "elevenlabs",
+      "resource_name": "Voice Library",
+      "resource_type": "资源",
+      "problem_solved": "要现成声音，不想自己录",
+      "how_to_access": "elevenlabs.io/voice-library",
+      "reuse_form": "挑声音 → 直接用/克隆",
+      "reuse_score": "5",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://elevenlabs.io/voice-library"
+    },
+    {
+      "resource_id": "RS-HIST-011-2",
+      "product": "elevenlabs",
+      "resource_name": "Agents 平台",
+      "resource_type": "Agent",
+      "problem_solved": "要做语音 agent（电话/网页）",
+      "how_to_access": "elevenlabs.io/agents",
+      "reuse_form": "配 agent → 接电话/网页",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://elevenlabs.io/agents"
+    },
+    {
+      "resource_id": "RS-HIST-011-3",
+      "product": "elevenlabs",
+      "resource_name": "API / SDK",
+      "resource_type": "接口",
+      "problem_solved": "要把语音接进产品",
+      "how_to_access": "elevenlabs.io/docs",
+      "reuse_form": "接 API/SDK",
+      "reuse_score": "3",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://elevenlabs.io/docs"
+    },
+    {
+      "resource_id": "RS-HIST-011-4",
+      "product": "elevenlabs",
+      "resource_name": "Voice Design / Cloning",
+      "resource_type": "工具",
+      "problem_solved": "要定制声音",
+      "how_to_access": "elevenlabs.io",
+      "reuse_form": "描述生成/上传样本克隆",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://elevenlabs.io/"
+    },
+    {
+      "resource_id": "RS-HIST-011-5",
+      "product": "elevenlabs",
+      "resource_name": "Dubbing / Music / SFX",
+      "resource_type": "工具",
+      "problem_solved": "要多语言配音/音效",
+      "how_to_access": "elevenlabs.io",
+      "reuse_form": "按产品线进入",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://elevenlabs.io/"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "011",
+      "product": "ElevenLabs",
+      "has_gallery": "partial",
+      "gallery_type": "Voice Library / Agents",
+      "gallery_url": "https://elevenlabs.io/",
+      "url_pattern": "/voice-library; /agents",
+      "scale_note": "voice library + agents（页面 JS 渲染）",
+      "access": "login",
+      "modules_available": "no",
+      "sampled_templates": "0",
+      "notes": "不是模板市场；voice/agent 是资源但不是模板，未按模板拆",
+      "evidence_url": "https://elevenlabs.io/"
+    }
+  ]
+}

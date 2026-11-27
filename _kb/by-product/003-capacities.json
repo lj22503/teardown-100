@@ -1,0 +1,249 @@
+{
+  "product": {
+    "no": "003",
+    "slug": "capacities",
+    "name": "Capacities",
+    "category": "notes-documents · 个人知识管理",
+    "one_liner": "它卖的不是 AI，是「你不用再花三个月把笔记系统搭出来」",
+    "icp_primary": "换过三四个笔记软件、还没找到系统的知识工作者",
+    "icp_secondary": "研究者、写作者、终身学习者（个人为主）；想给 AI 喂干净上下文的个人用户",
+    "jtbd": "让散落的材料自己长成关系网，别再为一个笔记系统当项目经理",
+    "core_scenarios": "每日笔记当收件箱→碎片升级成 typed object→自动双向链接→回看时间线/AI 属性自动填充、图片 OCR、自动打标签/Explore AI Chat 与 AI 生成查询/导出到外部 AI 当上下文",
+    "ai_mode": "辅助（官方明写 AI should stay assistive，AI 全在付费墙后）",
+    "pricing_model": "免费给「结构＋存储」，钱收在「调用＋回顾」（AI、查询、任务、日历、语义检索）",
+    "free_tier": "Basic 免费永久（无限 object、全平台同步、导入导出、只读分享；AI 为 Not included）",
+    "paid_tiers": "Pro HK$77.99/月（官方美元口径 $9.99/月，按年付）；Believer HK$98.99/月；Plus 加购 HK$66.67/月（年付）；年付 -16%",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "六张官方对比页吃离付费最近的长尾搜索＋Reddit／Discord 口碑＋PH 三次发布长期挂 4.8 分",
+    "moat_hypothesis": "护城河不是技术，是「别人的系统你不想要」——对象模型好抄，让人相信「这次不用再搭了」不好抄",
+    "evidence_urls": "https://capacities.io/why-capacities; https://capacities.io/pricing; https://capacities.io/whats-not-next",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-003-01",
+      "product": "capacities",
+      "atom_name": "Object Type",
+      "atom_type": "容器",
+      "what_it_does": "typed object（人/书/会议/项目）",
+      "composable_with": "property/backlink",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "atom_id": "H-003-02",
+      "product": "capacities",
+      "atom_name": "Property",
+      "atom_type": "工具",
+      "what_it_does": "对象字段",
+      "composable_with": "object/query",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "atom_id": "H-003-03",
+      "product": "capacities",
+      "atom_name": "Backlink",
+      "atom_type": "工具",
+      "what_it_does": "对象间反向链接",
+      "composable_with": "object",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "atom_id": "H-003-04",
+      "product": "capacities",
+      "atom_name": "Daily Note",
+      "atom_type": "容器",
+      "what_it_does": "每日收件箱",
+      "composable_with": "object/tag",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "atom_id": "H-003-05",
+      "product": "capacities",
+      "atom_name": "Tag",
+      "atom_type": "工具",
+      "what_it_does": "跨对象标签",
+      "composable_with": "object/search",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "atom_id": "H-003-06",
+      "product": "capacities",
+      "atom_name": "AI Chat",
+      "atom_type": "智能",
+      "what_it_does": "问自己的库",
+      "composable_with": "object/backlink",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "atom_id": "H-003-07",
+      "product": "capacities",
+      "atom_name": "AI Connector",
+      "atom_type": "协议",
+      "what_it_does": "ChatGPT/Claude/Cursor 读写 object",
+      "composable_with": "API/object",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "atom_id": "H-003-08",
+      "product": "capacities",
+      "atom_name": "REST API / SDK",
+      "atom_type": "协议",
+      "what_it_does": "程序化读写",
+      "composable_with": "object",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "atom_id": "H-003-09",
+      "product": "capacities",
+      "atom_name": "Media / OCR",
+      "atom_type": "知识",
+      "what_it_does": "图片/附件进对象",
+      "composable_with": "object/AI",
+      "evidence_url": "https://capacities.io/"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-003-W1",
+      "product": "capacities",
+      "workflow_name": "每日笔记 → 对象",
+      "input": "当天碎片",
+      "atoms_used": "Daily Note/Object",
+      "steps": "每日笔记记碎片 → 升级成 object → 加属性/链接",
+      "output": "结构化知识",
+      "who_uses": "个人",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "workflow_id": "H-003-W2",
+      "product": "capacities",
+      "workflow_name": "对象 → AI 问答",
+      "input": "一个问题",
+      "atoms_used": "Object/AI Chat",
+      "steps": "选范围 → 提问 → 回链",
+      "output": "答案+出处",
+      "who_uses": "个人",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "workflow_id": "H-003-W3",
+      "product": "capacities",
+      "workflow_name": "外部 AI → 建对象",
+      "input": "外部对话",
+      "atoms_used": "AI Connector/API",
+      "steps": "授权 → 调接口 → 建/改 object",
+      "output": "库里的新对象",
+      "who_uses": "个人",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "workflow_id": "H-003-W4",
+      "product": "capacities",
+      "workflow_name": "导出 → 外部 AI",
+      "input": "一批笔记",
+      "atoms_used": "API/Export",
+      "steps": "导出 Markdown/JSON → 喂给外部 AI",
+      "output": "外部上下文",
+      "who_uses": "个人",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "workflow_id": "H-003-W5",
+      "product": "capacities",
+      "workflow_name": "对象图 → 回顾",
+      "input": "一个领域",
+      "atoms_used": "Backlink/Object/Query",
+      "steps": "按对象类型筛 → 看反链 → 回顾",
+      "output": "领域视图",
+      "who_uses": "个人",
+      "evidence_url": "https://capacities.io/"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-003-1",
+      "product": "capacities",
+      "resource_name": "Object 类型系统",
+      "resource_type": "结构",
+      "problem_solved": "笔记散、想变成结构化对象",
+      "how_to_access": "capacities.io/why-capacities",
+      "reuse_form": "按 object 建自己的类型",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "resource_id": "RS-HIST-003-2",
+      "product": "capacities",
+      "resource_name": "AI 助手（问答/生成）",
+      "resource_type": "Agent",
+      "problem_solved": "想用自己的库回答问题",
+      "how_to_access": "capacities.io（应用内 AI）",
+      "reuse_form": "在 object/每日笔记里调用",
+      "reuse_score": "3",
+      "migration_cost": "3",
+      "evidence_strength": "B",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "resource_id": "RS-HIST-003-3",
+      "product": "capacities",
+      "resource_name": "每日笔记（Daily Note）",
+      "resource_type": "结构",
+      "problem_solved": "每天要有一个固定收件箱",
+      "how_to_access": "capacities.io/why-capacities",
+      "reuse_form": "每日笔记 → 碎片升级成 object",
+      "reuse_score": "3",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://capacities.io/why-capacities"
+    },
+    {
+      "resource_id": "RS-HIST-003-4",
+      "product": "capacities",
+      "resource_name": "移动端 App（iOS/Android）",
+      "resource_type": "工具",
+      "problem_solved": "手机上随手记",
+      "how_to_access": "capacities.io",
+      "reuse_form": "装 App → 同步",
+      "reuse_score": "3",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://capacities.io/"
+    },
+    {
+      "resource_id": "RS-HIST-003-5",
+      "product": "capacities",
+      "resource_name": "导入/导出（本地 Markdown）",
+      "resource_type": "工具",
+      "problem_solved": "不想被锁死/要迁移",
+      "how_to_access": "capacities.io（设置内）",
+      "reuse_form": "导出 Markdown → 迁移",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "B",
+      "evidence_url": "https://capacities.io/"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "003",
+      "product": "Capacities",
+      "has_gallery": "no",
+      "gallery_type": "无公开模板库",
+      "gallery_url": "https://capacities.io/templates",
+      "url_pattern": "",
+      "scale_note": "/templates 返回 404；对象/模板在应用内",
+      "access": "login",
+      "modules_available": "n/a",
+      "sampled_templates": "0",
+      "notes": "官网无公开模板库；模板是应用内的对象模板",
+      "evidence_url": "https://capacities.io/"
+    }
+  ]
+}

@@ -1,0 +1,249 @@
+{
+  "product": {
+    "no": "004",
+    "slug": "reflect-notes",
+    "name": "Reflect",
+    "category": "notes-documents · 个人知识管理（PKM）",
+    "one_liner": "它卖的不是功能，是把「第一分钟」做到零决策——打开就是今天",
+    "icp_primary": "苹果生态里的个人用户，不想为记笔记先做一次架构决策",
+    "icp_secondary": "每日记录型知识工作者（记者／产品／咨询）；被 Notion、Obsidian 复杂度劝退的人；隐私敏感的苹果用户",
+    "jtbd": "把当天发生的（会议、读到的、想到的）记进一个默认位置，之后靠时间与双链找回，而不是周五晚上补分类",
+    "core_scenarios": "会议笔记、日历与联系人、浏览器剪辑、Kindle 笔记、语音备忘都落进当天那篇/⌘J 问笔记（答案回链源笔记）/语义搜索、语音转写、改写摘要与自定义提示词",
+    "ai_mode": "可选层（Optional AI，自带 key，价值在内置提示词）",
+    "pricing_model": "单档订阅「One plan one price」＋Open 版平台差价；AI 不赚差价（自带 key）",
+    "free_tier": "无免费档（14 天试用）；Reflect Open 的 Mac 版免费",
+    "paid_tiers": "Classic $10/月（按年计费、14 天试用、无免费档）；Open 版 iPhone／iPad 需订阅（价格在 App Store，官网未披露）",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "PH 四次发布（含 #2 Bootstrapped & Crowdfunded Product of the Year）＋推特口碑墙＋2026 起 GitHub／MIT 开源渠道 [推断]",
+    "moat_hypothesis": "很薄——本地 Markdown 是公共底座、双链是公共范式、AI 用别人的模型加用户的 key，只剩「打开即今天」这一层习惯",
+    "evidence_urls": "https://reflect.app/; https://github.com/team-reflect/reflect-open; https://www.producthunt.com/products/reflect-notes",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-004-01",
+      "product": "reflect-notes",
+      "atom_name": "Note",
+      "atom_type": "容器",
+      "what_it_does": "Markdown 笔记",
+      "composable_with": "backlink/AI",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-02",
+      "product": "reflect-notes",
+      "atom_name": "Daily Note",
+      "atom_type": "容器",
+      "what_it_does": "当天汇总",
+      "composable_with": "note/calendar",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-03",
+      "product": "reflect-notes",
+      "atom_name": "Backlink",
+      "atom_type": "工具",
+      "what_it_does": "双向链接",
+      "composable_with": "note",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-04",
+      "product": "reflect-notes",
+      "atom_name": "AI Ask（⌘J）",
+      "atom_type": "智能",
+      "what_it_does": "问笔记并回链",
+      "composable_with": "note/backlink",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-05",
+      "product": "reflect-notes",
+      "atom_name": "Semantic Search",
+      "atom_type": "工具",
+      "what_it_does": "语义检索",
+      "composable_with": "note/AI",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-06",
+      "product": "reflect-notes",
+      "atom_name": "Voice Memo",
+      "atom_type": "工具",
+      "what_it_does": "语音备忘转文字",
+      "composable_with": "note/AI",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-07",
+      "product": "reflect-notes",
+      "atom_name": "Custom Prompt",
+      "atom_type": "工具",
+      "what_it_does": "保存常用提示词",
+      "composable_with": "AI/note",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-08",
+      "product": "reflect-notes",
+      "atom_name": "E2E / Sync",
+      "atom_type": "分发",
+      "what_it_does": "端到端加密与同步",
+      "composable_with": "note",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "atom_id": "H-004-09",
+      "product": "reflect-notes",
+      "atom_name": "Web Clipper",
+      "atom_type": "工具",
+      "what_it_does": "网页进当天笔记",
+      "composable_with": "note/clipper",
+      "evidence_url": "https://reflect.app/"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-004-W1",
+      "product": "reflect-notes",
+      "workflow_name": "会议/日历 → 今天",
+      "input": "会议与日程",
+      "atoms_used": "Daily Note/Calendar",
+      "steps": "会议笔记/日历/联系人落进当天",
+      "output": "当天一篇",
+      "who_uses": "个人",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "workflow_id": "H-004-W2",
+      "product": "reflect-notes",
+      "workflow_name": "⌘J 问笔记",
+      "input": "一个问题",
+      "atoms_used": "AI Ask/Backlink",
+      "steps": "提问 → 答案 → 回链源笔记",
+      "output": "答案+出处",
+      "who_uses": "个人",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "workflow_id": "H-004-W3",
+      "product": "reflect-notes",
+      "workflow_name": "语音备忘 → 笔记",
+      "input": "一段语音",
+      "atoms_used": "Voice Memo/AI/Note",
+      "steps": "录音 → 转写 → 存笔记",
+      "output": "文字笔记",
+      "who_uses": "个人",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "workflow_id": "H-004-W4",
+      "product": "reflect-notes",
+      "workflow_name": "自定义提示词 → 改写",
+      "input": "一段文字",
+      "atoms_used": "Custom Prompt/AI",
+      "steps": "选提示词 → 改写/摘要",
+      "output": "改写稿",
+      "who_uses": "个人",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "workflow_id": "H-004-W5",
+      "product": "reflect-notes",
+      "workflow_name": "剪藏 → 当天笔记",
+      "input": "网页",
+      "atoms_used": "Clipper/Daily Note",
+      "steps": "剪藏 → 进当天 → 加双链",
+      "output": "素材",
+      "who_uses": "个人",
+      "evidence_url": "https://reflect.app/"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-004-1",
+      "product": "reflect-notes",
+      "resource_name": "AI 助手",
+      "resource_type": "Agent",
+      "problem_solved": "写/问笔记时要 AI 帮忙",
+      "how_to_access": "reflect.app（应用内）",
+      "reuse_form": "选中文本调用",
+      "reuse_score": "3",
+      "migration_cost": "3",
+      "evidence_strength": "B",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "resource_id": "RS-HIST-004-2",
+      "product": "reflect-notes",
+      "resource_name": "双链 + 每日笔记",
+      "resource_type": "结构",
+      "problem_solved": "知识之间要建立关联",
+      "how_to_access": "reflect.app",
+      "reuse_form": "每日笔记 + [[双链]]",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "resource_id": "RS-HIST-004-3",
+      "product": "reflect-notes",
+      "resource_name": "Reflect Open（GitHub，MIT）",
+      "resource_type": "工具/源码",
+      "problem_solved": "想自托管或改格式",
+      "how_to_access": "github.com/team-reflect/reflect-open",
+      "reuse_form": "拉源码/自己部署",
+      "reuse_score": "4",
+      "migration_cost": "2",
+      "evidence_strength": "A",
+      "evidence_url": "https://github.com/team-reflect/reflect-open"
+    },
+    {
+      "resource_id": "RS-HIST-004-4",
+      "product": "reflect-notes",
+      "resource_name": "端到端加密 + 本地文件",
+      "resource_type": "工具",
+      "problem_solved": "笔记要私密/可迁移",
+      "how_to_access": "reflect.app",
+      "reuse_form": "本地文件 + E2E 加密",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://reflect.app/"
+    },
+    {
+      "resource_id": "RS-HIST-004-5",
+      "product": "reflect-notes",
+      "resource_name": "Mac / iOS 客户端",
+      "resource_type": "工具",
+      "problem_solved": "苹果生态内使用",
+      "how_to_access": "reflect.app",
+      "reuse_form": "装客户端 → 同步",
+      "reuse_score": "3",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://reflect.app/"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "004",
+      "product": "Reflect",
+      "has_gallery": "no",
+      "gallery_type": "无公开模板库",
+      "gallery_url": "https://reflect.app/",
+      "url_pattern": "",
+      "scale_note": "未找到公开模板页",
+      "access": "login",
+      "modules_available": "n/a",
+      "sampled_templates": "0",
+      "notes": "无公开模板库",
+      "evidence_url": "https://reflect.app/"
+    }
+  ]
+}

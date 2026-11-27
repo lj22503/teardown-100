@@ -1,0 +1,258 @@
+{
+  "product": {
+    "no": "005",
+    "slug": "hynote-ai",
+    "name": "HyNote AI",
+    "category": "notes-documents · AI 笔记与转录",
+    "one_liner": "永远不要再做笔记了——它把「整理」从用户手里拿走，只留下「喂素材」这一个动作",
+    "icp_primary": "有输出压力、素材来源很杂的专业人士与学生（PM／销售／研究者／创始人／创意团队）",
+    "icp_secondary": "学生与研究者；做内容输出的人",
+    "jtbd": "把「做笔记」这件事本身干掉——AI 时代任何东西都是上下文，不一定非得以笔记形态存在",
+    "core_scenarios": "八种输入（录音／音视频／PDF／图片 OCR／YouTube／网页／电话／Apple Watch）→AI 整理成可对话笔记→导出 Google Docs、Notion、PDF/抽象式摘要、要点与行动项、30+ 模板、50+ 语言转写与说话人识别",
+    "ai_mode": "嵌入（AI 嵌在笔记主干里，拿走 AI 仍是录音笔）[推断：005 无〇节，按 006 第〇节的判定口径]",
+    "pricing_model": "免费档引流＋四档订阅（Pro／Plus／Unlimited／Teams）＋两款硬件",
+    "free_tier": "Free $0（单场录音最多 3 小时、模板、跨端同步、日历集成、无需信用卡）",
+    "paid_tiers": "Pro $11.99/月（年付 $79.99、$6.66/月）；Plus $18.99/月（年付 $129.99）；Unlimited $24.99/月（年付 $189.99）；Teams $20/席/月（年付 $180/席，2 席起）；7 天试用，年付最多省 45%",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "PH 六次发布（2025-02 至 2026-08）＋几十个 Free Tools 单点落地页接长尾 [推断] ＋App Store／Google Play 双端自然量",
+    "moat_hypothesis": "薄——转写与摘要是公共能力，模板是工程量，它的底座是「广度」，而广度最容易被复制",
+    "evidence_urls": "https://hynote.ai/; https://hynote.ai/pricing; https://hynote.ai/mcp",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-005-01",
+      "product": "hynote-ai",
+      "atom_name": "Note",
+      "atom_type": "容器",
+      "what_it_does": "可对话的笔记",
+      "composable_with": "transcript/template/AI",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-02",
+      "product": "hynote-ai",
+      "atom_name": "Transcript",
+      "atom_type": "知识",
+      "what_it_does": "音视频/PDF/网页转写",
+      "composable_with": "AI/summary",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-03",
+      "product": "hynote-ai",
+      "atom_name": "Template",
+      "atom_type": "工具",
+      "what_it_does": "30+ 专业模板（SWOT/面试/学习）",
+      "composable_with": "note/AI",
+      "evidence_url": "https://hynote.ai/features/faq-template"
+    },
+    {
+      "atom_id": "H-005-04",
+      "product": "hynote-ai",
+      "atom_name": "AI Summary",
+      "atom_type": "智能",
+      "what_it_does": "摘要/要点/行动项",
+      "composable_with": "transcript/note",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-05",
+      "product": "hynote-ai",
+      "atom_name": "Action Item",
+      "atom_type": "工具",
+      "what_it_does": "提取任务/日期/联系人",
+      "composable_with": "AI Skill/calendar",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-06",
+      "product": "hynote-ai",
+      "atom_name": "AI Skill",
+      "atom_type": "动作",
+      "what_it_does": "把笔记变成日历/提醒/邮件",
+      "composable_with": "note/native app",
+      "evidence_url": "https://hynote.ai/features/ai-skills"
+    },
+    {
+      "atom_id": "H-005-07",
+      "product": "hynote-ai",
+      "atom_name": "MCP Server",
+      "atom_type": "协议",
+      "what_it_does": "外部 agent 读写笔记",
+      "composable_with": "note/integration",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-08",
+      "product": "hynote-ai",
+      "atom_name": "Integration",
+      "atom_type": "工具",
+      "what_it_does": "20+ 集成（Notion/Slack/Zoom…）",
+      "composable_with": "note",
+      "evidence_url": "https://hynote.ai/integrations"
+    },
+    {
+      "atom_id": "H-005-09",
+      "product": "hynote-ai",
+      "atom_name": "Multi-input",
+      "atom_type": "工具",
+      "what_it_does": "录音/PDF/OCR/YouTube/网页/电话/Watch",
+      "composable_with": "transcript",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "atom_id": "H-005-10",
+      "product": "hynote-ai",
+      "atom_name": "Export",
+      "atom_type": "分发",
+      "what_it_does": "导出 Google Docs/Notion/PDF",
+      "composable_with": "note",
+      "evidence_url": "https://hynote.ai/"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-005-W1",
+      "product": "hynote-ai",
+      "workflow_name": "录音 → 转写 → 摘要",
+      "input": "一段会议录音",
+      "atoms_used": "Multi-input/Transcript/AI Summary",
+      "steps": "录音 → 转写 → 摘要/行动项",
+      "output": "会议笔记",
+      "who_uses": "个人/团队",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "workflow_id": "H-005-W2",
+      "product": "hynote-ai",
+      "workflow_name": "PDF/视频 → 学习笔记",
+      "input": "PDF 或视频",
+      "atoms_used": "Transcript/Template/AI",
+      "steps": "导入 → 转写 → 套模板 → 生成",
+      "output": "学习笔记",
+      "who_uses": "学生",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "workflow_id": "H-005-W3",
+      "product": "hynote-ai",
+      "workflow_name": "笔记 → AI Skill → 日历/提醒",
+      "input": "一段笔记",
+      "atoms_used": "Action Item/AI Skill/native app",
+      "steps": "选文本 → 点技能 → 确认 → 写进日历",
+      "output": "日程/提醒",
+      "who_uses": "个人",
+      "evidence_url": "https://hynote.ai/features/ai-skills"
+    },
+    {
+      "workflow_id": "H-005-W4",
+      "product": "hynote-ai",
+      "workflow_name": "模板 → 结构化输出",
+      "input": "一个写作任务",
+      "atoms_used": "Template/AI/Export",
+      "steps": "选模板 → 填内容 → 生成 → 导出",
+      "output": "FAQ/简历/大纲",
+      "who_uses": "个人",
+      "evidence_url": "https://hynote.ai/features/faq-template"
+    },
+    {
+      "workflow_id": "H-005-W5",
+      "product": "hynote-ai",
+      "workflow_name": "Claude/ChatGPT → 查笔记（MCP）",
+      "input": "外部 agent 请求",
+      "atoms_used": "MCP/Integration/Note",
+      "steps": "配 MCP → 搜索/读取 → 写回",
+      "output": "跨工具检索",
+      "who_uses": "个人",
+      "evidence_url": "https://hynote.ai/integrations"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-005-1",
+      "product": "hynote-ai",
+      "resource_name": "AI 笔记/转写",
+      "resource_type": "Agent",
+      "problem_solved": "不想手记，想要现成摘要",
+      "how_to_access": "hynote.ai",
+      "reuse_form": "录音/上传 → 生成笔记",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "resource_id": "RS-HIST-005-2",
+      "product": "hynote-ai",
+      "resource_name": "MCP 接入",
+      "resource_type": "集成",
+      "problem_solved": "让外部 AI 读自己的笔记",
+      "how_to_access": "hynote.ai（MCP）",
+      "reuse_form": "配置 MCP → 外部 agent 调用",
+      "reuse_score": "3",
+      "migration_cost": "3",
+      "evidence_strength": "B",
+      "evidence_url": "https://hynote.ai/"
+    },
+    {
+      "resource_id": "RS-HIST-005-3",
+      "product": "hynote-ai",
+      "resource_name": "Templates（7 个）",
+      "resource_type": "模板",
+      "problem_solved": "要有固定结构的输出（FAQ/简历/大纲/案例分析/SWOT/头脑风暴/访谈）",
+      "how_to_access": "hynote.ai/features/faq-template 等 7 个模板页",
+      "reuse_form": "选模板 → 填内容 → 生成",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://hynote.ai/features/faq-template"
+    },
+    {
+      "resource_id": "RS-HIST-005-4",
+      "product": "hynote-ai",
+      "resource_name": "Integrations（20+）",
+      "resource_type": "集成",
+      "problem_solved": "要把笔记接到 ChatGPT/Claude/Notion/Slack/Zoom 等",
+      "how_to_access": "hynote.ai/integrations",
+      "reuse_form": "授权连接",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://hynote.ai/integrations"
+    },
+    {
+      "resource_id": "RS-HIST-005-5",
+      "product": "hynote-ai",
+      "resource_name": "AI Skills / AI Recipes",
+      "resource_type": "Agent",
+      "problem_solved": "把笔记变成日历/提醒/邮件等动作",
+      "how_to_access": "hynote.ai/features/ai-skills",
+      "reuse_form": "选中文本 → 点技能",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://hynote.ai/features/ai-skills"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "005",
+      "product": "HyNote AI",
+      "has_gallery": "partial",
+      "gallery_type": "模板页（7 个）+ 集成目录",
+      "gallery_url": "https://hynote.ai/features/faq-template",
+      "url_pattern": "/features/<template>",
+      "scale_note": "7 个模板页（FAQ/Resume/Outline/Case Study/SWOT/Brainstorm/Interview）；20+ 集成（ChatGPT/Claude/Notion/Slack/Zoom/Meet/Teams…）",
+      "access": "public",
+      "modules_available": "no",
+      "sampled_templates": "0",
+      "notes": "有模板页但不是模板市场；详情页无模块清单，只做目录级",
+      "evidence_url": "https://hynote.ai/features/faq-template"
+    }
+  ]
+}

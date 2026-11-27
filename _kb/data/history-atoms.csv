@@ -1,0 +1,106 @@
+﻿atom_id,product,atom_name,atom_type,what_it_does,composable_with,evidence_url
+H-001-01,notion,Page,容器,一页承载内容与子页,block/database/view,https://www.notion.com/
+H-001-02,notion,Block,容器,段落/待办/代码等最小内容块,page/database,https://www.notion.com/
+H-001-03,notion,Database,容器,结构化数据表（行=页面）,property/view/relation,https://www.notion.com/
+H-001-04,notion,Property,工具,字段：文本/数字/日期/选择/关系,database/view,https://www.notion.com/
+H-001-05,notion,View,界面,同一数据库的表格/看板/日历等视图,database/property,https://www.notion.com/
+H-001-06,notion,Relation,工具,库与库之间建立关联,database/property,https://www.notion.com/
+H-001-07,notion,Template,工具,预填页面/数据库结构,page/database,https://www.notion.com/templates
+H-001-08,notion,Notion AI,智能,问答/写作/总结/数据库属性填充,page/database,https://www.notion.com/product/ai
+H-001-09,notion,Custom Agent,身份,可执行任务的 agent,database/AI/MCP,https://www.notion.com/custom-agent-templates
+H-001-10,notion,MCP / API,协议,外部 agent 读写工作区,agent/database,https://developers.notion.com/
+H-002-01,obsidian,Vault,容器,本地文件夹即知识库,note/link/plugin,https://obsidian.md/
+H-002-02,obsidian,Note,容器,Markdown 笔记,link/tag/template,https://obsidian.md/
+H-002-03,obsidian,Wikilink,工具,双向链接,note/graph,https://obsidian.md/
+H-002-04,obsidian,Tag,工具,主题/状态标签,note/search,https://obsidian.md/
+H-002-05,obsidian,Canvas,界面,无限画布组织笔记/网页,note/canvas,https://obsidian.md/canvas
+H-002-06,obsidian,Plugin,工具,社区插件扩展功能,vault/note,https://community.obsidian.md/plugins
+H-002-07,obsidian,Template,工具,新建笔记套结构,note,https://help.obsidian.md/plugins/templates
+H-002-08,obsidian,Web Clipper,工具,网页剪藏进 vault,note/clipper,https://obsidian.md/clipper
+H-002-09,obsidian,Sync / Publish,分发,多端同步/发布站点,vault,https://obsidian.md/sync
+H-003-01,capacities,Object Type,容器,typed object（人/书/会议/项目）,property/backlink,https://capacities.io/why-capacities
+H-003-02,capacities,Property,工具,对象字段,object/query,https://capacities.io/why-capacities
+H-003-03,capacities,Backlink,工具,对象间反向链接,object,https://capacities.io/why-capacities
+H-003-04,capacities,Daily Note,容器,每日收件箱,object/tag,https://capacities.io/why-capacities
+H-003-05,capacities,Tag,工具,跨对象标签,object/search,https://capacities.io/
+H-003-06,capacities,AI Chat,智能,问自己的库,object/backlink,https://capacities.io/
+H-003-07,capacities,AI Connector,协议,ChatGPT/Claude/Cursor 读写 object,API/object,https://capacities.io/
+H-003-08,capacities,REST API / SDK,协议,程序化读写,object,https://capacities.io/
+H-003-09,capacities,Media / OCR,知识,图片/附件进对象,object/AI,https://capacities.io/
+H-004-01,reflect-notes,Note,容器,Markdown 笔记,backlink/AI,https://reflect.app/
+H-004-02,reflect-notes,Daily Note,容器,当天汇总,note/calendar,https://reflect.app/
+H-004-03,reflect-notes,Backlink,工具,双向链接,note,https://reflect.app/
+H-004-04,reflect-notes,AI Ask（⌘J）,智能,问笔记并回链,note/backlink,https://reflect.app/
+H-004-05,reflect-notes,Semantic Search,工具,语义检索,note/AI,https://reflect.app/
+H-004-06,reflect-notes,Voice Memo,工具,语音备忘转文字,note/AI,https://reflect.app/
+H-004-07,reflect-notes,Custom Prompt,工具,保存常用提示词,AI/note,https://reflect.app/
+H-004-08,reflect-notes,E2E / Sync,分发,端到端加密与同步,note,https://reflect.app/
+H-004-09,reflect-notes,Web Clipper,工具,网页进当天笔记,note/clipper,https://reflect.app/
+H-005-01,hynote-ai,Note,容器,可对话的笔记,transcript/template/AI,https://hynote.ai/
+H-005-02,hynote-ai,Transcript,知识,音视频/PDF/网页转写,AI/summary,https://hynote.ai/
+H-005-03,hynote-ai,Template,工具,30+ 专业模板（SWOT/面试/学习）,note/AI,https://hynote.ai/features/faq-template
+H-005-04,hynote-ai,AI Summary,智能,摘要/要点/行动项,transcript/note,https://hynote.ai/
+H-005-05,hynote-ai,Action Item,工具,提取任务/日期/联系人,AI Skill/calendar,https://hynote.ai/
+H-005-06,hynote-ai,AI Skill,动作,把笔记变成日历/提醒/邮件,note/native app,https://hynote.ai/features/ai-skills
+H-005-07,hynote-ai,MCP Server,协议,外部 agent 读写笔记,note/integration,https://hynote.ai/
+H-005-08,hynote-ai,Integration,工具,20+ 集成（Notion/Slack/Zoom…）,note,https://hynote.ai/integrations
+H-005-09,hynote-ai,Multi-input,工具,录音/PDF/OCR/YouTube/网页/电话/Watch,transcript,https://hynote.ai/
+H-005-10,hynote-ai,Export,分发,导出 Google Docs/Notion/PDF,note,https://hynote.ai/
+H-006-01,claude,Chat,界面,对话与长文推理,project/artifact/tool,https://www.anthropic.com/claude
+H-006-02,claude,Project,容器,固定上下文/资料,chat/artifact,https://www.anthropic.com/claude
+H-006-03,claude,Artifact,工具,可编辑产物（文档/代码/页面）,chat,https://www.anthropic.com/claude
+H-006-04,claude,MCP Tool,协议,调外部工具/数据,chat/connector,https://modelcontextprotocol.io/
+H-006-05,claude,Connector,工具,连接第三方服务,MCP/chat,https://www.anthropic.com/claude
+H-006-06,claude,Claude Code,动作,代码生成/重构/执行,repo/MCP,https://www.anthropic.com/claude
+H-006-07,claude,Cowork,身份,桌面代理,chat/tool,https://www.anthropic.com/claude
+H-006-08,claude,Model Family,智能,Opus/Sonnet/Haiku 等模型档,chat/code/api,https://www.anthropic.com/claude
+H-006-09,claude,API,协议,程序化调用,tool/model,https://www.anthropic.com/claude
+H-007-01,framer,Canvas,容器,设计画布,component/layout,https://www.framer.com/
+H-007-02,framer,Component,工具,可复用组件/变体,canvas/cms,https://www.framer.com/
+H-007-03,framer,CMS,容器,内容集合,component/page,https://www.framer.com/
+H-007-04,framer,Hosting,分发,一键发布,site/domain,https://www.framer.com/
+H-007-05,framer,Agent,身份,设计/CMS/Code agent,canvas/cms/mcp,https://www.framer.com/
+H-007-06,framer,Plugin,工具,扩展建站能力,canvas,https://www.framer.com/marketplace/plugins/
+H-007-07,framer,Template,工具,现成站点模板,canvas/cms,https://www.framer.com/marketplace/templates/
+H-007-08,framer,Analytics,工具,访问/转化数据,site,https://www.framer.com/
+H-007-09,framer,SEO / AEO,工具,搜索与 AI 引擎优化,site,https://www.framer.com/
+H-007-10,framer,MCP,协议,外部 agent 改站,agent/canvas,https://www.framer.com/
+H-009-01,figma,File,容器,设计文件,frame/component,https://www.figma.com/
+H-009-02,figma,Frame,容器,画板/布局,component/prototype,https://www.figma.com/
+H-009-03,figma,Component / Variant,工具,组件与变体,frame/instance,https://www.figma.com/
+H-009-04,figma,Auto Layout,工具,自适应布局,frame,https://www.figma.com/
+H-009-05,figma,Prototype,界面,交互原型,frame,https://www.figma.com/
+H-009-06,figma,Dev Mode,工具,交付代码/规格,component/specs,https://www.figma.com/
+H-009-07,figma,Make,智能,自然语言生成界面,frame/agent,https://www.figma.com/
+H-009-08,figma,Agent,身份,读文件上下文并动手,file/make/mcp,https://www.figma.com/
+H-009-09,figma,Sites,分发,发布网站,frame,https://www.figma.com/
+H-009-10,figma,MCP,协议,外部 agent 读设计上下文,agent/file,https://www.figma.com/
+H-010-01,fathom,Meeting,容器,一场会议,transcript/summary,https://www.fathom.ai/
+H-010-02,fathom,Transcript,知识,转写稿,summary/ask,https://www.fathom.ai/
+H-010-03,fathom,Summary,工具,即时摘要,meeting/crm,https://www.fathom.ai/
+H-010-04,fathom,Action Item,工具,行动项,summary/crm,https://www.fathom.ai/
+H-010-05,fathom,Tracker,工具,盯关键话题,transcript,https://www.fathom.ai/
+H-010-06,fathom,Ask Fathom,智能,跨会议问答,transcript,https://www.fathom.ai/features/ask-fathom
+H-010-07,fathom,Scorecard,工具,销售教练评分,meeting/crm,https://www.fathom.ai/
+H-010-08,fathom,CRM Sync,集成,字段回写 CRM,summary/crm,https://www.fathom.ai/integrations
+H-010-09,fathom,API,协议,程序化取会议数据,meeting,https://www.fathom.ai/features/api
+H-010-10,fathom,MCP,协议,让 ChatGPT/Claude 查会议,transcript,https://www.fathom.ai/features/mcp-server
+H-011-01,elevenlabs,Voice,资源,声音（库/克隆/设计）,TTS/agent,https://elevenlabs.io/voice-library
+H-011-02,elevenlabs,TTS,动作,文本转语音,voice,https://elevenlabs.io/
+H-011-03,elevenlabs,Voice Clone,工具,克隆声音,voice,https://elevenlabs.io/
+H-011-04,elevenlabs,STT,工具,语音转文字,transcript,https://elevenlabs.io/
+H-011-05,elevenlabs,Dubbing,工具,多语言配音,voice/transcript,https://elevenlabs.io/
+H-011-06,elevenlabs,Music / SFX,工具,音乐/音效生成,voice,https://elevenlabs.io/
+H-011-07,elevenlabs,Agent,身份,语音 agent（电话/网页）,voice/workflow,https://elevenlabs.io/agents
+H-011-08,elevenlabs,Workflow,编排,对话流程/护栏,agent,https://elevenlabs.io/agents
+H-011-09,elevenlabs,API,协议,接进产品,tts/stt/agent,https://elevenlabs.io/docs
+H-011-10,elevenlabs,MCP,协议,外部 agent 调语音能力,api,https://elevenlabs.io/docs
+H-012-01,gamma-3,Prompt,动作,一句需求生成内容,outline/card,https://gamma.app/
+H-012-02,gamma-3,Template,工具,19 类模板,theme/card,https://gamma.app/templates
+H-012-03,gamma-3,Theme / Style,工具,18 主题 / 16 风格,template/card,https://gamma.app/templates
+H-012-04,gamma-3,Card,容器,一页卡片,layout/format,https://gamma.app/
+H-012-05,gamma-3,Outline,工具,大纲/叙事结构,card,https://gamma.app/
+H-012-06,gamma-3,Format,分发,演示/文档/网页/社交卡片,card,https://gamma.app/
+H-012-07,gamma-3,Connector,集成,25+ 连接器导入内容,prompt,https://gamma.app/
+H-012-08,gamma-3,API,协议,程序化生成,prompt/format,https://gamma.app/
+H-012-09,gamma-3,Model Router,智能,多模型调度,prompt,https://gamma.app/

@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · Slack — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-26</span>
+  <span class="dot"></span>
+  <span>产品：Slack</span>
+</div>
+
+<h1>Slack<span class="tag">它卖的不是聊天，是「把任意业务动作变成频道里一次可被 @ 的调用」；2026 年它的赌注不是造更强的模型，是当 agent 的家——双向 MCP + Skills + 权限模型，让别人家的 AI 住进来。</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">B2B 协作 / AI 工作平台（工作操作系统 + Agent 托管层）</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">可核实的都是营销口径：10 亿+ 每日已发送消息、400 万 Slack Connect 用户每周与外部团队协作、300 万每日工作流、170 万每周活跃使用的应用（官网脚注分别标 2026 财年财报发言 / 2025 财年内部数据 / Salesforce 内部数据）。Marketplace 官方口径 2,600+ 应用，sitemap 实测 2,871 个应用页（另有 9 个合集页 + 1 个首页 = 2,881 条）。G2 4.5 分 / 40,606 条评论，分布 5★75% · 4★20% · 3★3% · 2★0% · 1★0%。DAU/MAU、付费席位数、ARR：官方未单独披露，本卡不编。Product Hunt 页本次被 Cloudflare 拦截，无数据可用。</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">Freemium + 按席位订阅 + 企业年付。Free $0 永久（90 天消息历史、最多 10 个 app、1:1 huddle/DM）；Pro $8.75 每人每月（年付 $7.25）；Business+ $18（年付 $15，Slackbot 持续可用）；Enterprise+ $45（仅年付，Slackbot 无周消息上限）。AI 超额用量走 Salesforce Flex Credits；非营利/教育有折扣；Frontline 是附加组件（均见定价页 FAQ）。</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成熟期，且正在换第二曲线。四个付费档（Free / Pro / Business+ / Enterprise+）明码标价；13 个语种站点；199 个客户故事；Marketplace（2,881 页）、帮助中心（579 页）、开发者文档（3,266 页）三套独立信息架构各跑各的。AI 侧从「Slack AI 摘要」长到「Slackbot + 双向 MCP + Agentforce + code channels」。历史节点：2013-08 发布（24 小时 8,000 个客户）→ 2019-06 直接上市（195 亿美元）→ 2021-07-21 归入 Salesforce（约 277 亿美元）→ 2023-03 接 ChatGPT → 2025-05 Agentforce 进 Slack → 2025-06 开始阻止 LLM 长期索引/复制数据。</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. 应用层六维</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会（我的判断）</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 可核实：官网定位与主张原文、四档定价金额与功能对照、Slackbot 的 limited trial 与 Enterprise+ 无周上限口径、Flex Credits 与非营利折扣、Workflow Builder 为付费功能与 15 个条件/70+ 连接器、双向 MCP 的两种形态与鉴权方式、Skills 四步发布机制、三个 sitemap 的页数（1,769 / 2,881 / 579）、13 个语种、18 条博客对比页、G2 4.5/40,606 与分布、公开增长史（Wikipedia）。推断并已标注：流量三条腿的权重、单用户频次、北美星与输入/护栏指标、AI 成本结构、竞品的价格与协议细节（本次未核验）。本期没有实测，所有体验类结论均不出。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>它是把业务动作标准化成消息流原子的协议层；AI 时代它不争「谁的模型强」，争「agent 住在谁家」。</h2>
+    <div class="sub">拔电测试判为嵌入型：拿走 Slackbot 与 AI 摘要，频道、Slack Connect、Canvas、List、Huddle、Workflow Builder 都照常卖——AI 不是地基，是长在地基上的第二层。它的护城河也不在功能表上，在接入协议 + 权限模型 + 工作场所占据：2,600+ 应用愿意接它，是因为它先定义了身份、权限、事件与消息格式，生态替它长功能。代价是它的每一次 AI 升级都必须以「已有形态」出现——agent 得是一个能被 @ 的成员，而不是一个新 App。</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>护城河是协议，不是功能</strong> — 12 个原子（Channel / Canvas / List / Message / Huddle / App / Agent / Slackbot / Workflow / MCP tool / Search / 权限）拼出四种封装：Template 给人、Slackbot Skills 给团队方法、Agent + 双向 MCP 给机器、Workflow Builder 给流程。它不自己长全部功能，让 2,600+ 应用替它长——所以功能表永远追不上，接入位永远在。</li>
+    <li><strong>AI 的计价单位从席位换成额度</strong> — 定价页原文：Free 与 Pro 的 Slackbot 只是 limited trial，Business+ 与 Enterprise+ 才持续可用，只有 Enterprise+ 写 no weekly message limits，超额买 Salesforce Flex Credits；Workflow Builder 则是 Pro 起的付费功能。两条放在一起说明：AI 在它这里不是加量项，是分档线——这也是 2026 年 SaaS 定价最值得盯的一处变化。</li>
+    <li><strong>流量是一座 13 语种的大站，不是一条爆款</strong> — sitemap 实测（2026-11-26）：营销站英文 1,769 页，13 个语种各一份（zh-CN 1,478 页），其中 blog 1,179 页是最大单一板块；Marketplace 2,881 页；帮助中心 579 页（578 篇 × 13 语言）。对比页两套并存：产品级 /compare/slack-vs-teams、/compare/slack-vs-email，博客级 /blog/compare/* 18 条（13 个竞品 vs 页 + 4 个 alternatives 页 + 1 个德语法务页）。这是典型的「大站 + 目录 + 帮助中心」三件套，不靠单篇爆款。</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">未测</div>
+    <div class="desc">本期没有实测，不把「第一次收到消息」当成价值到达，也不换算成分钟</div>
+  </div>
+  <div class="num-card">
+    <div class="label">核心循环频次</div>
+    <div class="big">每日<small> 10 亿+ 条消息</small></div>
+    <div class="desc">官方口径：每日已发送消息数（2026 财年财报发言）；单用户打开频次未公开</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分</div>
+    <div class="big">8<small>/10</small></div>
+    <div class="desc">我的评分，不是测量；扣分在 AI 层可复制与已失去的独立定价权（Salesforce 旗下）</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote"><strong>产品定位</strong>：Slack 是团队与企业的协作工作场所——把对话、文档、任务、会议、跨组织协作与 AI 放进同一个壳里。官方 2026 年的措辞是 The platform agents and AI call home：它把自己定义成 agent 的运行底座，而不只是一个聊天工具。一句更直白的判断：它为「一家 20 到 20,000 人的公司」解决「这件事该在哪儿说、谁来接、以后去哪儿找」这三件反复发生的事。</div>
+      <h4>核心用户承诺</h4>
+      <p>官方 H1 原文：All your people and AI agents working together；副标 Slack connects your team. Slackbot multiplies what they can do。翻成用户语言：你不用再决定「这件事该发消息、发邮件还是建个任务」，都在一个地方；AI 也不是另一个网站，而是同一个地方里能被 @ 的队友。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>它站在三条货架的交口：协作工具（Teams、Google Chat、Discord）、工作 OS / 项目协作（Asana、Trello、Monday、ClickUp——都在它的竞品 vs 页里）、以及 2026 年新出现的一层「agent 托管平台」。位置上它偏协作侧但重心在往 platform 移：比纯聊天多治理与集成，比项目管理工具多对话与实时性，比 agent 平台多一个真实的组织在里面工作。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>[推断] 2,600+ 是「应用数」口径，sitemap 的 2,871 条含历史/下架项；两者都不是活跃安装数。任何按此推算的生态价值都不可信。</li>
+        <li>[推断] 它的收入主力是 Business+ 与 Enterprise+，而不是 Pro：依据是 Slackbot 持续可用与合规套件都从 Business+ 起，且每页并行 Talk to sales。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://a.slack-edge.com/73a2348/marketing/img/homepage/revamped-24/unfurl/hp-revamp-unfurl.jpg" alt="Slack 官网首页主视觉：2026 年的主张是 All your people and AI agents working together（取自 slack.com 官方 OG 图）" loading="lazy"/><figcaption><span class="fig-num">图 01</span>Slack 官网首页主视觉：2026 年的主张是 All your people and AI agents working together（取自 slack.com 官方 OG 图）</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/assets/d271095f-8547-407b-84ac-4cc70b480684/unfurl-slack-ai.jpg" alt="Slack AI 功能页主视觉：频道/线程摘要、每日回顾、AI 搜索、文件摘要都在这一层（取自 slack.com/features/ai 官方图）" loading="lazy"/><figcaption><span class="fig-num">图 02</span>Slack AI 功能页主视觉：频道/线程摘要、每日回顾、AI 搜索、文件摘要都在这一层（取自 slack.com/features/ai 官方图）</figcaption></figure>
+    <figure class="shot"><img src="https://a.slack-edge.com/cd054cc/marketing/img/agentforce/lp/updated_agentforce_unfurl_1200x628@2x.jpg" alt="Agentforce 进 Slack：Salesforce 的企业 agent 可在频道、DM、线程里被 @ 后执行动作（取自 slack.com/ai-agents 官方图）" loading="lazy"/><figcaption><span class="fig-num">图 03</span>Agentforce 进 Slack：Salesforce 的企业 agent 可在频道、DM、线程里被 @ 后执行动作（取自 slack.com/ai-agents 官方图）</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/assets/04bff822-2660-4360-862d-bc098d6385b4/unfurl-enterprise-search.jpg" alt="Enterprise Search：一个搜索框搜 Slack + 已连接第三方应用 + 自建数据源，权限感知（取自 slack.com/features/enterprise-search）" loading="lazy"/><figcaption><span class="fig-num">图 04</span>Enterprise Search：一个搜索框搜 Slack + 已连接第三方应用 + 自建数据源，权限感知（取自 slack.com/features/enterprise-search）</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/pending/f408d8ce-7b2a-46bc-a973-0cc1039e3d94/unfurl-workflow-builder@2x.jpg" alt="Workflow Builder：触发器 + 步骤 + 条件（官方写 up to 15 conditions）+ 70+ 连接器，Pro 起付费（取自功能页官方图）" loading="lazy"/><figcaption><span class="fig-num">图 05</span>Workflow Builder：触发器 + 步骤 + 条件（官方写 up to 15 conditions）+ 70+ 连接器，Pro 起付费（取自功能页官方图）</figcaption></figure>
+    <figure class="shot"><img src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/slack-connect-unfurl-2.jpg" alt="Slack Connect：把外部组织拉进同一批频道与 DM（Pro 以上最多 250 个 orgs），这是它少见的 B 端病毒入口（取自 slack.com/connect）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>Slack Connect：把外部组织拉进同一批频道与 DM（Pro 以上最多 250 个 orgs），这是它少见的 B 端病毒入口（取自 slack.com/connect）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>团队与企业（10 人到 10 万人）</strong> — 这是它真正收钱的一层。买的是「频道即容器」：一个话题一个频道，人、文件、应用、AI 都在里面，权限边界就是频道边界。往上走，付费理由从「历史无限」逐步换成「治理」——多工作区、细分角色、信息屏障、法定保留、Discovery API、HIPAA。官方 Solutions 把场景切成 9 个部门 × 9 个行业 × 11 个 use case（共 32 个 solutions 页），说明它卖的不是单点工具，而是每个职能的工作场所。</li>
+        <li><strong>开发者 / IT（做集成与治理的人）</strong> — 这一层不进定价页，进文档站：359 个 Web API 方法页、121 个事件页、129 个 scope 页、46 个 block element、22 个 block、3,266 个文档 URL；Slack CLI 90 个命令页，Bolt 三语言 SDK，Deno SDK，8 个官方 samples。他们是它真正的渠道：2,600+ 应用和每一个内部 agent 都从这一层长出来，而 IT 又是 Business+/Enterprise+ 的付款批准人。</li>
+        <li><strong>跨组织协作者（客户、供应商、代理商）</strong> — Slack Connect 把外部组织拉进同一批频道与 DM（Pro 以上最多 250 个 orgs），官方措辞是 moving conversations out of siloed email threads。这一层的战略价值不在收费，在分发：每一次跨公司协作都是一次产品露出，且对方公司往往还没有 Slack——这是它少见的「病毒环长在 B 端」的结构。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 团队从 8 人涨到 20 人，微信/邮件/线下开始丢上下文：同一个问题被问三遍，新人入职要靠人带。Slack 的入口不是「我要一个聊天工具」，是「我们要一个能沉淀的地方」。</p>
+      <p><strong>使用频次：</strong> 按工作日持续在线，一天数十次到上百次；官方口径每日已发送消息 10 亿+（2026 财年财报发言），单用户频次未披露。</p>
+      <p><strong>使用场景：</strong> 桌面 / 移动 / 网页三端；会议在频道内用 Huddle；行动项落到 Canvas 或 List；跨公司走 Connect；检索走 Enterprise Search 与 AI 搜索；执行走 Workflow Builder、Slackbot 与被 @ 的 agent；数据出口是 MCP server、Web API 与 Events。</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">让一件事在同一个地方被说清、被决定、被跟踪，而不是在邮件、IM、文档、工单之间搬。 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">不怕漏掉关键消息，也不被消息淹掉。G2 的 5 星用户写下的不满几乎全是同一件事：通知太多、重要的东西被埋在频道里、旧上下文不好找。它卖的安全感是「我能找到」，而用户真实的体验常常是「我得从一堆里翻出来」。 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">在组织里成为「知道去哪儿问、知道谁在负责」的那个人；对外部伙伴，则是「你被拉进了我们的频道」这种被接纳感。 <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">一条消息进来</div>
+      <div class="why">触发点不是「我要用 AI」，是「这件事得有人接」。Slack 的高明之处在于：它没有为 AI 造新入口，所有 AI 都长在已有容器上——输入框、频道、画布、列表。用户不需要学一个新动作，只需要把 @ 换成 @Slackbot。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">在输入框里 @ 一下，或者让它自己跑</div>
+      <div class="why">同一个输入框承担三种动作：@ 一个 agent / 跑一条 workflow / 把消息转成 List 的一行。Workflow Builder 支持触发器 + 步骤 + 条件（官方写 up to 15 conditions）+ 70+ 连接器；Slackbot 可以调你的 MCP server，官方给了 4 种鉴权方式（无鉴权 / Slack 身份 / DCR / 手动 OAuth）。动作入口的收敛，是它把「AI 变成习惯」而非「AI 变成功能」的关键。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">答案、记录、下一步都留在对话流里</div>
+      <div class="why">结果不需要切到另一个界面看：Slackbot 的产物可以是频道里一张可排序、可筛选、可固定的视图，Huddle 结束后自动出笔记与 action items，Canvas 里能直接放工作流。把产出留在「事情发生的地方」，是它和所有「打开一个新 App 干活」的 AI 产品最大的差别。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">频道变厚，历史变成资产</div>
+      <div class="why">回来的理由不是「再聊一次」，是「上次那事在哪个频道决定的」。频道 + 线程 + Canvas + List 构成一份不可搬迁的组织记忆，Enterprise Search 再把它和已连接的第三方应用缝在一起。免费档只给 90 天历史，恰恰说明「历史」在这门生意里值钱。</div>
+    </div>
+  </div>
+  <div class="loop-note">"它真正教用户的是「工作不需要被归档到别处」：对话本身就是记录，@ 一下就是执行。用久之后，人会开始按「有没有频道」判断一件事值不值得做。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p><strong>流量曝光</strong>：三条腿并行，权重从大到小（[推断]，依据是页面结构与 CTA 设计）。① 产品内 PLG + 团队自传播：所有页面 CTA 是 Get started、无销售介入，模板与 Skills 可一键落进工作区并组织级发布；② 大站 SEO：英文营销站 1,769 页 + Marketplace 2,881 页 + 帮助中心 579 页，13 个语种各一份，blog 1,179 篇是最大单一板块；③ Salesforce 企业渠道：官网署名旗下公司、Slackbot 进 Lightning、Flex Credits 走 Salesforce 售卖，每页并行 Talk to sales。自然搜索流量占比、各渠道 CAC、Marketplace 带来的注册占比：均未核验，不推测。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>官方叙事里最像 aha 的一刻是：在频道里 @Slackbot 让它调你自己的 MCP server，工具结果直接回到 thread 里——不是打开一个新 App，是「队友多了一个」。本期未实测，这一点只据官方功能页与文档描述，不作体验结论。</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>频道历史 + 线程 + Canvas + List 构成组织记忆，迁移等于把记忆留在原地（免费档只给 90 天，付费买的就是这段记忆）。</li>
+        <li>2,600+ 应用的集成位与 OAuth 授权关系一旦铺开，换工具等于重做一遍接入与审批。</li>
+        <li>治理层：信息屏障、法定保留、Discovery API、DLP、app approvals——这一层是 IT 愿意续费的原因，也是最难搬的部分。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>有，而且是结构性的，只是不长得像病毒传播：Slack Connect 把外部组织拉进同一批频道（Pro 以上 250 orgs），跨公司协作本身就是曝光；模板与 Slackbot Skills 的组织级发布，让「一个人的方法」变成「全队一键可跑」，这是内部扩散。分享数据官方未披露，本条为 [推断]。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Channel（频道）</span><div class="desc">产品的容器，也是权限的边界：一个话题一个频道，人、文件、应用、AI 全在里面。官方措辞是 flexible, transparent spaces for working together。Slack 所有 AI 能力都长在这个容器上，而不是另起一个界面。</div></div>
+    <div class="surface"><span class="name">Slack Connect（跨组织）</span><div class="desc">把外部组织拉进同一批频道与 DM（Pro 以上最多 250 orgs），官方定位是把对话从割裂的邮件线程里搬出来。它是 B 端少见的病毒入口：合作方被迫成为用户。</div></div>
+    <div class="surface"><span class="name">Canvas + List（文档与结构化数据）</span><div class="desc">Canvas 是频道里的文档面，也是 Slackbot Skills 的指令载体（官方写 with a canvas you own）；List 是会话内的任务表，可被工作流读写、可被 MCP server 增删改查。这两件是它从「聊天」跨到「工作」的桥。</div></div>
+    <div class="surface"><span class="name">Huddle + Clip（音视频）</span><div class="desc">频道内即时音视频与异步录制；Huddle 结束后 AI 自动出笔记、待办与谁说了什么。会议不再是另一个软件，而是频道里的一次举手。</div></div>
+    <div class="surface"><span class="name">Slackbot + Agent（AI 成员）</span><div class="desc">Slackbot 是团队级 AI 队友（跨应用执行：调研、建工作流、建 dashboard/报表、更新记录、起草内容），Agent 是可被 @ 的成员级实体，两者靠 Skills（markdown/canvas 指令 → 组织级发布）与双向 MCP 长出能力。这一层是它在 2026 年真正的产品重心。</div></div>
+    <div class="surface"><span class="name">Workflow Builder + Enterprise Search（编排与检索）</span><div class="desc">编排层：触发器 + 步骤 + 条件（最多 15 个条件）+ 70+ 连接器，可插 AI 生成回答、agent 对话、自定义代码步骤，Pro 起付费。检索层：一个搜索框搜 Slack + 已连接应用 + 自建数据源（Custom Sources API），权限感知。前者把重复流程变成自动跑，后者把组织记忆变成可查——它们才是「工作 OS」这个词的实处。</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">Workspace / Org（工作区，计费与权限的最小单位）</span>
+    <span class="entity">Channel（频道，容器与权限边界）</span>
+    <span class="entity">Message / Thread（对话的最小单元与从属线程）</span>
+    <span class="entity">Canvas / List / Workflow（文档、结构化记录、自动化）</span>
+    <span class="entity">App / Agent / Skill / MCP server（身份与工具，可被 @ 的执行者）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>主轴是「频道」：一切从频道进来，再横向串成搜索、Connect 与治理。好处是零学习成本——频道本来就是团队的心智单位；代价是产品没有自己的画布，所有价值都寄存在「对话是否发生在这里」这件事上。也正因为这样，它才必须把 AI 做成频道里的一个成员：新界面会破坏这个主轴，新成员不会。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>结构是「左侧频道栏 + 顶部搜索 + 底部输入框」三段式，输入框同时是消息、workflow、agent 调用与文件上传的入口——把所有动作收进一个框，是它交互上最省事也最有效的设计。本期未实测，此段只据官方功能页与文档结构描述，不写体验结论。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">所有工艺都指向一句话：让新能力以「已有形态」出现。agent 是成员、技能是文件、自动化是频道里的一个步骤——用户不需要学新东西，只需要把旧动作多做一次。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">把 AI 做成「成员」，不做成「按钮」</span><div class="body">Slackbot 的身份是一个能被 @ 的队友，而不是工具栏里的一个按钮。这个选择决定了三件事：AI 有权限、有上下文、有历史；人不需要切换界面；以及它在频道里的产出天然被别人看见（也就天然可被复用）。</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">三种封装分层，各卖给不同的人</span><div class="body">Template 卖给「不想从零配」的团队（预配置 channel + canvas + list + workflow）；Slackbot Skills 卖给「有自己方法」的人（一段 markdown 或一个 canvas → 组织级发布 → 全队一键跑）；Agent + 双向 MCP 卖给「有工程能力」的组织。同一批原子，三种包装，三种买家。</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">把「个人绝活」变成「组织资产」的机制</span><div class="body">Skills 的四步是：用 markdown 或 canvas 写指令 → 创建 → 更新 → 组织级发布（API 名 admin.slackbot.skills.publish）→ 加入成员库。这是知识库产品化的标准形态：规则写成文件、发布成能力、按需调用。它把「老员工的经验」从口头变成了可执行资产。</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">双向 MCP：既当服务器，也当客户端</span><div class="body">一头是 Slack MCP Server（https://mcp.slack.com/mcp，远程 HTTP + OAuth），让 Claude、Cursor 这类外部 AI 读写 Slack 的消息、频道、Canvas、List；另一头是 Slackbot MCP Client，让 Slack 连你自己的远程 MCP server，自动发现并调用其中工具。「你家的 AI 可以进我家；我家的 AI 也可以去你家」——这是 2026 年平台级产品最难抄的一步。</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">把 AI 用量做成定价的档位线</span><div class="body">Free/Pro 的 Slackbot 是 limited trial，Business+/Enterprise+ 才持续可用，只有 Enterprise+ 写 no weekly message limits，超额走 Salesforce Flex Credits。它没有公布具体条数——模糊的额度本身就是一种定价权。对用户的启示：按「AI 执行量」而不是只按人头计价，会是 2026 年 SaaS 的默认动作。</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">价值到达时间：本次未测（本期没有实测；不把「第一次收到消息」当成价值到达，也不换算成分钟）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">认知负荷：中（未实测；可核实的结构是同一个界面里并存四种容器：频道、线程、画布、列表）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">惊喜点：模板一键生成工作场所、会议自动留痕、agent 变成频道成员</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">信任：大众口碑很稳（G2 4.5 / 40,606，1★与 2★各占 0%），企业信任层按档位给（信息屏障、法定保留、Discovery API、HIPAA 在 Business+ 起，多 SAML 与 data residency 在 Enterprise+）。但信任的真实瓶颈不在安全，在噪音：5 星用户的最大不满就是「重要的东西被埋了」。</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">摩擦：通知过载、免费档的墙、学习曲线</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>模板可以一键落进工作区：channel + canvas + list + workflow 整套骨架，不用从空白页开始（官方 35 个模板 + 14 个分类）。</li>
+        <li>Huddle 开完自动出笔记与 action items，会议不需要换软件（官方功能页原文）。</li>
+        <li>@ 一个 agent 就开一个 code channel，人 + 队友 + agent 在频道里共同看 diff（code channels 功能页）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>通知过载与信息被埋：G2 差评原话 The notification overload can get pretty overwhelming once you're in a few active channel, important updates get buried fast；5 星用户也重复同一句。这是「一切进频道」的直接代价。</li>
+        <li>免费档的墙很硬：90 天消息历史、最多 10 个 app、1:1 huddle。G2 原话点名 the 90-day message history limit on the free tier is really annoying。</li>
+        <li>学习曲线与界面复杂度：G2 差评原话 The interface was too hard to use. Not user-friendly enough；另一条写 it makes it incredibly hard to follow and use unless you are on it 24x7。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>Freemium + 按席位订阅 + 企业年付（AI 额度做分档线）</h5><p>Free $0（90 天历史 / 10 个 app / 1:1 huddle 与外部 DM / Basic AI）；Pro $8.75 每人每月，年付 $7.25（无限历史、无限 app、群组 huddle、最多 250 个外部组织）；Business+ $18，年付 $15（Slackbot 持续可用 + 管理合规套件）；Enterprise+ $45，仅年付、Contact Sales（Slackbot 无周消息上限 + Enterprise search + 多 SAML + data residency）。促销价（Pro $4.38、Business+ $9，前三个月）与 Flex Credits 超额购买都在定价页 FAQ 里写明。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>免费停在哪</h5><p>免费：90 天消息历史、最多 10 个 app、1:1 huddle、1:1 外部 DM、Basic AI（摘要 / Slackbot 试用 / AI 工作流生成 / AI 搜索 / 每日回顾 / 文件摘要）。付费：Pro 买无限历史、无限 app、群组 huddle、最多 250 个外部组织；Business+ 买 Slackbot 持续可用与治理（多工作区、细分角色、信息屏障、法定保留、Discovery API、HIPAA）；Enterprise+ 买 Slackbot 无周消息上限、Enterprise search、多 SAML、data residency。另外 Workflow Builder 是 Pro 起的付费功能，AI 超额走 Flex Credits。</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>入口免费到能自传播，钱收在治理与 AI 额度上</h5><p>免费档给的是「一个团队能真的用起来」的最小集合（90 天历史 + 10 个 app + 1:1 会议），刚好卡在「小团队够用、成长中的团队一定不够」的位置。付费的三次跳：无限历史与无限 app（Pro）→ Slackbot 持续可用 + 合规（Business+）→ 多 SAML / data residency / 无周上限（Enterprise+）。它卖的不是功能，是「组织变大之后必须有的那几样东西」。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>体验与变现是对齐的，还是打架的？</h5><p>大体对齐，但 2026 年出现了一道新裂缝。对齐的一面：免费档卡在「团队会自然撞墙」的位置（历史、app 数、群组会议），付费墙全部落在组织变大后才需要的东西上（治理、合规、AI 额度），切得很准。打架的一面：AI 的计价从「席位」变成「Slackbot 额度」，而额度数值官方不公布——用户没法预算「我这个月会花多少 AI」，这会让采购在续约时把不确定性折成折扣。另一处张力：Workflow Builder 到底算不算免费档能力，功能页说是付费功能、定价页 Free 档又列了 AI workflow generation，官方口径自相矛盾。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">名单不靠猜，取自它自己的动作：官网产品级对比页只有两个（/compare/slack-vs-teams、/compare/slack-vs-email），但博客级 /blog/compare/* 有 18 条，其中 13 条是竞品 vs 页——asana、chatwork、clickup、discord、google-chat、line-works、mattermost、microsoft-teams、monday、stackfield、trello、whatsapp、zoom，另有 4 条 alternatives 页（teams / discord / google-chat / trello 的替代品）。换句话说：它把 Microsoft Teams 当正面战场，把 Google Chat 与 Discord 当侧翼，把 mattermost / chatwork / line-works / stackfield 当「本地化与自托管」这一路的防守对象。竞品价格本次全部未核验，不编。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>Slack</th>
+          <th>Microsoft Teams</th>
+          <th>Google Chat</th>
+          <th>Discord</th>
+          <th>自托管与合规替代（Mattermost / Chatwork / Line Works / Stackfield）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>主战场</th><td class="own">团队协作工作场所 + agent 托管层</td><td>同一批企业员工：已经在用 Microsoft 365 的公司</td><td>Workspace 客户：Gmail / Drive / Meet 已经在用的团队</td><td>社群与兴趣团体起家，正往工作场景渗透的小团队</td><td>数据不能出内网、或所在市场被本地产品占住的组织</td></tr>
+        <tr><th>接入与协议</th><td class="own">双向 MCP（server + client）+ 2,600+ 应用 + 可 @ 的 agent + Real-Time Search API</td><td>长在 Microsoft 365 栈里（Outlook / SharePoint / Office 同账号），会议走 Teams；本次未核验其对外协议细节</td><td>与 Gmail、Drive、Meet 同栈，账号体系即权限体系</td><td>频道 + 语音房，为「在场感」设计，不以权限与治理为第一优先</td><td>自托管或本地化部署，用「数据不出门」换掉一部分功能</td></tr>
+        <tr><th>分发位置</th><td class="own">13 语种大站（英文 1,769 页）+ Marketplace 2,881 页 + 帮助中心 579 页 + Salesforce 渠道</td><td>企业批量授权与 IT 采购，默认随 M365 到位</td><td>Workspace 默认位，零分发成本</td><td>社区自传播与创作者生态，几乎不靠企业销售</td><td>政企采购、地区渠道、开源社区</td></tr>
+        <tr><th>价格可见性</th><td class="own">四档明码标价，Slackbot 额度做分档线，超额 Flex Credits；但具体额度数值不公开</td><td>本次未核验（Slack 官网把它列进 /compare/slack-vs-teams 与博客 13 个竞品 vs 页之首）</td><td>本次未核验（Slack 博客有 /blog/compare/slack-vs-google-chat）</td><td>本次未核验（Slack 博客有 /blog/compare/slack-vs-discord）</td><td>本次未核验（这四家都在 Slack 博客的竞品 vs 页名单里，说明它自己把它们当对手）</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 三处别人短期不好补：一是双向 MCP（别家多是单向接入，Slack 同时做了 server 与 client）；二是应用目录的厚度（2,600+ 应用，sitemap 2,871 页，且每个应用自带一页长尾）；三是治理颗粒度（信息屏障、法定保留、Discovery API、app approvals 这一整套，是它从 Pro 走到 Enterprise+ 的真正台阶）。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 三条缝：平台捆绑（Teams 随 M365、Google Chat 随 Workspace 到位，用户不会为同一件事再买一份）；通知过载（G2 的 5 星用户都在抱怨，这是它自己长出来的结构性问题，而 Discord 这类产品把噪音当成氛围）；AI 额度不透明（Slackbot 限额不公布，采购算不出账，恰恰给了竞品一个「打包价更好算」的切口）。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>高意图与本地化 SEO 双轨：13 个语种各一份营销站（英文 1,769 页、zh-CN 1,478 页），blog 1,179 篇是最大单一板块；产品级对比页 2 个 + 博客级竞品 vs 页 13 个 + alternatives 页 4 个；定价还被拆成 /pricing/free、/pricing/pro、/pricing/businessplus、/pricing/paid-vs-free 四个独立入口承接搜索。</li>
+        <li>PLG 免费档与团队自传播：所有页面 CTA 是 Get started、无销售介入；模板可一键落进工作区；Skills 可组织级发布——「一个人的方法变成全队一键可跑」本身就是内部扩散机制。</li>
+        <li>Salesforce 企业渠道 + Partner 体系：官网署名 Salesforce 旗下公司，Slackbot 进 Lightning，Flex Credits 走 Salesforce 售卖；另有 Partner Program、Partner Offers、Slack Certified 与 199 个客户故事支撑采购决策。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>免费档 → 团队 → 治理的爬梯环</strong> — Free $0 永久（90 天历史、10 个 app）→ 团队涨到需要无限历史与无限 app（Pro $8.75）→ 需要 Slackbot 持续可用与合规（Business+ $18）→ 需要多 SAML、data residency、Slackbot 无周上限（Enterprise+ $45）。四级台阶每一级都绑一个「组织才需要」的能力，这是它把个人使用转成企业付费的标准路径。</li>
+        <li><strong>生态反哺环</strong> — 第三方应用上架 Marketplace 拿分发 → 每个应用一页贡献长尾（sitemap 2,871 个应用页）→ 用户为了某个 app 装 Slack → 该 app 的作者又成了 Slack 的分销。它自己不用多写一页内容，目录会替它长。这条环的脆弱点在于：平台一旦收紧审核或 API 权限（它 2025-06 已开始阻止 LLM 长期索引），环的转速会立刻下降。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>从沟通到执行：Workflow Builder、Slackbot 现场产物、Slack CRM——把对话末端接上流程与业务对象。</li><li>从人到 agent：Agent、code channels、双向 MCP——把「同事」这个概念扩展到非人类成员（[推断] 这是它唯一能躲开「又一个聊天工具」的方向）。</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>9 个部门 × 9 个行业：Frontline、Engineering、IT、客服、销售、项目管理、市场、HR、安全，加制造/金融/零售/公共部门/教育/医疗。</li><li>11 个 use case 页（项目管理、客户协作、高效会议、销售管道、内部沟通、项目跟踪、线索管理、团队生产力、入职、工时、快速找答案）——它把「所有需要协作的岗位」都铺了一遍。</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>开放接口已经齐了：Slack MCP Server（远程 HTTP + OAuth）、Slackbot MCP Client（4 种鉴权）、Web API（359 个方法页）、Events（121 个）、Real-Time Search API、Block Kit、Bolt 三语言 SDK、Deno SDK、CLI、8 个官方 samples。</li><li>[推断] 它的平台策略是「当 agent 的托管层」：不争谁来当助手，争助手住在哪里。被 Salesforce 收编之后，这个策略反而更顺——因为 Salesforce 需要一个企业侧的 agent 落地场所，而 Slack 正好是那个场所。</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>应用层六维</h3>
+    <span class="pill">模型用得好不好</span>
+  </div>
+  <p class="section-intro">六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。</p>
+  <p class="section-intro">本片判为 **嵌入**。拔电测试：拿走 AI，产品照常卖 → AI 嵌入。（依据：传统工具，AI 属后加能力）</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① 替掉哪一步</h4>
+      <p>替掉的是「这件事该找谁、上次怎么定的」这段往返：原来靠记忆与私聊，现在靠频道历史 + Enterprise Search + @Slackbot。成本从「找人的时间」变成席位费（Free $0 起）——所以它的价值判断从来不是「AI 有多强」，而是「组织够不够大」。</p>
+    </div>
+    <div class="info-card">
+      <h4>② 脏活谁干</h4>
+      <p>它啃掉检索、摘要、跨应用取数、把结果写回 Canvas/List；甩回两件：一是权限与接入（app 审批、OAuth scope、管理员批准 MCP），二是治理（信息屏障、法定保留、DLP）。这两件是它最贵的部分，也是它最不愿意替你做的部分——因为那正是它收费的地方。</p>
+    </div>
+    <div class="info-card">
+      <h4>③ 出来能不能用</h4>
+      <p>能用，但产出需要人确认：Slackbot 在频道里给的是可排序/可筛选/可固定的视图与草稿，不是终稿。本期未实测这一点，只据官方功能页描述，因此不给「能不能直接用」的结论。</p>
+    </div>
+    <div class="info-card">
+      <h4>④ 错了怎么兜</h4>
+      <p>兜底在权限与审批，不在 AI：app approvals、MCP 管理员审批、Enterprise+ 的合规开关构成外层的护栏；但 AI 的产出有没有来源标注与置信度，本次未核验到证据——所以「它凭什么这么说」这一段仍然要靠人。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ 错一次多贵</h4>
+      <p>大体可逆：消息可编辑/删除、Canvas 有版本、workflow 可停用。不可逆的是那条发到 250 个外部组织（Connect）里的消息——它一旦发出，就同时离开了你的权限边界。对 B 端，这才是真正「错不起」的地方。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ 不用它的替代</h4>
+      <p>个人换得掉（Discord、Teams、甚至邮件），组织换不掉：历史 + 2,600 应用的集成位 + 治理策略 + 员工的肌肉记忆，四样叠起来，迁移成本远高于订阅费。所以它的留存不是「离不开」，是「换不起」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方未单独披露运营指标。以下分两类：能核实的公开事实（价格、sitemap 页数、G2 评级分布、官方营销数字），与标注 [推断] 的「它应该看什么」——后者不是真实数据。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>每周在频道内被完成的「动作」数（被 @ 的 agent 调用 + 跑完的 workflow + 被关闭的 List 项）（[推断]）</h5>
+      <p>[推断] 它按席位收费、按「工作是否在这里发生」定价：消息量只证明热闹，动作数才证明它是工作场所。北美星不该是 DAU——Slack 的 DAU 早已饱和，2026 年真正要证明的是「AI 有没有被真的用起来」。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>免费档 → 付费档的历史解锁率（90 天前的消息被读了几次）</h5>
+      <p>免费档唯一会「疼」的墙是 90 天历史。查过 90 天前消息的团队，才是有真实记忆需求的团队；这个行为比注册数更能预测付费。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>Slackbot 的周活跃与 Skills 的组织级发布数</h5>
+      <p>Slackbot 是它 AI 收入的唯一分档线；Skills 的组织级发布数则说明「个人方法有没有变成组织资产」——后者是它相对所有 AI 助手最独特的留存机制。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>Marketplace 应用的安装深度（安装后 30 天仍在用）</h5>
+      <p>2,881 页应用目录是它的长尾与护城河，但目录的价值取决于「装上的应用有没有被用」，不是应用数量。装而不用会让生态从资产变成噪音。</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>每用户每日通知数 + 关键消息被读到的延迟</h5>
+      <p>G2 的 5 星用户都在抱怨同一件事：重要的东西被埋。通知量是增长最诚实的反向指标——通知越多活跃可能越高，但价值越低。这条护栏不设，AI 摘要只会让噪音更贵。</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>没有公开的付费席位流失率、ARR 拆分、单条消息的推理成本 [推断]</h5>
+      <p>[推断] Slackbot「按席位固定成本、不按 token 计费」的口径意味着它在替用户吞掉推理成本的不确定性；免费档也在用 AI，等于免费用户持续烧钱。如果只看活跃与评论，会看不见「AI 用得越多、毛利越薄」。另一处盲区：它 2025-06 开始阻止 LLM 长期索引，短期看是护数据，长期会影响它在 AI 答案里的可见度——这条不会出现在任何产品指标里。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">通知过载：一切进频道的代价</span><span class="sev">高</span></div>
+      <div class="body">G2 里 5 星用户写下的不满高度一致：重要更新被淹没、旧上下文难找、通知分心。这不是 bug，是「一切进频道」这个设计选择的另一面——同一个机制既带来透明，也带来噪音。对它的 AI 来说这是一道真正的题：摘要与每日回顾只是在噪音上加一层摘要，真正的解法是「什么该打扰我」的判断权。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">免费档的墙刚好卡在团队长大那一刻</span><span class="sev">高 · High</span></div>
+      <div class="body">90 天历史 + 10 个 app + 1:1 huddle：单看每一项都不算苛刻，合起来就是「小团队试用很爽、真用会撞墙」。G2 原话点名 90 天历史 annoying。这是设计意图，不是缺陷——但也意味着它对「三个人的小团队」几乎没有收入，收入必须靠团队长大，这把增长曲线的斜率交给了客户的招聘节奏。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">学习曲线与界面复杂度</span><span class="sev">中</span></div>
+      <div class="body">G2 差评原话：The interface was too hard to use. Not user-friendly enough；另一条写，除非你 24x7 挂在上面，否则很难跟上它在说什么。对内部沟通工具，这等于说「信息架构的复杂度已经超过了组织的信息量」。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">AI 计价不透明：限额不公布</span><span class="sev">中 · Medium</span></div>
+      <div class="body">定价页只说 Free/Pro 的 Slackbot 是 limited trial、Enterprise+ 没有周消息上限，具体条数不公布；超额要买 Salesforce Flex Credits。对采购，这意味着 AI 这一项不可预算；对竞品，这是最好的切入话术。同一份定价里还有一处矛盾未解：Workflow Builder 功能页说是付费功能，定价页 Free 档却列了 AI workflow generation。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">风险按「可能性 × 影响」排序，严重度是我的判断，不是公司披露。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>平台捆绑：Teams 与 Google Chat 把「聊天」做成免费默认</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>守住捆绑做不到的三件：跨公司协作（Connect 的网络）、应用目录的厚度、双向 MCP 的开放性。同时把「治理」当成正面卖点打——捆绑品最难做的就是信息屏障与法定保留这一层。</td></tr>
+      <tr><td><strong>AI 层的价值被上游拿走（模型厂商自己就是 agent 平台）</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>它已经在做正确的防守：把 AI 做成成员而不是入口，把权限与审计做成别人绕不过的一层，并用 MCP 让外部 agent 依赖它的上下文。风险在于「依赖是双向的」——它同时依赖上游模型的质量。</td></tr>
+      <tr><td><strong>通知过载与信息密度反噬</strong></td><td>Product</td><td class="sev-med">Medium</td><td>High</td><td>把「什么该打扰我」做成可训练的一层（而不是再加一层摘要）：以频道/项目为单位设静默、以关注对象为单位设提醒、让 AI 负责「这条要不要现在看」的判断并给出理由。这一层做成了，它就从噪音源变成过滤器。</td></tr>
+      <tr><td><strong>AI 额度不透明，长期压低企业续约的确定性</strong></td><td>Business</td><td class="sev-med">Medium</td><td>Medium</td><td>把 Slackbot 额度、超额单价、用量面板写清，并给「上限封顶」选项——采购最怕的不是贵，是算不出来。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>（我的判断）把「Skills → 组织资产」这套机制抄成知识库产品</h5>
+      <div class="desc">怎么做：用 markdown 或画布写指令 → 组织级发布 → 全队一键跑，四步照抄 Slackbot Skills 的结构（创建/更新/发布/入成员库），但落地在一个更窄的场景里（比如某个岗位的固定流程）。为什么：这是把「老员工的判断」变成可执行资产的最短路径，而绝大多数知识库产品还停在「文档存起来」，没走到「能力被调用」。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>（我的判断）先做协议/插件，不做又一个界面</h5>
+      <div class="desc">怎么做：把产品做成 MCP server + 一个 Skill 包，去别人的场景里被调用（Claude、Cursor、Slackbot 都能是宿主），而不是要求用户再装一个 App。为什么：Slack 证明了「定义好身份+权限+事件+消息格式，生态会替你长功能」；对资源少的团队，这是唯一能借到别人分发的方式。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>（我的判断）把定价单位从人头改成执行量，但要把额度写明</h5>
+      <div class="desc">怎么做：设一档按「AI 执行量」计价（而不是只按人头），并且把额度数值、超额单价、用量面板全部写清。为什么：Slack 已经把分档线从席位挪到 Slackbot 额度，但额度不公布——这既是它的定价权，也是它的采购阻力。照抄方向、反着做透明度，是最省力的差异化。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>它的赌注：不造最强的 AI，做 AI 必须住的房子</h5>
+      <div class="desc">三个动作叠在一起：把 AI 做成频道成员（Slackbot / Agent / Skills）而不是新界面；用双向 MCP 让外部 agent 能进能出；用权限与治理把「企业敢让 agent 上手」这件事做实。前两个是产品动作，第三个才是真赌注——因为 agent 真正卡住的从来不是能力，是「它能不能被授权去动真实数据」。代价是它必须持续妥协：为了让 2,600 个应用继续适配，它的每一项 AI 能力都得兼容旧形态，创新速度被生态绑架。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>终局：工作不再有「入口」，只有「谁被叫到」</h5>
+      <div class="desc">如果 agent 真的成为同事，那么「打开一个工作软件」这个动作会消失——人只需要说话，agent 自己去调工具、留记录、找下一个执行者。在那种世界里，赢家不是模型最强的，而是「身份、权限、上下文、审计」四件事都在它手里的那一家。Slack 现在的位置离这个终局最近，但它缺两块：一是自己的模型（它选择不造，靠合作），二是跨出 Slack 的上下文（2025-06 阻止 LLM 索引，恰恰说明它不愿意把上下文交出去）。这两块决定了它是「agent 的家」还是「agent 的宿舍」。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>双向 MCP 的双边位置、2,881 页应用目录、13 语种 1,769 页的大站 SEO、把「个人方法」变成「组织资产」的 Skills 机制、以及从 Pro 到 Enterprise+ 逐级加码的治理颗粒度。</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>三个人的小团队（免费档够用，且 10 个 app 的限制刚好卡住他们）；数据不能出内网的组织（这是 mattermost / stackfield 的活）；只想要「一个便宜好用的聊天工具」的公司（它的定价与治理复杂度是负担）；以及对通知噪音零容忍的团队。</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>护城河是「强」的，但类型要看清：它强在协议与网络（2,600+ 应用按它的身份/权限模型写好、Connect 把外部组织拉进来），不强在 AI（AI 层几乎全是可复制的封装）。真正脆弱的地方只有一处：它的护城河建立在「工作发生在频道里」这个前提上，而 agent 时代的用户可能不再关心「在哪儿说」——那时它的协议层会从资产变成一层昂贵的中间件。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">这份名单不是猜的，全部取自它自己的动作：官网产品级对比页只放了两个（/compare/slack-vs-teams、/compare/slack-vs-email），但博客级 /blog/compare/* 有 18 条——13 个竞品 vs 页（asana、chatwork、clickup、discord、google-chat、line-works、mattermost、microsoft-teams、monday、stackfield、trello、whatsapp、zoom）+ 4 个 alternatives 页（teams / discord / google-chat / trello）+ 1 个德语法务页。换句话说：它把谁当对手，写在博客目录里。</p><table class="risk-table"><thead><tr><th>谁</th><th>抢同一个需求</th><th>抢同一段链路</th><th>用户实际迁移</th></tr></thead><tbody><tr><td>Microsoft Teams</td><td>同一批企业员工：已经在用 Microsoft 365 的公司</td><td>同一个入口：聊天 + 会议 + 文件，长在 M365 同一个账号体系里</td><td>它唯一的「产品级」对比对象（/compare/slack-vs-teams）。威胁不是功能，是「已经付过钱了」</td></tr><tr><td>Google Chat</td><td>Workspace 客户：Gmail / Drive / Meet 已在用的团队</td><td>同一个入口：邮件、文档、会议同栈，账号即权限</td><td>博客有 /blog/compare/slack-vs-google-chat，另有 google-chat-alternatives 页——正面防守</td></tr><tr><td>Discord</td><td>社群与兴趣团体起家，正往小团队工作场景渗透</td><td>频道 + 语音房的「在场感」，不加治理</td><td>G2 差评里有人直接推荐 GroupMe / 更轻的聊天工具，说明「只想要聊天」这一层在流失</td></tr><tr><td>Mattermost / Stackfield / Chatwork / Line Works</td><td>数据不能出内网、或本地市场被本地产品占住的组织</td><td>自托管与本地化部署，用「数据不出门」换掉一部分功能</td><td>四个都在它的博客竞品 vs 页名单里：这是它在政企与地区市场的防守对象</td></tr><tr><td>Asana / Trello / Monday / ClickUp</td><td>要「项目被跟踪」而不是「对话被看见」的团队</td><td>任务与流程这一段链路（Slack 用 List + Workflow 去接）</td><td>四家各有 vs 页。它的应对不是做更强的项目管理，而是把项目搬进频道（List + 模板）</td></tr><tr><td>Zoom</td><td>会议为主的团队</td><td>会议这一段（Slack 用 Huddle 去接）</td><td>有 /blog/compare/slack-vs-zoom。这是「会议工具往聊天渗透」与「聊天工具往会议渗透」的对撞</td></tr></tbody></table><p class="section-intro">读法：它在地图上的位置很稳但很挤——下面被「免费捆绑」压（Teams / Google Chat）、侧面被「更轻更快」切（Discord、GroupMe）、上面被「更专业的项目管理」挡（Asana / Monday）。它唯一的空位是「跨组织协作 + 应用目录 + 双向 MCP」这个组合：前两个别人做不厚，第三个别人还没做。竞品价格本次全部未核验，不做价格对比。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro"><strong>AI 构建过程（Slack 怎么把原子拼成工作流）</strong>：① 先有 12 个原子——Channel / Canvas / List / Message / Huddle / App / Agent / Slackbot / Workflow / MCP tool / Search / 权限；② 再一条拼接公式——容器 × 身份 × 权限 × 触发器 × 工具 = 一个工作流（官方的四个例子：Channel+App+OAuth scope+事件+Web API、Channel+Agent+MCP tool+权限+@、Workflow(trigger)+条件+连接器+消息步骤、Huddle+AI 摘要+Canvas）；③ 最后三种封装——Template 给人、Slackbot Skills 给团队方法（markdown 或 canvas 写成指令 → 组织级发布）、Agent + 双向 MCP 给机器（Slack MCP Server 让外部 AI 读写 Slack，Slackbot MCP Client 让 Slack 调你的 server）。所以它的「AI」不是某个功能，而是「把任意业务动作变成频道里一次可被 @ 的调用」。下表先看它自己这一层，再看各家的底座能锁住什么。</p><table class="risk-table"><thead><tr><th>产品</th><th>底座</th><th>它锁住了什么能力</th></tr></thead><tbody><tr><td>Slack</td><td>自建消息与权限模型（Channel / OAuth scope / Events / Block Kit）+ 双向 MCP（server 与 client 都做）+ 可插拔模型（自己不做基础模型，靠合作）</td><td>锁住「身份 × 权限 × 上下文」这一层：任何人想让 agent 动真实业务数据，都绕不开它的授权与审计</td></tr><tr><td>Microsoft Teams</td><td>Microsoft 365 的账号与图（Graph）体系，会议与文件同栈；AI 侧接 Copilot</td><td>锁住「已经在付钱的企业」：AI 作为套餐的一部分出现，边际定价为零</td></tr><tr><td>Google Chat</td><td>Workspace 账号体系 + Gmail / Drive / Meet 同栈</td><td>锁住「Workspace 客户的默认位」：不需要采购决策就能被用上</td></tr><tr><td>Discord</td><td>频道 + 语音房的自建实时栈，为大规模并发与在场感优化</td><td>锁住「社群与创作者」这一层的体验标准（延迟、在场、表情），但不锁治理</td></tr><tr><td>Mattermost</td><td>开源 + 自托管，企业自己运维</td><td>锁住「数据不出内网」这条硬约束——这是 SaaS 永远拿不到的一段市场</td></tr><tr><td>Asana / Monday / ClickUp</td><td>结构化数据（任务/看板/字段）+ 自动化规则</td><td>锁住「流程与责任」这一层：谁负责、卡在哪、什么时候交</td></tr></tbody></table><p class="section-intro">[推断] <strong>真护城河不在模型，也不在功能数量，在「谁持有授权链」。</strong>AI 时代的 agent 要动真实数据，必须过四道门：身份（它是谁）、权限（它能碰什么）、上下文（它看得懂什么）、审计（它做过什么）。Slack 把四道门全握在手里，这是它比「功能更多」更值钱的地方；Teams 与 Google Chat 握的是前三道的另一种版本（账号体系），第四道（审计与信息屏障）反而是 Slack 更细。<br>反过来说，它的底座有一个别人没有的弱点：<strong>它不拥有模型</strong>。上游模型能力一旦变成商品，它的 AI 差异化就只能靠封装与权限——这也解释了它为什么急着做双向 MCP：把「上下文」变成别人离不开的东西。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会（我的判断）</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <ol><li><strong>把「Skills → 组织资产」抄成知识库产品</strong>——用 markdown 或画布写指令，创建 → 更新 → 组织级发布 → 入成员库，四步照抄；但只做一个窄场景（某岗位的固定流程）。为什么值得抄：绝大多数知识库停在「文档存起来」，Slack 走完了最后一步「能力被调用」。<em>最轻，改的是发布机制不是数据模型。</em></li><li><strong>先做协议/插件，不做又一个界面</strong>——把产品做成 MCP server + 一个 Skill 包，让 Claude、Cursor、Slackbot 都能当宿主。为什么：Slack 证明「定义好身份+权限+事件+消息格式，生态会替你长功能」；资源少的团队没有第二种拿到分发的方式。<em>最快见效。</em></li><li><strong>定价按「AI 执行量」分档，但把额度写明</strong>——Slack 已经把分档线从席位挪到 Slackbot 额度，却没公布数值；照抄方向、反着做透明度（额度、超额单价、用量面板、上限封顶），是最省力的差异化。</li><li><strong>把「注意力路由」当第一职责</strong>——G2 里 5 星用户的最大不满是「重要的被埋了」。做任何消息型产品，AI 的第一件事应该是「判断这条要不要现在打扰谁」，而不是「再写一段摘要」。<em>最难，但这是唯一能同时提升留存与口碑的方向。</em></li></ol><p class="section-intro">四个里哪个最该先做？<strong>第 2 个</strong>：它不要求你有流量，只要求你把接口写对；哪个最容易被忽略？<strong>第 1 个</strong>——大家都把它当「模板功能」，其实它是「方法论市场」的地基。</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">先把规模摊开（全部来自官方 sitemap 实测，2026-11-26）：营销站英文 <strong>1,769</strong> 页，13 个语种各一份（zh-CN 1,478 页）；其中 /blog/* <strong>1,179</strong> 页是最大单一板块，/customer-stories/* 199 页，/resources/* 107 页，/templates/* 50 页，/solutions/* 32 页，/features/* 23 页。另有两套独立信息架构：Marketplace <strong>2,881</strong> 页（2,871 个应用页 + 9 个合集 + 1 个首页）、帮助中心 <strong>579</strong> 页（578 篇 × 13 语言）。三套加起来，英文侧约 5,229 个可索引入口，再乘 12 个语种的重复。</p><table class="risk-table"><thead><tr><th>环节</th><th>它怎么做的</th><th>为什么有效 / 哪里漏</th></tr></thead><tbody><tr><td>拉新</td><td>13 语种大站 + 2,881 页应用目录 + 579 页帮助中心 + 2 个产品级对比页 + 18 条博客对比集群</td><td>有效：页面规模本身就是壁垒，长尾词全覆盖。漏点：sitemap 只能证明页面存在，不能证明流量；自然搜索占比本次未核验</td></tr><tr><td>激活</td><td>所有页面 CTA 是 Get started（无销售介入）；模板可一键落进工作区；免费档即含 AI 摘要与 Slackbot 试用</td><td>有效：试用零摩擦。漏点：90 天历史 + 10 个 app 的墙会让小团队在「刚用顺」时撞上付费</td></tr><tr><td>留存</td><td>频道历史 + 线程 + Canvas/List + 2,600 应用的集成位 + 治理策略</td><td>有效：四层叠起来迁移成本极高。漏点：留存的是组织，不是个人——个人对它的黏性远低于组织</td></tr><tr><td>变现</td><td>Free $0 / Pro $8.75（年付 $7.25）/ Business+ $18（年付 $15）/ Enterprise+ $45（仅年付）</td><td>有效：付费点全部落在「组织变大才需要」的东西上。漏点：AI 额度不公布，采购算不出账</td></tr><tr><td>扩张</td><td>席位随人数增长；Connect 从跨部门长到跨公司；Slackbot 额度与 Flex Credits 按 AI 用量计价</td><td>[推断] 扩张的真实阻力不是价格，是「治理先行」：信息屏障与法定保留一旦是硬要求，决策周期就从一个人点一下变成 IT 与法务排队</td></tr></tbody></table><p class="section-intro">套利三问。<strong>钱从谁的兜里出：</strong>企业 IT / 业务部门的年度预算，个人几乎不付费——免费档就是给个人用的。<strong>还能拿多久：</strong>[推断] 只要「跨组织协作」与「应用目录」还是它的独占资产，就能一直拿；但 AI 这一层的溢价窗口在收窄（捆绑品免费送）。<strong>凭什么你拿到：</strong>靠三件别人短期补不齐的东西——2,600 个按它的权限模型写好的应用、跨公司网络、治理颗粒度。</p><p class="section-intro">最脆的那根梁：<strong>「工作发生在频道里」这个前提</strong>。如果 agent 时代的人不再关心「在哪儿说」（直接跟 agent 说），那么它 2,881 页的应用目录、13 语种的 SEO、甚至治理层，都会从「资产」变成「一层昂贵的中间件」。它现在的解法是双向 MCP——让自己成为 agent 必经的路，而不是 agent 的替代品。这条路对不对，2026 年还看不出来。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://slack.com/" target="_blank" rel="noopener">官网首页（H1：All your people and AI agents working together；副标 Slack connects your team）</a></li>
+    <li><a href="https://slack.com/features/agentic-platform" target="_blank" rel="noopener">Agent 平台页（The platform agents and AI call home；与 Anthropic / OpenAI / Perplexity 的互背书）</a></li>
+    <li><a href="https://slack.com/features/slackbot" target="_blank" rel="noopener">Slackbot 功能页（AI 队友、现场产物、按席位固定成本口径）</a></li>
+    <li><a href="https://slack.com/features/ai" target="_blank" rel="noopener">Slack AI 功能页（频道/线程摘要、每日回顾、AI 搜索、97 分钟口径）</a></li>
+    <li><a href="https://slack.com/pricing" target="_blank" rel="noopener">定价页（四档金额、Slackbot limited trial、Enterprise+ 无周上限、Flex Credits、教育折扣）</a></li>
+    <li><a href="https://slack.com/features/workflow-automation" target="_blank" rel="noopener">Workflow Builder 功能页（付费功能、up to 15 conditions、70+ 连接器、AI 生成工作流）</a></li>
+    <li><a href="https://docs.slack.dev/ai/slack-mcp-server" target="_blank" rel="noopener">Slack MCP Server 文档（https://mcp.slack.com/mcp，远程 HTTP + OAuth，可读写消息/Canvas/List）</a></li>
+    <li><a href="https://docs.slack.dev/ai/slackbot-mcp-client" target="_blank" rel="noopener">Slackbot MCP Client 文档（反向接入、4 种鉴权）</a></li>
+    <li><a href="https://docs.slack.dev/ai/slackbot-skills" target="_blank" rel="noopener">Slackbot Skills 文档（markdown/canvas → 创建/更新/组织级发布/入成员库）</a></li>
+    <li><a href="https://slack.com/marketplace" target="_blank" rel="noopener">Marketplace（官方口径 Browse over 2,600 apps；23 个分类与编辑合集）</a></li>
+    <li><a href="https://slack.com/templates/gallery" target="_blank" rel="noopener">模板库（1 gallery + 14 分类 + 35 个模板）</a></li>
+    <li><a href="https://slack.com/compare/slack-vs-teams" target="_blank" rel="noopener">产品级对比页（Slack vs Teams，含 94% / 97min / 1.7M 三个数字）</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_en-us.xml" target="_blank" rel="noopener">营销站 sitemap（英文 1,769 条；13 个语种子 sitemap）</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_marketplace_en-us.xml" target="_blank" rel="noopener">Marketplace sitemap（英文 2,881 条 = 2,871 应用页 + 9 合集 + 1 首页）</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_help_en-us.xml" target="_blank" rel="noopener">帮助中心 sitemap（英文 579 条 = 578 篇文章 × 13 语言）</a></li>
+    <li><a href="https://docs.slack.dev/sitemap.xml" target="_blank" rel="noopener">开发者文档 sitemap（3,266 条文档 URL：359 API / 121 事件 / 129 scope / 46 block element）</a></li>
+    <li><a href="https://www.g2.com/products/slack/reviews" target="_blank" rel="noopener">G2 评论页（4.5 分 / 40,606 条；5★75% · 4★20% · 3★3% · 2★0% · 1★0%）</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Slack_(software)" target="_blank" rel="noopener">增长史与方法（2013 发布 / 2019 DPO / 2021 Salesforce 收购 / 2025 阻止 LLM 索引）</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

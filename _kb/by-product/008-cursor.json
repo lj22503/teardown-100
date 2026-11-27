@@ -1,0 +1,45 @@
+{
+  "product": {
+    "no": "008",
+    "slug": "cursor",
+    "name": "Cursor",
+    "category": "AI 编程工具 / 代码编辑器（AI coding agent）[推断]",
+    "one_liner": "Cursor 是您的编程智能体，助您构建雄心勃勃的软件",
+    "icp_primary": "写代码的开发者与团队（官网自述：构建世界级软件的团队、超半数财富 500 强）",
+    "icp_secondary": "未采集",
+    "jtbd": "未采集",
+    "core_scenarios": "IDE 内 Agent 规划与生成/云端智能体并行跑任务/CLI 与 Slack 协作、GitHub PR 审查/代码库索引与语义搜索",
+    "ai_mode": "未采集",
+    "pricing_model": "未采集（定价页抓取超时失败）",
+    "free_tier": "未公开",
+    "paid_tiers": "未公开",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "未采集",
+    "moat_hypothesis": "未采集",
+    "evidence_urls": "https://cursor.com/",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [],
+  "workflows": [],
+  "channels": [],
+  "resources": [],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "008",
+      "product": "Cursor",
+      "has_gallery": "放弃",
+      "gallery_type": "—",
+      "gallery_url": "",
+      "url_pattern": "",
+      "scale_note": "本期未完成，先放弃",
+      "access": "—",
+      "modules_available": "n/a",
+      "sampled_templates": "0",
+      "notes": "008 原始目录就没有 README，模板层跳过",
+      "evidence_url": ""
+    }
+  ]
+}

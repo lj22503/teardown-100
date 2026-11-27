@@ -1,0 +1,15 @@
+﻿no,slug,name,resources,res_types,atoms,workflows,modules,fits,catalog
+001,notion,Notion,5,4,10,5,0,2,1
+002,obsidian,Obsidian,6,5,9,5,0,0,1
+003,capacities,Capacities,5,3,9,5,0,0,1
+004,reflect-notes,Reflect,5,4,9,5,0,0,1
+005,hynote-ai,HyNote AI,5,3,10,5,0,0,1
+006,claude,Claude,5,4,9,5,0,0,1
+007,framer,Framer,5,5,10,5,19,3,1
+008,cursor,Cursor,0,0,0,0,0,0,1
+009,figma,Figma,5,5,10,5,25,8,1
+010,fathom,Fathom,7,4,10,5,0,0,1
+011,elevenlabs,ElevenLabs,5,4,10,5,0,0,1
+012,gamma-3,Gamma,3,3,9,5,0,0,1
+013,slack,Slack,8,8,15,10,21,6,1
+014,taskade,Taskade,17,15,23,16,30,8,1

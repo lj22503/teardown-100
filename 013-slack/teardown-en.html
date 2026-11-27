@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Teardown · Slack — Principal PM Analysis</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="Report tools">
+  <div class="lang-tools" role="group" aria-label="Language">
+    <a href="teardown-en.html" class="lang-btn active" aria-label="English version">EN</a>
+    <a href="teardown-zh.html" class="lang-btn " aria-label="中文版本">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">Export MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">Export PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 Product Teardown</div>
+
+<div class="meta-strip">
+  <span>Product Teardown · Principal PM Analysis</span>
+  <span class="dot"></span>
+  <span>Generated 2026-11-26</span>
+  <span class="dot"></span>
+  <span>Product: Slack</span>
+</div>
+
+<h1>Slack<span class="tag">It doesn't sell chat. It sells turning any business action into one @-able call inside a channel. In 2026 its bet is not a stronger model but becoming the home agents live in — bidirectional MCP, Skills and a permission model, so somebody else's AI can move in.</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">Category</div><div class="value">B2B Collaboration / AI Work Platform (work OS + agent hosting layer)</div></div>
+  <div class="cell"><div class="label">Users</div><div class="value">Everything verifiable here is a marketing figure: 1B+ messages sent daily, 4M Slack Connect users collaborating with external teams weekly, 3M workflows per day, 1.7M apps actively used weekly (site footnotes credit FY2026 earnings commentary, FY2025 internal data and Salesforce internal data respectively). Marketplace: the site claims 2,600+ apps; the sitemap yields 2,871 app pages (plus 9 collections and 1 index = 2,881). G2: 4.5 / 40,606 reviews, split 5★75% · 4★20% · 3★3% · 2★0% · 1★0%. DAU/MAU, paid seats and ARR are not separately disclosed, so this card does not invent them. The Product Hunt page was blocked by Cloudflare this round — no data used.</div></div>
+  <div class="cell"><div class="label">Model</div><div class="value">Freemium + per-seat subscription + enterprise annual. Free $0 forever (90-day history, up to 10 apps, 1:1 huddles and DMs); Pro $8.75 per user per month (annual $7.25); Business+ $18 (annual $15, Slackbot ongoing); Enterprise+ $45 (annual only, Slackbot with no weekly message limits). AI overage runs through Salesforce Flex Credits; nonprofit and education discounts exist; Frontline is an add-on (all per the pricing FAQ).</div></div>
+  <div class="cell"><div class="label">Stage</div><div class="value">Mature, and mid-way through a second curve. Four public paid tiers (Free / Pro / Business+ / Enterprise+); a 13-language site; 199 customer-story pages; and three separate information architectures — Marketplace (2,881 pages), Help Center (579 pages) and developer docs (3,266 URLs) — each running its own machine. On the AI side it has grown from 'Slack AI summaries' into 'Slackbot + bidirectional MCP + Agentforce + code channels'. Milestones: launched 2013-08 (8,000 customers in 24 hours) → direct listing 2019-06 ($19.5B) → acquired by Salesforce, closed 2021-07-21 (~$27.7B) → ChatGPT integration 2023-03 → Agentforce into Slack 2025-05 → since 2025-06 it blocks long-term LLM indexing/copying of its data.</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">Inside</span>
+  <ol>
+    <li><a href="#tldr">Verdict · TL;DR</a></li>
+    <li><a href="#metrics">Key Signals</a></li>
+    <li><a href="#s1">1. Product Snapshot</a></li>
+    <li><a href="#gallery">· Product Tour</a></li>
+    <li><a href="#s2">2. Users & JTBD</a></li>
+    <li><a href="#s3">3. Core Product Loop</a></li>
+    <li><a href="#s4">4. Architecture & UX System</a></li>
+    <li><a href="#s5">5. Design Language & Craft</a></li>
+    <li><a href="#s6">6. Value Delivery & UX Quality</a></li>
+    <li><a href="#s7">7. Business Model</a></li>
+    <li><a href="#s8">8. Competitor Landscape</a></li>
+    <li><a href="#s9">9. Growth Strategy</a></li>
+    <li><a href="#s10">10. Application six-dim</a></li>
+    <li><a href="#s11">11. Metrics They Optimize For</a></li>
+    <li><a href="#s12">12. Friction & Weaknesses</a></li>
+    <li><a href="#s13">13. Risk Matrix</a></li>
+    <li><a href="#s14">14. Opportunities & Redesign</a></li>
+    <li><a href="#s15">15. Final PM Verdict</a></li>
+      <li><a href="#s16">16. Competitive map</a></li>
+    <li><a href="#s17">17. Rivals' technical base</a></li>
+    <li><a href="#s18">18. Portable opportunities (my judgement)</a></li>
+    <li><a href="#s19">19. Traffic and monetisation</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>Assumptions:</strong> Verifiable: the site's positioning copy, the four tier prices and feature mapping, the Slackbot limited-trial and Enterprise+ no-weekly-limit wording, Flex Credits and nonprofit discounts, Workflow Builder as paid with 15 conditions and 70+ connectors, the two shapes of bidirectional MCP and their auth modes, the four-step Skills publishing mechanism, the three sitemap counts (1,769 / 2,881 / 579), the 13 languages, the 18 blog comparison pages, G2 4.5/40,606 with distribution, and the public growth history (Wikipedia). Inferred and flagged: the weighting of the three traffic legs, per-user frequency, north-star and input/guardrail metrics, AI cost structure, and competitor prices and protocol details (not verified this round). No hands-on test was run, so no experience conclusions are given.
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM Verdict</div>
+    <h2>It is a protocol layer that standardises business actions into message-stream atoms. In the AI era it isn't fighting over whose model is best — it's fighting over whose house the agent lives in.</h2>
+    <div class="sub">The unplug test says embedded, not native: remove Slackbot and AI summaries and channels, Slack Connect, Canvas, Lists, Huddles and Workflow Builder all still sell. AI is not the foundation; it is a second floor built on one. The moat isn't the feature list either — it is the access protocol, the permission model and the occupation of the workplace: 2,600+ apps integrate with Slack because Slack defined identity, permissions, events and message format first, and the ecosystem grows features on its behalf. The price: every AI upgrade has to arrive in an existing shape — an agent must be an @-able member, not a new app.</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · Strategic strength</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">If you only read three things —</div>
+  <ul>
+    <li><strong>The moat is the protocol, not the features</strong> — Twelve atoms (Channel / Canvas / List / Message / Huddle / App / Agent / Slackbot / Workflow / MCP tool / Search / permissions) combine into four wrappers: a Template for people, Slackbot Skills for team know-how, Agent + bidirectional MCP for machines, Workflow Builder for processes. It doesn't grow every feature itself — 2,600+ apps do — so its feature list can never catch up, while its access position never moves.</li>
+    <li><strong>The AI pricing unit moved from seats to allowance</strong> — Pricing page, verbatim: Slackbot is a limited trial on Free and Pro, ongoing access continues on Business+ and Enterprise+, only Enterprise+ carries 'no weekly message limits', and overage is bought as Salesforce Flex Credits; Workflow Builder is a paid feature from Pro. Put together, AI here is not an add-on — it is the tier line. That is the most interesting pricing shift in SaaS this year.</li>
+    <li><strong>Traffic is a 13-language mega-site, not one viral post</strong> — Sitemap measurements (2026-11-26): the English marketing site holds 1,769 URLs, replicated across 13 languages (zh-CN 1,478), with /blog/* at 1,179 pages as the single largest block; Marketplace 2,881 pages; Help Center 579 pages (578 articles × 13 languages). Comparison pages come in two layers: product-level /compare/slack-vs-teams and /compare/slack-vs-email, plus a blog cluster /blog/compare/* with 18 entries (13 competitor-vs pages + 4 alternatives pages + 1 German legal page). Classic mega-site + directory + help centre — no single viral hit.</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">Time to value</div>
+    <div class="big">Not measured</div>
+    <div class="desc">No hands-on test this round; the first message is not counted as value and no minutes are claimed</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Core loop frequency</div>
+    <div class="big">Daily<small> 1B+ messages</small></div>
+    <div class="desc">Official figure: messages sent per day (FY2026 earnings commentary); per-user frequency is not disclosed</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Moat score</div>
+    <div class="big">8<small>/10</small></div>
+    <div class="desc">My judgement, not a measurement; points lost on a copyable AI layer and pricing power already ceded to Salesforce</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>Product Snapshot</h3>
+    <span class="pill">What it really is</span>
+  </div>
+  <p class="section-intro">Beyond the marketing description — what this product actually is as a system.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote"><strong>Product positioning</strong>: Slack is the collaboration workplace for teams and enterprises — conversation, documents, tasks, meetings, cross-org collaboration and AI inside one shell. Its 2026 wording is 'The platform agents and AI call home', which defines it as the runtime for agents rather than a chat tool. In plainer terms: for a company of 20 to 20,000 people it solves three recurring questions — where does this get said, who picks it up, and where do we find it later.</div>
+      <h4>Core user promise</h4>
+      <p>Homepage H1, verbatim: 'All your people and AI agents working together'; subtitle: 'Slack connects your team. Slackbot multiplies what they can do.' In user language: you no longer decide whether this should be a message, an email or a task — it all lives in one place, and the AI isn't another website either, it's a teammate you can @ in that same place.</p>
+    </div>
+    <div class="info-card">
+      <h4>Category & positioning</h4>
+      <p>It stands where three shelves intersect: collaboration tools (Teams, Google Chat, Discord), work OS / project collaboration (Asana, Trello, Monday, ClickUp — all in its competitor-vs pages), and the 2026 layer of 'agent hosting platform'. It leans collaboration-side but its centre of gravity is moving toward platform: more governance and integration than plain chat, more conversation and real-time than project tools, and one thing no agent platform has — a real organisation already working inside it.</p>
+      <h4 style="margin-top:14px;">Assumptions</h4>
+      <ul>
+        <li>[inferred] '2,600+' counts apps, and the 2,871 sitemap entries include historical and delisted ones; neither equals active installations. Any ecosystem value derived from them is unreliable.</li>
+        <li>[inferred] The revenue core is Business+ and Enterprise+, not Pro: ongoing Slackbot and the compliance suite both start at Business+, and every page carries a parallel 'Talk to sales'.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 PRODUCT TOUR (screenshots) -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>Product Tour</h3>
+    <span class="pill">Screenshots from the product</span>
+  </div>
+  <p class="section-intro">A visual pass through the surfaces we'll analyze next. Images sourced live from the product's public marketing pages.</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://a.slack-edge.com/73a2348/marketing/img/homepage/revamped-24/unfurl/hp-revamp-unfurl.jpg" alt="Slack homepage hero: the 2026 claim is 'All your people and AI agents working together' (official OG image from slack.com)" loading="lazy"/><figcaption><span class="fig-num">Fig.01</span>Slack homepage hero: the 2026 claim is 'All your people and AI agents working together' (official OG image from slack.com)</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/assets/d271095f-8547-407b-84ac-4cc70b480684/unfurl-slack-ai.jpg" alt="Slack AI feature page hero: channel and thread summaries, daily recaps, AI search and file summaries live here (official image from slack.com/features/ai)" loading="lazy"/><figcaption><span class="fig-num">Fig.02</span>Slack AI feature page hero: channel and thread summaries, daily recaps, AI search and file summaries live here (official image from slack.com/features/ai)</figcaption></figure>
+    <figure class="shot"><img src="https://a.slack-edge.com/cd054cc/marketing/img/agentforce/lp/updated_agentforce_unfurl_1200x628@2x.jpg" alt="Agentforce in Slack: Salesforce's enterprise agent can be @-mentioned in channels, DMs and threads to execute actions (official image from slack.com/ai-agents)" loading="lazy"/><figcaption><span class="fig-num">Fig.03</span>Agentforce in Slack: Salesforce's enterprise agent can be @-mentioned in channels, DMs and threads to execute actions (official image from slack.com/ai-agents)</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/assets/04bff822-2660-4360-862d-bc098d6385b4/unfurl-enterprise-search.jpg" alt="Enterprise Search: one box across Slack, connected third-party apps and custom sources, permission-aware (official image from slack.com/features/enterprise-search)" loading="lazy"/><figcaption><span class="fig-num">Fig.04</span>Enterprise Search: one box across Slack, connected third-party apps and custom sources, permission-aware (official image from slack.com/features/enterprise-search)</figcaption></figure>
+    <figure class="shot"><img src="https://d1kmis9bmaw00z.cloudfront.net/pending/f408d8ce-7b2a-46bc-a973-0cc1039e3d94/unfurl-workflow-builder@2x.jpg" alt="Workflow Builder: triggers, steps and conditions ('up to 15 conditions') across 70+ connectors, paid from Pro (official feature-page image)" loading="lazy"/><figcaption><span class="fig-num">Fig.05</span>Workflow Builder: triggers, steps and conditions ('up to 15 conditions') across 70+ connectors, paid from Pro (official feature-page image)</figcaption></figure>
+    <figure class="shot"><img src="https://d34u8crftukxnk.cloudfront.net/slackpress/prod/sites/6/slack-connect-unfurl-2.jpg" alt="Slack Connect: pulls external organisations into the same channels and DMs (up to 250 orgs on Pro+) — a rare B2B viral entry (official image from slack.com/connect)" loading="lazy"/><figcaption><span class="fig-num">Fig.06</span>Slack Connect: pulls external organisations into the same channels and DMs (up to 250 orgs on Pro+) — a rare B2B viral entry (official image from slack.com/connect)</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>Target Users & Jobs-to-be-Done</h3>
+    <span class="pill">Who + why</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Primary user segments</h4>
+      <ul>
+        <li><strong>Teams and enterprises (10 to 100,000 people)</strong> — This is the layer that actually pays. What it buys is 'the channel is the container': one topic, one channel, with people, files, apps and AI inside, and the permission boundary being the channel boundary. Moving up, the reason to pay shifts from unlimited history to governance — multiple workspaces, granular roles, information barriers, legal hold, Discovery API, HIPAA. The site's Solutions menu cuts scenarios into 9 departments × 9 industries × 11 use cases (32 solutions pages), which tells you it sells a workplace per function, not a point tool.</li>
+        <li><strong>Developers and IT (the people who integrate and govern)</strong> — This layer doesn't show up on the pricing page, it shows up in the docs: 359 Web API method pages, 121 event pages, 129 scope pages, 46 block elements, 22 blocks, 3,266 doc URLs; 90 CLI command pages, Bolt in three languages, a Deno SDK, 8 official samples. They are its real channel — 2,600+ apps and every internal agent grow out of this layer — and IT is also the person who signs off on Business+ and Enterprise+.</li>
+        <li><strong>Cross-org collaborators (clients, vendors, agencies)</strong> — Slack Connect pulls external organisations into the same channels and DMs (up to 250 orgs on Pro and above), described on the site as moving conversations out of siloed email threads. The strategic value isn't revenue, it's distribution: every cross-company collaboration is a product impression, and the other company often doesn't use Slack yet. This is the rare case of a viral loop built for B2B.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Trigger & context</h4>
+      <p><strong>Trigger moment:</strong> The team goes from 8 to 20 people and WeChat, email or hallway talk starts dropping context: the same question asked three times, new hires needing a human guide. Slack's trigger isn't 'I want a chat tool', it's 'we need a place where this accumulates'.</p>
+      <p><strong>Frequency:</strong> Always on during the workday — dozens to hundreds of touches a day; the site claims 1B+ messages sent daily (FY2026 earnings commentary). Per-user frequency is not disclosed.</p>
+      <p><strong>Context:</strong> Desktop, mobile and web; meetings happen inside a channel as a Huddle; action items land in Canvas or Lists; cross-company work runs through Connect; retrieval runs through Enterprise Search and AI search; execution runs through Workflow Builder, Slackbot and @-mentioned agents; data exits through the MCP server, Web API and Events.</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done</h4>
+    <div class="jtbd-row">
+      <div class="who">Functional</div>
+      <div class="job">Keep one thing said, decided and tracked in one place instead of hauling it between email, IM, docs and tickets. <br><em>"When ___, I want to ___, so I can ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Emotional</div>
+      <div class="job">Don't miss the important message, and don't drown in messages. The thing 5-star G2 reviewers complain about is nearly always the same: too many notifications, important updates buried in busy channels, old context hard to find. It sells the feeling 'I can find it'; the lived experience is often 'I have to dig for it'. <br><em>"I want to feel ___ / avoid feeling ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Social</div>
+      <div class="job">Be the person in the org who knows where to ask and who owns what; externally, be the partner who gets invited into the channel. <br><em>"I want others to see me as ___."</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>Core Product Loop</h3>
+    <span class="pill">System dynamics</span>
+  </div>
+  <p class="section-intro">The engine — how a single user session compounds into retention and, if lucky, growth.</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">Trigger</div>
+      <div class="what">A message arrives</div>
+      <div class="why">The trigger isn't 'I want AI', it's 'someone has to pick this up'. Slack's cleverness is that it built no new entry point for AI: every AI capability lives in an existing container — the composer, the channel, the canvas, the list. The user learns nothing new, they just type @Slackbot instead of @a-colleague.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Action</div>
+      <div class="what">Type @ in the composer, or let it run itself</div>
+      <div class="why">One composer carries three actions: @ an agent / run a workflow / turn the message into a List row. Workflow Builder supports triggers, steps and conditions (the site says 'up to 15 conditions') across 70+ connectors; Slackbot can call your own MCP server with four auth modes (none / Slack identity / DCR / manual OAuth). Collapsing the action entry points is what turns AI into a habit rather than a feature.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Reward</div>
+      <div class="what">Answer, record and next step all stay in the conversation</div>
+      <div class="why">You don't switch to another screen to see the result: Slackbot's output can be a sortable, filterable, pinnable view inside the channel, a Huddle produces notes and action items when it ends, and a Canvas can hold a workflow. Keeping output where the work happens is the biggest difference between Slack and every AI product that asks you to open a new app.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Return</div>
+      <div class="what">The channel thickens and history becomes an asset</div>
+      <div class="why">You come back not to chat again but to ask which channel decided that last time. Channels, threads, Canvas and Lists form organisational memory that cannot be moved, and Enterprise Search stitches it to connected third-party apps. That the free plan caps history at 90 days is the clearest proof that history is what this business sells.</div>
+    </div>
+  </div>
+  <div class="loop-note">"What it teaches is that work doesn't need to be archived somewhere else: the conversation is the record and @ is the execution. Use it long enough and people start judging whether something deserves doing by whether it has a channel."</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Acquisition loop</h4>
+      <p><strong>Traffic and exposure</strong>: three legs running in parallel, weighted roughly as follows ([inferred] from page structure and CTA design). (1) In-product PLG and team self-propagation: every page's CTA is 'Get started' with no sales gate, templates drop into a workspace in one click, and Skills publish at org level. (2) Mega-site SEO: 1,769 English marketing URLs + 2,881 Marketplace pages + 579 help pages, replicated across 13 languages, with 1,179 blog posts as the largest single block. (3) The Salesforce channel: co-branded as a Salesforce company, Slackbot inside Lightning, Flex Credits sold through Salesforce, and a parallel 'Talk to sales' on every page. Organic share of traffic, CAC by channel and the share of signups from Marketplace are all unverified — no guesses offered.</p>
+    </div>
+    <div class="info-card">
+      <h4>Activation · Aha moment</h4>
+      <p>The most aha-shaped moment in the official narrative: you @Slackbot in a channel, it calls your own MCP server, and the tool result comes back in the thread — not another app opened, just one more teammate. Not tested this round; this point rests on the official feature page and docs, and is not a hands-on conclusion.</p>
+    </div>
+    <div class="info-card">
+      <h4>Retention drivers</h4>
+      <ul>
+        <li>Channels, threads, Canvas and Lists form organisational memory; leaving means leaving the memory behind (the free plan caps it at 90 days, which is exactly what paid tiers sell back).</li>
+        <li>Once 2,600+ integrations and their OAuth grants are wired in, switching means redoing every connection and every approval.</li>
+        <li>The governance layer — information barriers, legal hold, Discovery API, DLP, app approvals — is why IT renews, and the hardest part to move.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Virality / network effects</h4>
+      <p>Yes, structurally — it just doesn't look like virality. Slack Connect pulls external organisations into the same channels (250 orgs on Pro+), so cross-company collaboration is itself exposure; org-level publishing of templates and Slackbot Skills turns one person's method into something the whole team runs, which is internal propagation. Sharing data is not disclosed; this is [inferred].</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>Product Architecture & UX System</h3>
+    <span class="pill">Surfaces + entities</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">Key product surfaces</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Channel</span><div class="desc">The product's container and its permission boundary: one topic per channel, with people, files, apps and AI inside. The site calls them flexible, transparent spaces for working together. Every AI capability is built on this container rather than beside it.</div></div>
+    <div class="surface"><span class="name">Slack Connect (cross-org)</span><div class="desc">Pulls external organisations into the same channels and DMs (up to 250 orgs on Pro+), positioned as moving conversations out of siloed email threads. A rare B2B viral entry: the partner is made a user.</div></div>
+    <div class="surface"><span class="name">Canvas + List (documents and structured data)</span><div class="desc">Canvas is the document surface inside a channel and the instruction carrier for Slackbot Skills (the docs say 'with a canvas you own'); List is the task table in the conversation, readable and writable by workflows and CRUD-able through the MCP server. These two are the bridge from chat to work.</div></div>
+    <div class="surface"><span class="name">Huddle + Clip (audio and video)</span><div class="desc">Instant audio/video inside a channel plus asynchronous recording. When a Huddle ends, AI produces notes, action items and who said what. A meeting stops being separate software and becomes a raised hand in the channel.</div></div>
+    <div class="surface"><span class="name">Slackbot + Agent (AI members)</span><div class="desc">Slackbot is the team-level AI teammate (acting across apps: research, building workflows, building dashboards, reports and polls, updating records, drafting content); an Agent is a member-level entity you can @. Both grow capabilities through Skills (markdown or canvas instructions published at org level) and bidirectional MCP. This is where its 2026 product gravity sits.</div></div>
+    <div class="surface"><span class="name">Workflow Builder + Enterprise Search (orchestration and retrieval)</span><div class="desc">Orchestration: triggers, steps and conditions (up to 15) across 70+ connectors, with AI response, agent-conversation and custom-code steps, paid from Pro. Retrieval: one search box across Slack, connected apps and custom sources (Custom Sources API), permission-aware. The first turns repeated processes into automation, the second turns memory into a query — those two are what 'work OS' actually means.</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">Core entities · what the system is built around</h4>
+  <div class="entity-row">
+    <span class="entity">Workspace / Org (the unit of billing and permission)</span>
+    <span class="entity">Channel (container and permission boundary)</span>
+    <span class="entity">Message / Thread (the smallest unit of conversation and its replies)</span>
+    <span class="entity">Canvas / List / Workflow (document, structured records, automation)</span>
+    <span class="entity">App / Agent / Skill / MCP server (identities and tools that can be @-ed)</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>IA logic</h4>
+      <p>The spine is the channel: everything enters through a channel, then strings sideways into search, Connect and governance. The upside is zero learning cost — a channel is already the team's mental unit. The cost is that the product has no canvas of its own; all value is stored in whether the conversation happens here. That is exactly why AI had to become a member of the channel: a new surface would break the spine, a new member doesn't.</p>
+    </div>
+    <div class="info-card">
+      <h4>Navigation & interaction model</h4>
+      <p>Structurally it is a three-part layout: channel list on the left, search on top, composer at the bottom — and the composer doubles as the entry for messages, workflows, agent calls and file uploads. Collapsing every action into one box is its most economical and most effective interaction decision. Not tested this round; this paragraph rests on official feature pages and docs, with no hands-on claims.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>Design Language & Craft Signals</h3>
+    <span class="pill">What craft actually means</span>
+  </div>
+  <p class="section-intro">Every craft decision points at one sentence: let new capability arrive in an existing shape. An agent is a member, a skill is a file, an automation is a step in a channel. The user learns nothing new — they just repeat an old action.</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">Make AI a member, not a button</span><div class="body">Slackbot's identity is a teammate you can @, not an icon in a toolbar. That single choice buys three things: the AI has permissions, context and history; the human never switches surface; and its output in a channel is visible to others, which makes it reusable.</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">Three wrappers, three kinds of buyer</span><div class="body">Templates sell to teams that don't want to configure from zero (pre-configured channel + canvas + list + workflow); Slackbot Skills sell to people who already have a method (one markdown file or one canvas → org-level publish → one click for the whole team); Agent + bidirectional MCP sells to organisations with engineers. The same atoms, three packages, three buyers.</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">The mechanism that turns personal craft into organisational assets</span><div class="body">Skills runs four steps: write instructions in markdown or a canvas → create → update → publish at org level (API name admin.slackbot.skills.publish) → land in the member library. This is the standard shape of productised knowledge: rules written as files, published as capability, called on demand. It converts a senior colleague's judgement from folklore into an executable asset.</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">Bidirectional MCP: both server and client</span><div class="body">One side is the Slack MCP Server (https://mcp.slack.com/mcp, remote HTTP + OAuth) letting external AIs like Claude and Cursor read and write messages, channels, Canvas and Lists. The other side is the Slackbot MCP Client, letting Slack connect to your own remote MCP server and auto-discover and call its tools. Your AI may enter my house; my AI may visit yours. That is the hardest step for any platform product to copy in 2026.</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">Turn AI usage into the pricing tier line</span><div class="body">Slackbot is a limited trial on Free and Pro, ongoing on Business+ and Enterprise+, 'no weekly message limits' only on Enterprise+, with overage through Salesforce Flex Credits. The exact numbers are not published — an undefined allowance is itself pricing power. The lesson for everyone else: pricing on AI execution rather than headcount alone will be the SaaS default in 2026.</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>Value Delivery & UX Quality</h3>
+    <span class="pill">Feel of the product</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">Time-to-value</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Time to value: not measured this round (no hands-on test was run; receiving the first message is not counted as value, and no minutes are claimed)</span></div>
+  <div class="ux-bar"><span class="lbl">Cognitive load</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">Cognitive load: medium (not measured; the verifiable structure is four containers coexisting in one interface — channels, threads, canvas, lists)</span></div>
+  <div class="ux-bar"><span class="lbl">Delight density</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Delight: one-click workspaces, meetings that leave a record, agents that are channel members</span></div>
+  <div class="ux-bar"><span class="lbl">Trust signals</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Trust: public sentiment is steady (G2 4.5 / 40,606 with 1★ and 2★ at 0% each) and the enterprise trust layer is tiered (information barriers, legal hold, Discovery API, HIPAA from Business+; multi-SAML and data residency on Enterprise+). But the real trust bottleneck isn't security, it's noise: the loudest complaint among 5-star users is that important things get buried.</span></div>
+  <div class="ux-bar"><span class="lbl">Struggle risk</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">Friction: notification overload, the free-tier wall, the learning curve</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>Key delight moments</h4>
+      <ul>
+        <li>Templates drop a whole workspace skeleton in one click — channel + canvas + list + workflow — instead of a blank page (35 templates across 14 categories).</li>
+        <li>A Huddle ends and the notes and action items already exist; a meeting needs no second application.</li>
+        <li>@ an agent and a code channel opens, with people, teammates and the agent looking at the diff together.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Where users likely struggle</h4>
+      <ul>
+        <li>Notification overload and buried information. G2, verbatim: 'The notification overload can get pretty overwhelming once you're in a few active channel, important updates get buried fast' — and 5-star reviewers repeat the same line. This is the direct cost of 'everything goes into a channel'.</li>
+        <li>The free-tier wall is hard: 90-day message history, at most 10 apps, 1:1 huddles. G2 names it: 'the 90-day message history limit on the free tier is really annoying'.</li>
+        <li>Learning curve and interface complexity. G2, verbatim: 'The interface was too hard to use. Not user-friendly enough'; another review says it is incredibly hard to follow unless you are on it 24x7.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>Business Model & Monetization</h3>
+    <span class="pill">How it makes money</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">Revenue model</span><h5>Freemium + per-seat subscription + enterprise annual (AI allowance as the tier line)</h5><p>Free $0 (90-day history / 10 apps / 1:1 huddles and external DMs / Basic AI); Pro $8.75 per user per month, $7.25 annual (unlimited history, unlimited apps, group huddles, up to 250 external orgs); Business+ $18, $15 annual (ongoing Slackbot + admin and compliance suite); Enterprise+ $45, annual only, contact sales (no weekly Slackbot limit, Enterprise search, multi-SAML, data residency). Promo prices (Pro $4.38, Business+ $9 for three months) and Flex Credits overage are both spelled out in the pricing FAQ.</p></div>
+    <div class="biz-card"><span class="tag">Free ↔ Paid boundary</span><h5>Where free stops</h5><p>Free: 90-day message history, up to 10 apps, 1:1 huddles, 1:1 external DMs, Basic AI (summaries / Slackbot trial / AI workflow generation / AI search / daily recaps / file summaries). Paid: Pro buys unlimited history, unlimited apps, group huddles and up to 250 external orgs; Business+ buys ongoing Slackbot plus governance (multiple workspaces, granular roles, information barriers, legal hold, Discovery API, HIPAA); Enterprise+ buys no weekly Slackbot limit, Enterprise search, multi-SAML and data residency. Workflow Builder is paid from Pro, and AI overage runs through Flex Credits.</p></div>
+    <div class="biz-card"><span class="tag">Monetization entry points</span><h5>The entry is free enough to spread itself; the money is in governance and AI allowance</h5><p>The free plan is the minimum a real team can work in (90-day history + 10 apps + 1:1 meetings), landing exactly where a small team is fine and a growing team is not. Three paid steps: unlimited history and apps (Pro) → ongoing Slackbot plus compliance (Business+) → multi-SAML, data residency, no weekly cap (Enterprise+). It doesn't sell features; it sells the things an organisation must have once it grows.</p></div>
+    <div class="biz-card"><span class="tag">UX ↔ Monetization alignment</span><h5>Are experience and monetisation aligned, or fighting?</h5><p>Broadly aligned, with one new crack in 2026. Aligned: the free plan sits exactly where a team naturally hits a wall (history, app count, group meetings), and every paywall lands on something only a bigger organisation needs (governance, compliance, AI allowance). Fighting: AI pricing moved from seats to a Slackbot allowance, and the allowance numbers aren't published — buyers cannot budget their AI spend, and procurement converts that uncertainty into a discount at renewal. A second tension: whether Workflow Builder counts as free-tier capability is contradictory in its own pages — the feature page calls it paid, the free tier lists AI workflow generation.</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>Competitor Landscape</h3>
+    <span class="pill">Positioning matrix</span>
+  </div>
+  <p class="section-intro">The list isn't guesswork; it comes from Slack's own moves. Product-level comparison pages are only two (/compare/slack-vs-teams, /compare/slack-vs-email), but the blog cluster /blog/compare/* holds 18, of which 13 are competitor-vs pages — asana, chatwork, clickup, discord, google-chat, line-works, mattermost, microsoft-teams, monday, stackfield, trello, whatsapp, zoom — plus 4 alternatives pages (teams / discord / google-chat / trello). In other words: Microsoft Teams is the frontal battlefield, Google Chat and Discord are the flanks, and mattermost / chatwork / line-works / stackfield are the defence against localisation and self-hosting. Competitor prices were not verified this round and are not invented here.</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Slack</th>
+          <th>Microsoft Teams</th>
+          <th>Google Chat</th>
+          <th>Discord</th>
+          <th>Self-hosted and compliance substitutes (Mattermost / Chatwork / Line Works / Stackfield)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Main battleground</th><td class="own">Team collaboration workplace + agent hosting layer</td><td>The same enterprise employees: companies already on Microsoft 365</td><td>Workspace customers: teams already using Gmail / Drive / Meet</td><td>Communities and hobby groups first, now seeping into small-team work</td><td>Organisations whose data cannot leave the intranet, or whose local market is held by a local product</td></tr>
+        <tr><th>Access and protocol</th><td class="own">Bidirectional MCP (server + client) + 2,600 apps + @-able agents + Real-Time Search API</td><td>Built into the Microsoft 365 stack (same account as Outlook / SharePoint / Office), meetings via Teams; its external protocol details were not verified this round</td><td>Same stack as Gmail, Drive and Meet; the account system is the permission system</td><td>Channels plus voice rooms, designed for presence, not permissions and governance</td><td>Self-hosted or locally deployed; trading features for data staying home</td></tr>
+        <tr><th>Distribution</th><td class="own">13-language mega-site (1,769 English URLs) + 2,881 Marketplace pages + 579 help pages + the Salesforce channel</td><td>Enterprise volume licensing and IT procurement — it arrives by default with M365</td><td>The Workspace default — zero distribution cost</td><td>Community word of mouth and creator ecosystems; almost no enterprise sales</td><td>Public-sector procurement, regional channels, open-source communities</td></tr>
+        <tr><th>Price transparency</th><td class="own">Four public tiers, Slackbot allowance as the tier line, Flex Credits for overage — but the actual allowance numbers are not published</td><td>Not verified this round (Slack lists it at /compare/slack-vs-teams and first in its 13 blog competitor-vs pages)</td><td>Not verified this round (Slack runs /blog/compare/slack-vs-google-chat)</td><td>Not verified this round (Slack runs /blog/compare/slack-vs-discord)</td><td>Not verified this round (all four appear in Slack's own blog competitor list, so Slack counts them as rivals)</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>Where the product wins:</strong> Three things rivals can't close quickly: bidirectional MCP (most competitors integrate one way; Slack shipped both server and client); the thickness of the app directory (2,600 apps, 2,871 sitemap pages, each app carrying its own long-tail page); and governance granularity (information barriers, legal hold, Discovery API, app approvals) — the real staircase from Pro to Enterprise+.</div>
+  <div class="comp-verdict warn"><strong>Where rivals are catching up:</strong> Three gaps: bundling (Teams arrives with M365, Google Chat with Workspace; nobody buys the same thing twice); notification overload (its own 5-star users complain, and that is a structural problem it grew itself, while products like Discord treat noise as atmosphere); and opaque AI allowance (Slackbot limits unpublished mean procurement can't do the maths, which hands rivals a 'bundled price is easier to budget' pitch).</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>Growth Strategy</h3>
+    <span class="pill">Explicit or inferred</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Likely acquisition channels</h4>
+      <ul>
+        <li>Two SEO tracks: localisation and high intent. 13 language sites (1,769 English URLs, 1,478 zh-CN), with 1,179 blog posts as the largest single block; two product-level comparison pages plus 13 blog competitor-vs pages and 4 alternatives pages; and pricing itself split into four landers — /pricing/free, /pricing/pro, /pricing/businessplus, /pricing/paid-vs-free — to catch plan-level searches.</li>
+        <li>PLG free tier and team self-propagation: every page CTA is 'Get started' with no sales gate, templates drop into a workspace in one click, and Skills publish at org level — 'one person's method becomes a one-click team capability' is propagation by design.</li>
+        <li>The Salesforce enterprise channel plus a partner programme: co-branded as a Salesforce company, Slackbot inside Lightning, Flex Credits sold through Salesforce, alongside Partner Program, Partner Offers, Slack Certified and 199 customer stories for procurement-stage buyers.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Primary growth loops</h4>
+      <ul>
+        <li><strong>The free-tier ladder</strong> — Free $0 forever (90-day history, 10 apps) → the team outgrows it and needs unlimited history and apps (Pro $8.75) → it needs ongoing Slackbot plus compliance (Business+ $18) → it needs multi-SAML, data residency and no weekly Slackbot cap (Enterprise+ $45). Every step is bound to something only an organisation needs, which is the standard path from individual use to enterprise payment.</li>
+        <li><strong>The ecosystem feedback loop</strong> — A third-party app lists in Marketplace for distribution → each app page contributes long-tail search (2,871 app pages in the sitemap) → a user installs Slack because of that app → the app's author becomes a Slack reseller. Slack writes no extra content; the directory grows for it. The fragility: the moment it tightens review or API access (it began blocking long-term LLM indexing in 2025-06), the loop slows down.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">Expansion vectors</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>Horizontal</h5><ul><li>From conversation to execution: Workflow Builder, Slackbot's live artifacts and Slack CRM wire the end of a conversation into process and business objects.</li><li>From people to agents: Agent, code channels and bidirectional MCP extend the idea of 'colleague' beyond humans ([inferred] the only direction that escapes 'yet another chat tool').</li></ul></div>
+    <div class="growth-col"><h5>Vertical</h5><ul><li>9 departments × 9 industries: Frontline, Engineering, IT, customer service, sales, project management, marketing, HR, security, plus manufacturing, financial services, retail, public sector, education and healthcare.</li><li>11 use-case pages (project management, client collaboration, effective meetings, sales pipeline, internal comms, project tracking, lead management, team productivity, onboarding, time tracking, finding answers faster) — it has laid a page for every role that collaborates.</li></ul></div>
+    <div class="growth-col"><h5>Platform</h5><ul><li>The open interfaces are already there: Slack MCP Server (remote HTTP + OAuth), Slackbot MCP Client (4 auth modes), Web API (359 method pages), Events (121 pages), Real-Time Search API, Block Kit, Bolt in three languages, a Deno SDK, a CLI and 8 official samples.</li><li>[inferred] Its platform play is to be the hosting layer for agents: not fighting over who is the assistant, but over where the assistant lives. Being part of Salesforce makes this easier, not harder — Salesforce needs an enterprise venue where agents can actually land, and Slack is that venue.</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>Application six-dim</h3>
+    <span class="pill">how well the model is used</span>
+  </div>
+  <p class="section-intro">Six dimensions are the main framework: the first three are about value, the last three about trust and switching cost.</p>
+  <p class="section-intro">Classified as **嵌入**. 拔电测试：拿走 AI，产品照常卖 → AI 嵌入 (basis: 传统工具，AI 属后加能力)</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① What step it replaces</h4>
+      <p>What it replaces is the round trip of 'who owns this and how did we decide last time': memory and DMs become channel history plus Enterprise Search plus @Slackbot. Cost moves from searching for a person to a seat fee (from $0), which is why the value judgement is never 'how good is the AI' but 'is the organisation big enough'.</p>
+    </div>
+    <div class="info-card">
+      <h4>② Who does the dirty work</h4>
+      <p>It eats retrieval, summarisation, cross-app data fetching and writing results back into Canvas and Lists. It hands back two things: permissions and access (app approvals, OAuth scopes, admin approval for MCP), and governance (information barriers, legal hold, DLP). Those two are its most expensive parts and the parts it least wants to do for you — because that is what it charges for.</p>
+    </div>
+    <div class="info-card">
+      <h4>③ Is the output usable</h4>
+      <p>Usable, but output needs human confirmation: what Slackbot produces in a channel is a sortable, filterable, pinnable view and a draft, not a final document. Not tested this round, so no verdict on 'can you ship it as-is' is offered.</p>
+    </div>
+    <div class="info-card">
+      <h4>④ How errors are caught</h4>
+      <p>The safety net is permissions and approval, not the AI: app approvals, admin approval for MCP and Enterprise+ compliance switches form the outer rail. Whether AI output carries source attribution or confidence was not verified this round — so the 'why does it say this' question still falls to a human.</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ Cost of one error</h4>
+      <p>Mostly reversible: messages can be edited or deleted, Canvas has versions, workflows can be disabled. What is irreversible is the message sent into a Connect channel shared with 250 external orgs — once sent, it has left your permission boundary. For B2B, that is where 'you can't afford to be wrong' actually lives.</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ What replaces it</h4>
+      <p>An individual can switch (Discord, Teams, even email); an organisation cannot: history + 2,600 integration slots + governance policies + muscle memory add up to a migration cost far above the subscription. So retention isn't 'can't leave' — it's 'can't afford to leave'.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>What Metrics They Actually Optimize For</h3>
+    <span class="pill">[Inferred] north-star + guardrails</span>
+  </div>
+  <p class="section-intro">No operating metrics are separately disclosed. What follows separates verifiable public facts (prices, sitemap page counts, G2 rating distribution, official marketing figures) from [inferred] 'what it should be watching' — the latter is not real data.</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">North Star</span>
+      <h5>Weekly completed actions inside channels (agent invocations + workflows run to completion + List items closed) ([inferred])</h5>
+      <p>[inferred] It charges per seat and prices on 'does the work happen here': message volume proves busyness, actions prove it is a workplace. The north star shouldn't be DAU — Slack's DAU saturated long ago; what 2026 has to prove is whether the AI actually gets used.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 1</span>
+      <h5>Free → paid history unlock (how often messages older than 90 days are read)</h5>
+      <p>The only free-tier wall that actually hurts is 90-day history. A team that searched past 90 days has a genuine memory requirement; that behaviour predicts payment better than signups do.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 2</span>
+      <h5>Slackbot weekly actives and the number of org-level Skills published</h5>
+      <p>Slackbot is its only AI revenue tier line; Skills published at org level show whether personal method became an organisational asset — its most distinctive retention mechanism against every other AI assistant.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 3</span>
+      <h5>Marketplace install depth (still in use 30 days after install)</h5>
+      <p>The 2,881-page app directory is its long tail and its moat, but the directory is only worth as much as its apps are used, not as many as exist. Install-without-use turns an ecosystem from an asset into noise.</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">Guardrail</span>
+      <h5>Notifications per user per day + delay until a critical message is read</h5>
+      <p>Every 5-star G2 reviewer complains about the same thing: important things get buried. Notification volume is growth's most honest counter-metric — more notifications can raise activity while lowering value. Without this guardrail, AI summaries just make the noise more expensive.</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">Blindspot</span>
+      <h5>No public paid-seat churn, ARR breakdown or per-message inference cost [inferred]</h5>
+      <p>[inferred] The claim that Slackbot is a fixed per-seat cost rather than token-billed means Slack is absorbing inference cost uncertainty on the customer's behalf; the free tier uses AI too, so free users keep burning money. Watching only activity and reviews hides that the more AI gets used, the thinner the margin. A second blind spot: since 2025-06 it blocks long-term LLM indexing, which protects its data but erodes its visibility inside AI answers — and that will never show up in a product metric.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>Friction & Weaknesses</h3>
+    <span class="pill">Critical PM lens</span>
+  </div>
+  <p class="section-intro">Explicit and opinionated. Where the system leaks, breaks, or over-designs.</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">Notification overload: the price of 'everything in a channel'</span><span class="sev">高 · High</span></div>
+      <div class="body">The complaints from 5-star G2 reviewers are strikingly consistent: important updates buried, old context hard to find, notifications distracting. This is not a bug; it is the other side of the design choice that makes the product transparent. For its AI this is the real question: summaries and daily recaps just add a layer on top of the noise. The real fix is deciding what deserves to interrupt whom.</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">The free-tier wall sits exactly where a team starts growing</span><span class="sev">高 · High</span></div>
+      <div class="body">90-day history + 10 apps + 1:1 huddles: each item looks reasonable, together they mean 'delightful for a tiny team, blocked for a real one'. G2 names the history limit as annoying. That is intent, not defect — but it also means it earns almost nothing from three-person teams, so revenue depends on the customer's hiring pace.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Learning curve and interface complexity</span><span class="sev">中 · Medium</span></div>
+      <div class="body">G2, verbatim: 'The interface was too hard to use. Not user-friendly enough'; another review says unless you are on it 24x7 it is incredibly hard to follow. For an internal communication tool that is another way of saying the information architecture has outgrown the organisation's information volume.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Opaque AI pricing: the allowance is not published</span><span class="sev">中 · Medium</span></div>
+      <div class="body">The pricing page only says Slackbot is a limited trial on Free and Pro and has no weekly message limits on Enterprise+; the numbers aren't given, and overage goes through Salesforce Flex Credits. For procurement, that makes AI unbudgetable; for competitors, it is the best opening line available. One contradiction is also unresolved: Workflow Builder is called a paid feature on its feature page while the free tier lists AI workflow generation.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>Risk Matrix</h3>
+    <span class="pill">Severity × Likelihood</span>
+  </div>
+  <p class="section-intro">Risks ordered by likelihood × impact; severity is my judgement, not a company disclosure.</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>Risk</th><th>Category</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>Bundling: Teams and Google Chat make chat a free default</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>Hold the three things bundling can't do: cross-company collaboration (the Connect network), the thickness of the app directory, and the openness of bidirectional MCP. And sell governance as the headline — information barriers and legal hold are the hardest layer for a bundled product to build.</td></tr>
+      <tr><td><strong>AI value captured upstream (model vendors are becoming agent platforms)</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>It is already defending correctly: AI as member rather than entry point, permissions and audit as a layer nobody can route around, and MCP making external agents depend on its context. The risk is that dependence runs both ways — it also depends on upstream model quality.</td></tr>
+      <tr><td><strong>Notification overload and information density backfiring</strong></td><td>Product</td><td class="sev-med">Medium</td><td>High</td><td>Make 'what deserves to interrupt me' a trainable layer instead of another summary: quiet hours per channel or project, alerts per followed object, and an AI that decides whether this needs attention now and explains why. Done well, it turns the noise source into the filter.</td></tr>
+      <tr><td><strong>Opaque AI allowance erodes enterprise renewal certainty</strong></td><td>Business</td><td class="sev-med">Medium</td><td>Medium</td><td>Publish the Slackbot allowance, the overage unit price and a usage dashboard, and offer a hard cap. Procurement doesn't fear cost; it fears arithmetic it cannot do.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>Opportunities & Redesign Ideas</h3>
+    <span class="pill">Actionable PM thinking</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">Improvement · 1</div>
+      <h5>(My judgement) Copy 'Skills → organisational asset' as a knowledge product</h5>
+      <div class="desc">How: instructions in markdown or a canvas → publish at org level → one click for the whole team. Copy Slackbot Skills' four steps (create / update / publish / add to member library) but land them in a narrow scenario, such as one role's fixed process. Why: it is the shortest path from 'a senior colleague's judgement' to an executable asset, and most knowledge products stop at 'the document is stored' without ever reaching 'the capability gets called'.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 2</div>
+      <h5>(My judgement) Build the protocol or plugin first, not another interface</h5>
+      <div class="desc">How: ship the product as an MCP server plus a Skill pack so it gets called inside someone else's surface (Claude, Cursor, Slackbot can all be hosts) instead of demanding one more install. Why: Slack proved that defining identity, permissions, events and message format makes the ecosystem grow features for you — for a small team, it is the only way to borrow someone else's distribution.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 3</div>
+      <h5>(My judgement) Price on execution, but publish the allowance</h5>
+      <div class="desc">How: add a tier priced by AI execution rather than headcount — and publish the allowance numbers, the overage unit price and a usage dashboard. Why: Slack has already moved the tier line from seats to Slackbot allowance but keeps the numbers private, which is both its pricing power and its procurement friction. Copy the direction, invert the transparency — the cheapest differentiation available.</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">Strategic shift</div>
+      <h5>Its bet: don't build the strongest AI, build the house AI has to live in</h5>
+      <div class="desc">Three moves stacked: make AI a channel member (Slackbot / Agent / Skills) rather than a new surface; use bidirectional MCP so external agents can come in and go out; and use permissions and governance to make 'let an agent touch real data' an enterprise-safe decision. The first two are product moves; the third is the actual bet — because what stops an agent is never capability, it is authorisation. The price: it must keep compromising, since keeping 2,600 apps compatible means every AI capability has to fit an old shape, and the ecosystem holds its innovation speed hostage.</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 Moonshot</div>
+      <h5>Endgame: work has no entry point, only 'who gets called'</h5>
+      <div class="desc">If agents really become colleagues, 'open a work app' disappears: a person speaks, the agent calls tools, leaves records and finds the next executor. In that world the winner is not the one with the best model but the one holding identity, permissions, context and audit — all four. Slack is closest to that endgame but is missing two pieces: its own model (it chose to partner instead) and context outside Slack (blocking LLM indexing in 2025-06 shows it won't hand context over). Those two decide whether it is the agent's home or the agent's dormitory.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>Final PM Verdict</h3>
+    <span class="pill">Synthesis</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>Why it wins</h5>
+      <p>Its two-sided MCP position, a 2,881-page app directory, a 13-language 1,769-page SEO footprint, the Skills mechanism that turns personal method into organisational assets, and governance granularity that ratchets up from Pro to Enterprise+.</p>
+    </div>
+    <div class="final-col break">
+      <h5>Where it breaks</h5>
+      <p>Three-person teams (the free plan is enough and the 10-app cap blocks them anyway); organisations whose data cannot leave the intranet (that is mattermost / stackfield territory); companies that just want a cheap, good chat tool (its pricing and governance complexity is overhead); and teams with zero tolerance for notification noise.</p>
+    </div>
+    <div class="final-col moat">
+      <h5>Long-term moat</h5>
+      <p>The moat is strong, but the type matters: strong on protocol and network (2,600+ apps written against its identity and permission model, Connect pulling external orgs in), not strong on AI (the AI layer is almost entirely copyable packaging). Only one soft spot: the moat assumes work happens in channels. In an agent era people may stop caring where they said it — at which point the protocol layer turns from asset into expensive middleware.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>Competitive map</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">This list is not guesswork; it comes from Slack's own moves. Product-level comparison pages are only two (/compare/slack-vs-teams, /compare/slack-vs-email), but the blog cluster /blog/compare/* holds 18 — 13 competitor-vs pages (asana, chatwork, clickup, discord, google-chat, line-works, mattermost, microsoft-teams, monday, stackfield, trello, whatsapp, zoom) plus 4 alternatives pages (teams / discord / google-chat / trello) and one German legal page. In other words: who it counts as a rival is written in its blog directory.</p><table class="risk-table"><thead><tr><th>Who</th><th>Fighting for the same need</th><th>Fighting for the same link in the chain</th><th>Where users actually go</th></tr></thead><tbody><tr><td>Microsoft Teams</td><td>The same enterprise employees: companies already on Microsoft 365</td><td>The same entry point: chat + meetings + files inside one Microsoft 365 account</td><td>Its only product-level comparison target (/compare/slack-vs-teams). The threat isn't features, it's 'we already paid for this'</td></tr><tr><td>Google Chat</td><td>Workspace customers: teams already on Gmail / Drive / Meet</td><td>The same entry: mail, docs and meetings in one stack, where the account is the permission</td><td>It runs /blog/compare/slack-vs-google-chat plus a google-chat-alternatives page — active defence</td></tr><tr><td>Discord</td><td>Communities and hobby groups first, now seeping into small-team work</td><td>Channels plus voice rooms for presence, without governance</td><td>G2 reviewers recommend GroupMe or lighter chat tools, which shows the 'I just want chat' segment leaking away</td></tr><tr><td>Mattermost / Stackfield / Chatwork / Line Works</td><td>Organisations whose data can't leave the intranet, or whose local market is held by a local product</td><td>Self-hosted and localised deployment; trading features for data staying home</td><td>All four appear in its blog competitor list: these are its defence targets in public sector and regional markets</td></tr><tr><td>Asana / Trello / Monday / ClickUp</td><td>Teams that need projects tracked, not conversations seen</td><td>The task-and-process link in the chain (Slack answers with Lists + Workflow Builder)</td><td>Four separate vs pages. Its answer isn't a better project tool but moving the project into the channel (Lists + templates)</td></tr><tr><td>Zoom</td><td>Meeting-first teams</td><td>The meeting link in the chain (Slack answers with Huddles)</td><td>Has /blog/compare/slack-vs-zoom — the collision of meeting tools moving into chat and chat tools moving into meetings</td></tr></tbody></table><p class="section-intro">How to read the map: its position is secure but crowded — pressed from below by free bundling (Teams / Google Chat), cut from the side by lighter and faster tools (Discord, GroupMe), and blocked from above by deeper project management (Asana / Monday). Its only open slot is the combination of cross-org collaboration + app directory + bidirectional MCP: nobody else has the first two at this thickness, and nobody has shipped the third. Competitor prices were not verified this round, so no price comparison is offered.</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>Rivals' technical base</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro"><strong>How the AI is built (turning atoms into workflows)</strong>: (1) twelve atoms — Channel / Canvas / List / Message / Huddle / App / Agent / Slackbot / Workflow / MCP tool / Search / permissions; (2) one composition formula — container × identity × permissions × trigger × tool = a workflow (the four examples the company itself uses: Channel+App+OAuth scope+events+Web API, Channel+Agent+MCP tool+permissions+@, Workflow(trigger)+conditions+connector+message step, Huddle+AI summary+Canvas); (3) three wrappers — a Template for people, Slackbot Skills for team method (write instructions in markdown or a canvas, publish at org level), and Agent + bidirectional MCP for machines (Slack MCP Server lets external AI read and write Slack; Slackbot MCP Client lets Slack call your server). So its 'AI' is not a feature — it is turning any business action into one @-able call inside a channel. The table below reads its own layer first, then what each rival's base locks up.</p><table class="risk-table"><thead><tr><th>Product</th><th>Base</th><th>What that base locks up</th></tr></thead><tbody><tr><td>Slack</td><td>Its own messaging and permission model (Channel / OAuth scopes / Events / Block Kit) + bidirectional MCP (server and client) + pluggable models (it does not build foundation models, it partners)</td><td>Locks up the identity × permission × context layer: anyone who wants an agent to touch real business data has to go through its authorisation and audit</td></tr><tr><td>Microsoft Teams</td><td>The Microsoft 365 account and graph, with meetings and files on the same stack; AI arrives as Copilot</td><td>Locks up 'enterprises that already pay': AI appears as part of a bundle, with zero marginal pricing</td></tr><tr><td>Google Chat</td><td>The Workspace account system with Gmail / Drive / Meet on the same stack</td><td>Locks up 'the Workspace default': it gets used without a procurement decision</td></tr><tr><td>Discord</td><td>A self-built realtime stack of channels and voice rooms, optimised for concurrency and presence</td><td>Locks up the experience standard for communities and creators (latency, presence, reactions) but not governance</td></tr><tr><td>Mattermost</td><td>Open source, self-hosted, operated by the customer</td><td>Locks up 'data never leaves the intranet' — a segment SaaS can never reach</td></tr><tr><td>Asana / Monday / ClickUp</td><td>Structured data (tasks, boards, fields) plus automation rules</td><td>Locks up the process-and-accountability layer: who owns it, where it's stuck, when it's due</td></tr></tbody></table><p class="section-intro">[inferred] <strong>The real moat is not the model and not the feature count — it is who holds the authorisation chain.</strong> An agent touching real data has to pass four gates: identity (who it is), permission (what it may touch), context (what it understands) and audit (what it did). Slack holds all four, which is worth more than having more features; Teams and Google Chat hold a different version of the first three (the account system), and the fourth — audit and information barriers — is actually finer-grained at Slack.<br>The flip side is a weakness nobody else has: <strong>Slack does not own a model</strong>. Once upstream model capability becomes a commodity, its AI differentiation rests entirely on packaging and permissions — which is exactly why it rushed bidirectional MCP: to turn 'context' into something others can't leave.</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>Portable opportunities (my judgement)</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <ol><li><strong>Copy 'Skills → organisational asset' as a knowledge product</strong> — instructions in markdown or a canvas, then create → update → org-level publish → member library, four steps copied wholesale, but landing in one narrow scenario (a role's fixed process). Why it's worth copying: most knowledge products stop at 'the document is stored'; Slack finished the last step, 'the capability gets called'. <em>Lightest option — it changes publishing, not the data model.</em></li><li><strong>Build the protocol/plugin first, not another interface</strong> — ship as an MCP server plus a Skill pack so Claude, Cursor and Slackbot can all be hosts. Why: Slack proved that defining identity, permissions, events and message format makes the ecosystem grow features for you, and a small team has no second route to distribution. <em>Fastest to show results.</em></li><li><strong>Price by AI execution, but publish the allowance</strong> — Slack already moved the tier line from seats to Slackbot allowance without publishing the numbers. Copy the direction and invert the transparency (allowance, overage price, usage dashboard, hard cap): the cheapest differentiation on the table.</li><li><strong>Make attention routing the first job</strong> — the loudest complaint among 5-star G2 reviewers is that important things get buried. For any message-shaped product, the AI's first act should be deciding whether this deserves to interrupt anyone now, not writing another summary. <em>Hardest, and the only direction that lifts retention and reputation at once.</em></li></ol><p class="section-intro">Which of the four first? <strong>Number 2</strong> — it doesn't require traffic, only that you get the interface right. Which gets ignored? <strong>Number 1</strong> — everyone files it under 'templates', when it is really the foundation of a marketplace of methods.</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>Traffic and monetisation</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">First, the scale, all from official sitemaps measured on 2026-11-26: the English marketing site holds <strong>1,769</strong> URLs replicated across 13 languages (zh-CN 1,478); within it /blog/* at <strong>1,179</strong> pages is the largest single block, then /customer-stories/* 199, /resources/* 107, /templates/* 50, /solutions/* 32, /features/* 23. Two further architectures run separately: Marketplace <strong>2,881</strong> pages (2,871 app pages + 9 collections + 1 index) and the Help Center at <strong>579</strong> pages (578 × 13 languages). Together that is roughly 5,229 indexable English entry points, multiplied again across 12 other languages.</p><table class="risk-table"><thead><tr><th>Stage</th><th>What it does</th><th>Why it works / where it leaks</th></tr></thead><tbody><tr><td>Acquisition</td><td>A 13-language mega-site + a 2,881-page app directory + 579 help pages + 2 product comparison pages + an 18-page blog comparison cluster</td><td>Works: page scale is itself a barrier and the long tail is fully covered. Leak: a sitemap proves pages exist, not traffic; organic share was not verified this round</td></tr><tr><td>Activation</td><td>Every page CTA is 'Get started' with no sales gate; templates drop into a workspace in one click; AI summaries and a Slackbot trial are already in the free tier</td><td>Works: zero-friction trial. Leak: the 90-day history and 10-app walls hit small teams right when they get fluent</td></tr><tr><td>Retention</td><td>Channel history + threads + Canvas/Lists + 2,600 integration slots + governance policies</td><td>Works: four layers make migration brutal. Leak: it retains the organisation, not the individual — personal stickiness is far lower</td></tr><tr><td>Monetisation</td><td>Free $0 / Pro $8.75 (annual $7.25) / Business+ $18 (annual $15) / Enterprise+ $45 (annual only)</td><td>Works: every paywall sits on something only a bigger org needs. Leak: AI allowance unpublished, so procurement can't do the maths</td></tr><tr><td>Expansion</td><td>Seats grow with headcount; Connect grows from cross-department to cross-company; Slackbot allowance and Flex Credits price AI by usage</td><td>[inferred] The real brake isn't price, it's governance-first: once information barriers and legal hold are hard requirements, the cycle goes from one click to IT plus legal</td></tr></tbody></table><p class="section-intro">The three arbitrage questions. <strong>Whose pocket does the money come from:</strong> enterprise IT and departmental budgets — individuals barely pay, the free tier is for them. <strong>How long can it keep taking it:</strong> [inferred] as long as cross-org collaboration and the app directory stay exclusive; the AI premium window, however, is narrowing as bundled products give it away. <strong>Why does it get it:</strong> three things rivals can't assemble quickly — 2,600 apps written against its permission model, the cross-company network, and governance granularity.</p><p class="section-intro">The weakest beam: <strong>the premise that work happens in a channel</strong>. If agent-era users stop caring where they said something and just talk to an agent, then its 2,881-page directory, its 13-language SEO and even its governance layer turn from assets into expensive middleware. Its current answer is bidirectional MCP — making itself the road every agent must travel rather than a replacement for the agent. Whether that road holds is not visible from 2026.</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>Sources：</strong>Every factual claim comes from the public pages below; first-hand observations come from the hands-on test.
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://slack.com/" target="_blank" rel="noopener">Homepage (H1: 'All your people and AI agents working together'; subtitle 'Slack connects your team')</a></li>
+    <li><a href="https://slack.com/features/agentic-platform" target="_blank" rel="noopener">Agent platform page ('The platform agents and AI call home'; endorsements from Anthropic / OpenAI / Perplexity)</a></li>
+    <li><a href="https://slack.com/features/slackbot" target="_blank" rel="noopener">Slackbot page (AI teammate, live artifacts, fixed per-seat cost wording)</a></li>
+    <li><a href="https://slack.com/features/ai" target="_blank" rel="noopener">Slack AI page (channel and thread summaries, daily recaps, AI search, the 97-minutes claim)</a></li>
+    <li><a href="https://slack.com/pricing" target="_blank" rel="noopener">Pricing (four tiers, Slackbot limited trial, no weekly limit on Enterprise+, Flex Credits, education discount)</a></li>
+    <li><a href="https://slack.com/features/workflow-automation" target="_blank" rel="noopener">Workflow Builder page (paid feature, 'up to 15 conditions', 70+ connectors, AI workflow generation)</a></li>
+    <li><a href="https://docs.slack.dev/ai/slack-mcp-server" target="_blank" rel="noopener">Slack MCP Server docs (https://mcp.slack.com/mcp, remote HTTP + OAuth, read/write messages, Canvas, Lists)</a></li>
+    <li><a href="https://docs.slack.dev/ai/slackbot-mcp-client" target="_blank" rel="noopener">Slackbot MCP Client docs (reverse connection, 4 auth modes)</a></li>
+    <li><a href="https://docs.slack.dev/ai/slackbot-skills" target="_blank" rel="noopener">Slackbot Skills docs (markdown/canvas → create / update / org publish / member library)</a></li>
+    <li><a href="https://slack.com/marketplace" target="_blank" rel="noopener">Marketplace (site claim 'Browse over 2,600 apps'; 23 categories and editorial collections)</a></li>
+    <li><a href="https://slack.com/templates/gallery" target="_blank" rel="noopener">Template gallery (1 gallery + 14 categories + 35 templates)</a></li>
+    <li><a href="https://slack.com/compare/slack-vs-teams" target="_blank" rel="noopener">Product-level comparison page (Slack vs Teams, with the 94% / 97min / 1.7M figures)</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_en-us.xml" target="_blank" rel="noopener">Marketing sitemap (1,769 English URLs; 13 language sub-sitemaps)</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_marketplace_en-us.xml" target="_blank" rel="noopener">Marketplace sitemap (2,881 English URLs = 2,871 app pages + 9 collections + 1 index)</a></li>
+    <li><a href="https://slack.com/sitemaps/sitemap_help_en-us.xml" target="_blank" rel="noopener">Help Center sitemap (579 English URLs = 578 articles × 13 languages)</a></li>
+    <li><a href="https://docs.slack.dev/sitemap.xml" target="_blank" rel="noopener">Developer docs sitemap (3,266 doc URLs: 359 API methods / 121 events / 129 scopes / 46 block elements)</a></li>
+    <li><a href="https://www.g2.com/products/slack/reviews" target="_blank" rel="noopener">G2 reviews (4.5 / 40,606; 5★75% · 4★20% · 3★3% · 2★0% · 1★0%)</a></li>
+    <li><a href="https://en.wikipedia.org/wiki/Slack_(software)" target="_blank" rel="noopener">Growth history and method (2013 launch / 2019 DPO / 2021 Salesforce acquisition / 2025 LLM indexing block)</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 100 AI Product Teardowns.</div>
+      <div class="brand-sub">— Product Teardown · Principal PM Analysis</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,249 @@
+{
+  "product": {
+    "no": "006",
+    "slug": "claude",
+    "name": "Claude",
+    "category": "AI 对话 / 基础模型（LLM · AI Chatbots）",
+    "one_liner": "它不是助手，是插座——模型能力做成订阅卖给你，再用 MCP 把别人的 agent 插上来",
+    "icp_primary": "写代码的人（PH 好评几乎每条都在讲 Claude Code）",
+    "icp_secondary": "内容与知识工作者；被官网点名的 16 类行业与部门（金融顾问／政府／医疗／高教等）",
+    "jtbd": "判断力外包：帮我把这件事想清楚并直接做成，不是给我一段答案",
+    "core_scenarios": "对话与长文推理/代码生成与重构（Claude Code，CLI＋IDE＋桌面）/桌面与主动代理（Cowork、Duet）/个人财务问答/多模态文档产出/MCP 直连外部工具与多云平台接入",
+    "ai_mode": "原生（AI Native）",
+    "pricing_model": "个人订阅＋平台按量（云厂商转售）＋企业合同，没有买断也没有永久版",
+    "free_tier": "未公开（Free 档存在，但本次未取到金额与额度；只取到脚注：Usage limits 生效、5 小时限额、verified 账号例外）",
+    "paid_tiers": "未公开（Pro／Max 档位存在，金额未取到；企业走 AWS／Google Cloud／Microsoft Foundry 按量与合同）",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "PH 48 次发布（每次模型迭代都当上新）＋16 类行业需求页与企业合作伙伴渠道＋开发者口碑与 MCP 生态自发扩散",
+    "moat_hypothesis": "有但都是租的——模型领先会被同层追平、MCP 会被全行业采纳却难独占，唯一自己握住的是协议的中立性",
+    "evidence_urls": "https://claude.com/pricing; https://support.claude.com; https://modelcontextprotocol.io/",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-006-01",
+      "product": "claude",
+      "atom_name": "Chat",
+      "atom_type": "界面",
+      "what_it_does": "对话与长文推理",
+      "composable_with": "project/artifact/tool",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-02",
+      "product": "claude",
+      "atom_name": "Project",
+      "atom_type": "容器",
+      "what_it_does": "固定上下文/资料",
+      "composable_with": "chat/artifact",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-03",
+      "product": "claude",
+      "atom_name": "Artifact",
+      "atom_type": "工具",
+      "what_it_does": "可编辑产物（文档/代码/页面）",
+      "composable_with": "chat",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-04",
+      "product": "claude",
+      "atom_name": "MCP Tool",
+      "atom_type": "协议",
+      "what_it_does": "调外部工具/数据",
+      "composable_with": "chat/connector",
+      "evidence_url": "https://modelcontextprotocol.io/"
+    },
+    {
+      "atom_id": "H-006-05",
+      "product": "claude",
+      "atom_name": "Connector",
+      "atom_type": "工具",
+      "what_it_does": "连接第三方服务",
+      "composable_with": "MCP/chat",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-06",
+      "product": "claude",
+      "atom_name": "Claude Code",
+      "atom_type": "动作",
+      "what_it_does": "代码生成/重构/执行",
+      "composable_with": "repo/MCP",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-07",
+      "product": "claude",
+      "atom_name": "Cowork",
+      "atom_type": "身份",
+      "what_it_does": "桌面代理",
+      "composable_with": "chat/tool",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-08",
+      "product": "claude",
+      "atom_name": "Model Family",
+      "atom_type": "智能",
+      "what_it_does": "Opus/Sonnet/Haiku 等模型档",
+      "composable_with": "chat/code/api",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "atom_id": "H-006-09",
+      "product": "claude",
+      "atom_name": "API",
+      "atom_type": "协议",
+      "what_it_does": "程序化调用",
+      "composable_with": "tool/model",
+      "evidence_url": "https://www.anthropic.com/claude"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-006-W1",
+      "product": "claude",
+      "workflow_name": "对话 → Artifact",
+      "input": "一个需求",
+      "atoms_used": "Chat/Artifact",
+      "steps": "对话 → 生成 → 编辑/导出",
+      "output": "文档/代码/页面",
+      "who_uses": "个人",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "workflow_id": "H-006-W2",
+      "product": "claude",
+      "workflow_name": "项目 → 带上下文对话",
+      "input": "一批资料",
+      "atoms_used": "Project/Chat",
+      "steps": "建项目 → 放资料 → 项目内提问",
+      "output": "有上下文的答案",
+      "who_uses": "团队",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "workflow_id": "H-006-W3",
+      "product": "claude",
+      "workflow_name": "MCP → 调外部工具",
+      "input": "一个任务",
+      "atoms_used": "MCP/Connector/Chat",
+      "steps": "授权 → 调工具 → 返回结果",
+      "output": "跨系统动作",
+      "who_uses": "开发者",
+      "evidence_url": "https://modelcontextprotocol.io/"
+    },
+    {
+      "workflow_id": "H-006-W4",
+      "product": "claude",
+      "workflow_name": "Claude Code → 改代码",
+      "input": "一个仓库",
+      "atoms_used": "Claude Code/Model/MCP",
+      "steps": "读仓库 → 改 → 跑测试",
+      "output": "代码变更",
+      "who_uses": "工程",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "workflow_id": "H-006-W5",
+      "product": "claude",
+      "workflow_name": "对话 → 多模态文档",
+      "input": "一份内容",
+      "atoms_used": "Chat/Artifact",
+      "steps": "生成 docx/pptx/xlsx",
+      "output": "可交付文件",
+      "who_uses": "职场",
+      "evidence_url": "https://www.anthropic.com/claude"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-006-1",
+      "product": "claude",
+      "resource_name": "Prompt Library",
+      "resource_type": "模板",
+      "problem_solved": "不会写提示词/想要现成范式",
+      "how_to_access": "docs.anthropic.com/en/prompt-library",
+      "reuse_form": "抄提示词 → 换变量",
+      "reuse_score": "4",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://docs.anthropic.com/en/prompt-library"
+    },
+    {
+      "resource_id": "RS-HIST-006-2",
+      "product": "claude",
+      "resource_name": "MCP 连接器",
+      "resource_type": "集成",
+      "problem_solved": "要让 Claude 接外部工具/数据",
+      "how_to_access": "modelcontextprotocol.io",
+      "reuse_form": "装 MCP server → 授权",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://modelcontextprotocol.io/"
+    },
+    {
+      "resource_id": "RS-HIST-006-3",
+      "product": "claude",
+      "resource_name": "Projects（项目上下文）",
+      "resource_type": "知识",
+      "problem_solved": "每次都要重新贴背景",
+      "how_to_access": "claude.ai（Projects）",
+      "reuse_form": "建项目 → 放资料 → 项目内对话",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "B",
+      "evidence_url": "https://www.anthropic.com/claude"
+    },
+    {
+      "resource_id": "RS-HIST-006-4",
+      "product": "claude",
+      "resource_name": "Anthropic Cookbook",
+      "resource_type": "模板/示例",
+      "problem_solved": "想看官方怎么调 API/提示词",
+      "how_to_access": "github.com/anthropics/anthropic-cookbook",
+      "reuse_form": "抄 notebook/示例",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://github.com/anthropics/anthropic-cookbook"
+    },
+    {
+      "resource_id": "RS-HIST-006-5",
+      "product": "claude",
+      "resource_name": "Connectors（连接器目录）",
+      "resource_type": "集成",
+      "problem_solved": "要让 Claude 接外部工具",
+      "how_to_access": "claude.ai（Connectors）",
+      "reuse_form": "授权连接",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "B",
+      "evidence_url": "https://www.anthropic.com/claude"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "006",
+      "product": "Claude",
+      "has_gallery": "partial",
+      "gallery_type": "Prompt Library / Skills",
+      "gallery_url": "https://docs.anthropic.com/en/prompt-library",
+      "url_pattern": "/prompt-library/<slug>",
+      "scale_note": "官方 prompt library + Skills（能力包）",
+      "access": "public",
+      "modules_available": "no",
+      "sampled_templates": "0",
+      "notes": "不是模板市场：Prompt Library 是提示词模板，Skills 是能力包；两者结构不同，未按模板拆",
+      "evidence_url": "https://docs.anthropic.com/en/prompt-library"
+    }
+  ]
+}

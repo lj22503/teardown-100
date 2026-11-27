@@ -1,0 +1,284 @@
+{
+  "product": {
+    "no": "010",
+    "slug": "fathom",
+    "name": "Fathom",
+    "category": "AI 会议记录 / 会议智能（ai-meeting-notetakers）",
+    "one_liner": "它不是「会议记录工具」，是「会议的下游工厂」——纪要、行动项、跟进邮件",
+    "icp_primary": "个人重度开会者（销售、教练、顾问、招聘）",
+    "icp_secondary": "销售与客服团队；企业与合规敏感行业",
+    "jtbd": "会开完，纪要、行动项、跟进邮件已经在那儿了——省掉会后那半小时与会中不敢分神的注意力",
+    "core_scenarios": "会前授权（日历／邮箱／会议工具）→会中采集（bot 或 bot-free）→会后摘要＋行动项→推进 CRM／Slack／Notion／Asana→进 ChatGPT 与 Claude 查历史/Trackers、Ask Fathom、AI Scorecards 与跟进邮件",
+    "ai_mode": "原生（AI-native，记录壳＋AI 脑两段式）",
+    "pricing_model": "个人订阅＋团队按席位订阅＋合规档加价，免费档极厚（无限录制与转写）",
+    "free_tier": "Free $0（无限录制、无限转写、即时摘要、clips／playlists／跨通话搜索；bot 或 bot-free 可选）",
+    "paid_tiers": "Premium $16；Team $15（2 人起）；Business $25；Enterprise $35（仅年付）——均每人每月，年付省 25%+，全部档位 90 day guarantee",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "高意图 SEO（七个竞品对比页）＋PH 316 条评论与 Superhuman 收购的媒体波峰＋集成目录（Salesforce／HubSpot／Slack／Asana／Zapier／ChatGPT／Claude）",
+    "moat_hypothesis": "弱到中——真护城河只有三条且都可被覆盖；真资产是「个人先用顺、团队再买单」这条路径与对比页的搜索卡位",
+    "evidence_urls": "https://www.fathom.ai/; https://www.fathom.ai/pricing; https://blog.superhuman.com/superhuman-acquires-fathom/",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-010-01",
+      "product": "fathom",
+      "atom_name": "Meeting",
+      "atom_type": "容器",
+      "what_it_does": "一场会议",
+      "composable_with": "transcript/summary",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-02",
+      "product": "fathom",
+      "atom_name": "Transcript",
+      "atom_type": "知识",
+      "what_it_does": "转写稿",
+      "composable_with": "summary/ask",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-03",
+      "product": "fathom",
+      "atom_name": "Summary",
+      "atom_type": "工具",
+      "what_it_does": "即时摘要",
+      "composable_with": "meeting/crm",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-04",
+      "product": "fathom",
+      "atom_name": "Action Item",
+      "atom_type": "工具",
+      "what_it_does": "行动项",
+      "composable_with": "summary/crm",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-05",
+      "product": "fathom",
+      "atom_name": "Tracker",
+      "atom_type": "工具",
+      "what_it_does": "盯关键话题",
+      "composable_with": "transcript",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-06",
+      "product": "fathom",
+      "atom_name": "Ask Fathom",
+      "atom_type": "智能",
+      "what_it_does": "跨会议问答",
+      "composable_with": "transcript",
+      "evidence_url": "https://www.fathom.ai/features/ask-fathom"
+    },
+    {
+      "atom_id": "H-010-07",
+      "product": "fathom",
+      "atom_name": "Scorecard",
+      "atom_type": "工具",
+      "what_it_does": "销售教练评分",
+      "composable_with": "meeting/crm",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "atom_id": "H-010-08",
+      "product": "fathom",
+      "atom_name": "CRM Sync",
+      "atom_type": "集成",
+      "what_it_does": "字段回写 CRM",
+      "composable_with": "summary/crm",
+      "evidence_url": "https://www.fathom.ai/integrations"
+    },
+    {
+      "atom_id": "H-010-09",
+      "product": "fathom",
+      "atom_name": "API",
+      "atom_type": "协议",
+      "what_it_does": "程序化取会议数据",
+      "composable_with": "meeting",
+      "evidence_url": "https://www.fathom.ai/features/api"
+    },
+    {
+      "atom_id": "H-010-10",
+      "product": "fathom",
+      "atom_name": "MCP",
+      "atom_type": "协议",
+      "what_it_does": "让 ChatGPT/Claude 查会议",
+      "composable_with": "transcript",
+      "evidence_url": "https://www.fathom.ai/features/mcp-server"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-010-W1",
+      "product": "fathom",
+      "workflow_name": "会 → 转写 → 摘要 → CRM",
+      "input": "一场会",
+      "atoms_used": "Meeting/Transcript/Summary/CRM Sync",
+      "steps": "授权 → 采集 → 摘要 → 回写",
+      "output": "会议记录+CRM 更新",
+      "who_uses": "销售",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "workflow_id": "H-010-W2",
+      "product": "fathom",
+      "workflow_name": "Trackers → 提醒",
+      "input": "关键话题",
+      "atoms_used": "Tracker/Transcript",
+      "steps": "设话题 → 自动标记 → 提醒",
+      "output": "风险/机会提示",
+      "who_uses": "销售管理",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "workflow_id": "H-010-W3",
+      "product": "fathom",
+      "workflow_name": "Ask → 跨会议问答",
+      "input": "一个问题",
+      "atoms_used": "Ask Fathom/Transcript",
+      "steps": "提问 → 检索所有会议 → 回答",
+      "output": "答案+来源",
+      "who_uses": "团队",
+      "evidence_url": "https://www.fathom.ai/features/ask-fathom"
+    },
+    {
+      "workflow_id": "H-010-W4",
+      "product": "fathom",
+      "workflow_name": "Scorecards → 教练",
+      "input": "一批销售会",
+      "atoms_used": "Scorecard/Meeting",
+      "steps": "评分 → 看差距 → 训练",
+      "output": "教练报告",
+      "who_uses": "销售管理",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "workflow_id": "H-010-W5",
+      "product": "fathom",
+      "workflow_name": "MCP → ChatGPT/Claude 查历史",
+      "input": "外部提问",
+      "atoms_used": "MCP/Transcript",
+      "steps": "配 MCP → 查询 → 回答",
+      "output": "跨工具会议记忆",
+      "who_uses": "个人",
+      "evidence_url": "https://www.fathom.ai/features/mcp-server"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-010-1",
+      "product": "fathom",
+      "resource_name": "集成（CRM/Slack/Notion/Asana/Zapier）",
+      "resource_type": "集成",
+      "problem_solved": "会议结果要有去处",
+      "how_to_access": "fathom.ai 集成页",
+      "reuse_form": "授权连接",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "resource_id": "RS-HIST-010-2",
+      "product": "fathom",
+      "resource_name": "Public API 与 MCP",
+      "resource_type": "接口",
+      "problem_solved": "要让 ChatGPT/Claude 查会议",
+      "how_to_access": "fathom.ai（API/MCP）",
+      "reuse_form": "申请 key → 接 MCP",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/"
+    },
+    {
+      "resource_id": "RS-HIST-010-3",
+      "product": "fathom",
+      "resource_name": "自定义摘要模板",
+      "resource_type": "模板",
+      "problem_solved": "团队有固定纪要格式",
+      "how_to_access": "fathom.ai/pricing（功能）",
+      "reuse_form": "建模板 → 应用到会议",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/pricing"
+    },
+    {
+      "resource_id": "RS-HIST-010-4",
+      "product": "fathom",
+      "resource_name": "Resource Hub",
+      "resource_type": "模板/案例",
+      "problem_solved": "要案例、对比、use case 参考",
+      "how_to_access": "fathom.ai/resource-hub",
+      "reuse_form": "按场景找案例",
+      "reuse_score": "4",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/resource-hub"
+    },
+    {
+      "resource_id": "RS-HIST-010-5",
+      "product": "fathom",
+      "resource_name": "集成目录（视频会议/LLM/CRM）",
+      "resource_type": "集成",
+      "problem_solved": "按类别找该接哪个",
+      "how_to_access": "fathom.ai/integrations",
+      "reuse_form": "按类别选 → 授权",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/integrations"
+    },
+    {
+      "resource_id": "RS-HIST-010-6",
+      "product": "fathom",
+      "resource_name": "API",
+      "resource_type": "接口",
+      "problem_solved": "要程序化取会议数据",
+      "how_to_access": "fathom.ai/features/api",
+      "reuse_form": "申请 key → 调 API",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/features/api"
+    },
+    {
+      "resource_id": "RS-HIST-010-7",
+      "product": "fathom",
+      "resource_name": "MCP Server",
+      "resource_type": "接口",
+      "problem_solved": "要让 Claude/ChatGPT 查会议",
+      "how_to_access": "fathom.ai/features/mcp-server",
+      "reuse_form": "配 MCP → 调用",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.fathom.ai/features/mcp-server"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "010",
+      "product": "Fathom",
+      "has_gallery": "no",
+      "gallery_type": "资源中心 + 集成目录",
+      "gallery_url": "https://www.fathom.ai/resource-hub",
+      "url_pattern": "/resource-hub; /integrations/<tool>",
+      "scale_note": "Resource Hub + 集成目录（视频会议/LLM/CRM）+ API + MCP",
+      "access": "public",
+      "modules_available": "n/a",
+      "sampled_templates": "0",
+      "notes": "无模板库；资源是集成、API/MCP、案例与 use case，不是模板",
+      "evidence_url": "https://www.fathom.ai/resource-hub"
+    }
+  ]
+}

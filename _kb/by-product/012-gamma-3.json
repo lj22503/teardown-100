@@ -1,0 +1,223 @@
+{
+  "product": {
+    "no": "012",
+    "slug": "gamma-3",
+    "name": "Gamma",
+    "category": "AI 演示文稿 / 视觉叙事平台（ai-presentation · docs-decks-sites）",
+    "one_liner": "它不是「PPT 生成器」，是「审美流水线＋人类判断的检查站」",
+    "icp_primary": "咨询、教育、营销、产品设计四类人",
+    "icp_secondary": "产品与营销团队；教育与内部汇报",
+    "jtbd": "一段想法直接变成能给人看的东西——审美兜底＋一稿多形态",
+    "core_scenarios": "描述需求→场景／风格→大纲→布局→逐节点确认→导出或发布/多形态输出（演示、文档、网站、社媒、图片）/25+ 连接器与公共 API",
+    "ai_mode": "嵌入（embedded，实测判定；模型外采，自研编排与模板）",
+    "pricing_model": "积分制订阅四档＋企业／商业席位；免费 400 积分、单次 10 页，Plus 起去品牌",
+    "free_tier": "Free $0（400 积分注册即赠、单次最多 10 页、带品牌）",
+    "paid_tiers": "Plus $9/月（1,500 积分/月、100 页/次、去品牌）；Pro $18/月（4,000/月、自定义品牌、10 个自定义域名）；Ultra $90/月（20,000/月、100 域名、SOC 2 Type II）；企业／商业版按成员另议",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "模板与场景页吃搜索长尾（公开 gamma 页被大量收录）＋产品社区与创作者口碑＋教育与专家场景的成品外溢",
+    "moat_hypothesis": "护城河在模板密度与流程设计、不在模型；6/10——能被追平，但要花时间与大量真实稿件",
+    "evidence_urls": "https://gamma.app/zh-cn; https://gamma.app/pricing; https://help.gamma.app/",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-012-01",
+      "product": "gamma-3",
+      "atom_name": "Prompt",
+      "atom_type": "动作",
+      "what_it_does": "一句需求生成内容",
+      "composable_with": "outline/card",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-02",
+      "product": "gamma-3",
+      "atom_name": "Template",
+      "atom_type": "工具",
+      "what_it_does": "19 类模板",
+      "composable_with": "theme/card",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "atom_id": "H-012-03",
+      "product": "gamma-3",
+      "atom_name": "Theme / Style",
+      "atom_type": "工具",
+      "what_it_does": "18 主题 / 16 风格",
+      "composable_with": "template/card",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "atom_id": "H-012-04",
+      "product": "gamma-3",
+      "atom_name": "Card",
+      "atom_type": "容器",
+      "what_it_does": "一页卡片",
+      "composable_with": "layout/format",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-05",
+      "product": "gamma-3",
+      "atom_name": "Outline",
+      "atom_type": "工具",
+      "what_it_does": "大纲/叙事结构",
+      "composable_with": "card",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-06",
+      "product": "gamma-3",
+      "atom_name": "Format",
+      "atom_type": "分发",
+      "what_it_does": "演示/文档/网页/社交卡片",
+      "composable_with": "card",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-07",
+      "product": "gamma-3",
+      "atom_name": "Connector",
+      "atom_type": "集成",
+      "what_it_does": "25+ 连接器导入内容",
+      "composable_with": "prompt",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-08",
+      "product": "gamma-3",
+      "atom_name": "API",
+      "atom_type": "协议",
+      "what_it_does": "程序化生成",
+      "composable_with": "prompt/format",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "atom_id": "H-012-09",
+      "product": "gamma-3",
+      "atom_name": "Model Router",
+      "atom_type": "智能",
+      "what_it_does": "多模型调度",
+      "composable_with": "prompt",
+      "evidence_url": "https://gamma.app/"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-012-W1",
+      "product": "gamma-3",
+      "workflow_name": "需求 → 大纲 → 卡片 → 导出",
+      "input": "一句需求",
+      "atoms_used": "Prompt/Outline/Card/Format",
+      "steps": "描述 → 选场景 → 大纲 → 逐卡确认 → 导出",
+      "output": "deck/文档/网页",
+      "who_uses": "职场",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "workflow_id": "H-012-W2",
+      "product": "gamma-3",
+      "workflow_name": "模板 → 内容 → 生成",
+      "input": "一个模板+内容",
+      "atoms_used": "Template/Theme/Prompt",
+      "steps": "选模板 → 填内容 → 生成",
+      "output": "成品",
+      "who_uses": "市场/教育",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "workflow_id": "H-012-W3",
+      "product": "gamma-3",
+      "workflow_name": "连接器 → 导入 → 生成",
+      "input": "外部文档",
+      "atoms_used": "Connector/Prompt",
+      "steps": "连 Slack/Notion/Dropbox → 提内容 → 生成",
+      "output": "基于真实内容的 deck",
+      "who_uses": "团队",
+      "evidence_url": "https://gamma.app/"
+    },
+    {
+      "workflow_id": "H-012-W4",
+      "product": "gamma-3",
+      "workflow_name": "主题/风格切换",
+      "input": "一份成品",
+      "atoms_used": "Theme/Style/Card",
+      "steps": "换主题/风格 → 重排",
+      "output": "统一视觉版本",
+      "who_uses": "设计",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "workflow_id": "H-012-W5",
+      "product": "gamma-3",
+      "workflow_name": "API → 批量生成",
+      "input": "批量请求",
+      "atoms_used": "API/Prompt/Format",
+      "steps": "调 API → 生成 → 回收",
+      "output": "批量内容",
+      "who_uses": "开发者",
+      "evidence_url": "https://gamma.app/"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-012-1",
+      "product": "gamma-3",
+      "resource_name": "模板库（19 类 / 100+）",
+      "resource_type": "模板",
+      "problem_solved": "要快速出一份 deck/文档/网页",
+      "how_to_access": "gamma.app/templates",
+      "reuse_form": "选模板 → 输入内容 → 生成",
+      "reuse_score": "5",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "resource_id": "RS-HIST-012-2",
+      "product": "gamma-3",
+      "resource_name": "主题/风格筛选（18 主题 / 16 风格）",
+      "resource_type": "主题",
+      "problem_solved": "要统一视觉风格",
+      "how_to_access": "gamma.app/templates 左侧筛选",
+      "reuse_form": "按主题/风格收窄",
+      "reuse_score": "4",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://gamma.app/templates"
+    },
+    {
+      "resource_id": "RS-HIST-012-3",
+      "product": "gamma-3",
+      "resource_name": "生成格式（演示/文档/网页/社交卡片）",
+      "resource_type": "工具",
+      "problem_solved": "同一内容要换载体",
+      "how_to_access": "gamma.app（新建时选格式）",
+      "reuse_form": "选格式 → 生成 → 导出",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://gamma.app/"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "012",
+      "product": "Gamma",
+      "has_gallery": "yes",
+      "gallery_type": "官方模板库",
+      "gallery_url": "https://gamma.app/templates",
+      "url_pattern": "/templates/<slug>",
+      "scale_note": "超过 100 个模板；19 个分类；列表共 46 页（2026-11-26 登录后实测）",
+      "access": "public",
+      "modules_available": "no",
+      "sampled_templates": "3（Sorbet / Deep Cut / Daktilo Dispatch）",
+      "notes": "详情页有分类、风格描述与「使用此模板生成」入口，但没有模块清单；只做适配",
+      "evidence_url": "https://gamma.app/templates"
+    }
+  ]
+}

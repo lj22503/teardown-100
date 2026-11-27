@@ -1,0 +1,45 @@
+﻿template_id,product,template_name,template_one_liner,module_no,module_name,module_type,detail,composition,evidence_url
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,1,Home 页面,界面,hero + work + services + process + toolkit + testimonials + pricing + FAQ 八个区块,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,2,CMS 作品区,工具,CMS 驱动的作品区，每个案例有独立详情页,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,3,作品归档页,界面,Dedicated work archive page,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,4,联系表单,工具,含 location 字段的 contact form,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,5,响应式适配,界面,desktop / tablet / mobile 三端,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-brevio,framer,Brevio,设计师/开发者/创意自由职业者的一页作品集，用来展示作品并接单,6,动效,界面,Smooth scroll 与入场动画,6 个模块,https://www.framer.com/marketplace/templates/brevio/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,1,Remix 项目,分发,一个 remix 链接；demo 站就是同一个项目,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,2,页面结构,界面,Home + 7 个 CMS 案例页 + 404,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,3,项目行（页内展开）,界面,点击一行就地展开案例；首条默认展开；每条有 /#work-<slug> 深链,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,4,复制链接,工具,"复制项目深链并提示 ""Link copied""，剪贴板被拦时给出可选文本",8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,5,自适应 Hero 字号,界面,名字按宽度自动缩放，长名字也不溢出,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,6,About / Services / Experience / 两条证言,界面,个人介绍与信任块,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,7,联系（复制邮箱 + 表单）,工具,邮箱点击即复制；表单字段 name/email/project type/timeline/message，走 Framer 内置提交,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-tearsheet,framer,Tearsheet,独立设计师与小工作室的单页作品集，项目在页内展开,8,CMS 字段（19 个）,工具,Title/Folio/Client/Discipline/Year/Role/Timeline/Cover/Image 2/Image 3/Share Image/Brief/What I Did/Result/Metric Value/Metric Label/Live Link/Open First/Order/Body,8 个模块,https://www.framer.com/marketplace/templates/tearsheet/
+TP-framer-asher-vale,framer,Asher Vale,面向设计师与创意人的作品集模板，强调「几小时上线」,1,作品集页面,界面,引导访客走完「你是谁—做过什么—为什么选你」的叙事,5 个模块,https://www.framer.com/marketplace/templates/asher-vale/
+TP-framer-asher-vale,framer,Asher Vale,面向设计师与创意人的作品集模板，强调「几小时上线」,2,项目展示,界面,项目以干净布局呈现，突出作品本身,5 个模块,https://www.framer.com/marketplace/templates/asher-vale/
+TP-framer-asher-vale,framer,Asher Vale,面向设计师与创意人的作品集模板，强调「几小时上线」,3,CMS 项目,工具,用 Framer CMS 管理项目，便于持续更新,5 个模块,https://www.framer.com/marketplace/templates/asher-vale/
+TP-framer-asher-vale,framer,Asher Vale,面向设计师与创意人的作品集模板，强调「几小时上线」,4,排版与交互,界面,克制的排版与细致的交互，注意力留在作品上,5 个模块,https://www.framer.com/marketplace/templates/asher-vale/
+TP-framer-asher-vale,framer,Asher Vale,面向设计师与创意人的作品集模板，强调「几小时上线」,5,转化路径,界面,每页都为「潜在客户/雇主走下一步」设计,5 个模块,https://www.framer.com/marketplace/templates/asher-vale/
+TP-figma-free-ui-kit,figma,Free Figma UI kit and design system,一套可直接用的 UI kit + 设计系统底子,1,Design tokens,工具,颜色/字体/间距/阴影四类 token,3 个模块,https://www.figma.com/community/file/1512527544070386427/free-figma-ui-kit-and-design-system
+TP-figma-free-ui-kit,figma,Free Figma UI kit and design system,一套可直接用的 UI kit + 设计系统底子,2,可访问组件,工具,带 default/hover/focus/error/disabled 状态的组件,3 个模块,https://www.figma.com/community/file/1512527544070386427/free-figma-ui-kit-and-design-system
+TP-figma-free-ui-kit,figma,Free Figma UI kit and design system,一套可直接用的 UI kit + 设计系统底子,3,布局模式,界面,支撑迭代与扩展的 layout patterns,3 个模块,https://www.figma.com/community/file/1512527544070386427/free-figma-ui-kit-and-design-system
+TP-figma-media-dashboard,figma,Media Dashboard,内容/社媒团队的可编辑数据看板,1,可编辑 Figma 文件,工具,整套文件可改，非只读稿,4 个模块,https://www.figma.com/community/file/1537877734913818740/media-dashboard
+TP-figma-media-dashboard,figma,Media Dashboard,内容/社媒团队的可编辑数据看板,2,响应式布局,界面,"Clean, responsive layout",4 个模块,https://www.figma.com/community/file/1537877734913818740/media-dashboard
+TP-figma-media-dashboard,figma,Media Dashboard,内容/社媒团队的可编辑数据看板,3,核心指标与图表,界面,"Key media metrics, charts",4 个模块,https://www.figma.com/community/file/1537877734913818740/media-dashboard
+TP-figma-media-dashboard,figma,Media Dashboard,内容/社媒团队的可编辑数据看板,4,内容表格,界面,Content tables,4 个模块,https://www.figma.com/community/file/1537877734913818740/media-dashboard
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,1,Dashboard,界面,总览页,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,2,Bookings,界面,预订,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,3,E-Voucher,界面,电子凭证,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,4,Invoices,界面,发票,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,5,Inbox,界面,消息,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,6,Calendar,界面,日历,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-ventixe,figma,Ventixe 活动管理后台,活动组织者/票务平台/场馆的活动管理后台,7,Events（Grid）,界面,活动网格,7 个模块,https://www.figma.com/community/file/1482921791678828657/ventixe-event-management-admin-dashboard-ui-design
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,1,55+ 屏（亮/暗）,界面,light + dark 两套，40+/55+ 屏,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,2,模块化设计系统,工具,variables / components / tokens / auto-layout,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,3,匹配与聊天,界面,smart match cards、chat UI、profile insights,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,4,Onboarding,界面,目标与兴趣选择流程,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,5,安全与信任,界面,verified badge、safe chat、block/report,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-match-ui-kit,figma,Match – 约会 App UI Kit,约会/社交产品的完整 UI kit 与设计系统,6,个人资料构建,界面,editable prompts、lifestyle tags、photos,55+ 屏 / 6 组模块,https://www.figma.com/community/file/1523609597252271295
+TP-figma-material3-expressive,figma,Material 3 Expressive（设计系统）,把 Google M3 Expressive 指南做成可交互 Figma 系统,1,463 variable tokens,工具,6 种颜色模式（亮/暗/中/高对比）+ Web/Android/iOS 代码语法,463 tokens / 75 组件集,https://www.figma.com/community/file/1695747533279107617
+TP-figma-material3-expressive,figma,Material 3 Expressive（设计系统）,把 Google M3 Expressive 指南做成可交互 Figma 系统,2,75 组件集,工具,"3,200+ variants、9,600+ spring-based interactions",463 tokens / 75 组件集,https://www.figma.com/community/file/1695747533279107617
+TP-figma-material3-expressive,figma,Material 3 Expressive（设计系统）,把 Google M3 Expressive 指南做成可交互 Figma 系统,3,35 个 Expressive 形状,界面,几何参数从 Android 移植,463 tokens / 75 组件集,https://www.figma.com/community/file/1695747533279107617
+TP-figma-material3-expressive,figma,Material 3 Expressive（设计系统）,把 Google M3 Expressive 指南做成可交互 Figma 系统,4,151 图标 + 30 文字样式,界面,Material Symbols 图标与 text styles,463 tokens / 75 组件集,https://www.figma.com/community/file/1695747533279107617
+TP-figma-material3-expressive,figma,Material 3 Expressive（设计系统）,把 Google M3 Expressive 指南做成可交互 Figma 系统,5,文档 + 可玩原型,知识,每个组件有文档，整套可交互原型,463 tokens / 75 组件集,https://www.figma.com/community/file/1695747533279107617

@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Product Teardown · Taskade — Principal PM Analysis</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="Report tools">
+  <div class="lang-tools" role="group" aria-label="Language">
+    <a href="teardown-en.html" class="lang-btn active" aria-label="English version">EN</a>
+    <a href="teardown-zh.html" class="lang-btn " aria-label="中文版本">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">Export MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">Export PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 Product Teardown</div>
+
+<div class="meta-strip">
+  <span>Product Teardown · Principal PM Analysis</span>
+  <span class="dot"></span>
+  <span>Generated 2026-11-26</span>
+  <span class="dot"></span>
+  <span>Product: Taskade</span>
+</div>
+
+<h1>Taskade<span class="tag">It isn't a task tool. It's a machine that turns one sentence of business process into a live app: Projects hold the data, Agents make the calls, Automations do the running, Genesis App is the interface. The company calls the stack Workspace DNA and the compounding loop Living Loop.</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">Category</div><div class="value">AI Collaboration / Tasks & Agents (Workspace DNA: memory + intelligence + execution + interface)</div></div>
+  <div class="cell"><div class="label">Users</div><div class="value">The press page gives exactly three cumulative figures: 150,000+ Genesis apps built, 500K+ AI agents deployed, 3M+ automation executions — with no cut-off date. Third-party ratings: Capterra 4.7/5 (67 reviews), Product Hunt 4.7 (108), Trustpilot 4.6 (745), checked 2026-08/09. The countable scale is in the sitemap: 17 sub-sitemaps totalling 28,602 URLs. MAU, paying users and ARR are not disclosed, so this card does not invent them.</div></div>
+  <div class="cell"><div class="label">Model</div><div class="value">Subscription plus credits. Free $0 forever (2 members, 3 live apps, 1 agent, 10 automation runs/month, 250MB, 1 knowledge source, and no monthly credits — they must be earned through invites or clones); Starter $6, Pro $10 (monthly $20), Business $25, Max $100, Enterprise $250 (all annual-equivalent monthly prices; annual saves 50% from Pro up). No student, education or nonprofit discount (explicitly stated).</div></div>
+  <div class="cell"><div class="label">Stage</div><div class="value">Growth leaning mature, having just completed a platform turn. TASKCADE INC., founded 2017 in San Francisco, Y Combinator S19; TechCrunch reported a $5M round on 2019-10. Product line: Taskade AI launched 2022-12 → Workspace DNA (Memory / Intelligence / Execution) took shape in 2024 with Automation v2 and durable execution → Genesis plus Platform V6 (Aurora design system) in 2025 → platform build-out in 2026 (API, MCP v2, 100+ integrations, agent publishing), which the company describes as '80 releases in 5 months'. Six paid tiers, from $0 to $250.</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">Inside</span>
+  <ol>
+    <li><a href="#tldr">Verdict · TL;DR</a></li>
+    <li><a href="#metrics">Key Signals</a></li>
+    <li><a href="#s1">1. Product Snapshot</a></li>
+    <li><a href="#gallery">· Product Tour</a></li>
+    <li><a href="#s2">2. Users & JTBD</a></li>
+    <li><a href="#s3">3. Core Product Loop</a></li>
+    <li><a href="#s4">4. Architecture & UX System</a></li>
+    <li><a href="#s5">5. Design Language & Craft</a></li>
+    <li><a href="#s6">6. Value Delivery & UX Quality</a></li>
+    <li><a href="#s7">7. Business Model</a></li>
+    <li><a href="#s8">8. Competitor Landscape</a></li>
+    <li><a href="#s9">9. Growth Strategy</a></li>
+    <li><a href="#s10">10. Application six-dim</a></li>
+    <li><a href="#s11">11. Metrics They Optimize For</a></li>
+    <li><a href="#s12">12. Friction & Weaknesses</a></li>
+    <li><a href="#s13">13. Risk Matrix</a></li>
+    <li><a href="#s14">14. Opportunities & Redesign</a></li>
+    <li><a href="#s15">15. Final PM Verdict</a></li>
+      <li><a href="#s16">16. Competitive map</a></li>
+    <li><a href="#s17">17. Rivals' technical base</a></li>
+    <li><a href="#s18">18. Portable opportunities (my judgement)</a></li>
+    <li><a href="#s19">19. Traffic and monetisation</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>Assumptions:</strong> Verifiable: the official llms.txt and SKILL.md text (Workspace DNA, Living Loop, 'The user is usually a business owner, not a developer'), the six tiers with their feature matrix (annual-equivalent prices, credit and run allowances, where BYOK and SAML/SCIM sit), the page counts across 17 sub-sitemaps (28,602 total) and their structural split, the composition of the 197 comparison pages (155 / 33 / 6), the specific GEO moves (llms.txt / SKILL.md / MCP / .well-known / markdown output / robots.txt signals), third-party ratings (Capterra 4.7/67, PH 4.7/108, Trustpilot 4.6/745), and company history and funding (founded 2017, YC S19, TechCrunch $5M in 2019-10). Inferred and flagged: frequency, north-star and input/guardrail metrics, competitor prices and protocol details (not verified this round), and the real activity of the App Kit market. No hands-on test was run, so no experience conclusions are given.
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM Verdict</div>
+    <h2>It splits one workspace into four isomorphic layers (data / intelligence / execution / interface), then sells that single object graph four times over as four wrappers (projects / agents / automations / apps). The moat isn't the template count — it's the loop where results flow back as memory.</h2>
+    <div class="sub">The unplug test says native: take away agents, automations and one-prompt Genesis and what remains is a task table with ten views — half the value, because what it sells is 'an app without writing code'. But be precise about what its AI actually is: not model capability, but routing from task to model (the TSK ladder) plus the engineering to fit business process into a controlled container. That also explains why it can sell templates, agents and apps at once — they were always the same data in different shells.</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · Strategic strength</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">If you only read three things —</div>
+  <ul>
+    <li><strong>Four isomorphic layers: one dataset, four wrappers</strong> — Memory (Projects hold data) → Intelligence (Agents make calls) → Execution (Automations run across 100+ integrations) → Interface (Genesis App). Four entry points, one object graph: Projects for people, Agents for whoever is asking, Automations for the system, Genesis App for the end customer. So templates, agents and apps are not three product lines — they are three packages of the same layer.</li>
+    <li><strong>Living Loop: results have to flow back as memory</strong> — Company wording: Memory supplies context → Intelligence decides → Execution produces results → results flow back as new Memory. The most concrete design decision: an agent's memory is not a black box, it is a Project — browsable, editable, searchable, forkable. That turns 'AI memory' from something uncontrollable into a table a human can correct, and it is why each run is better than the last.</li>
+    <li><strong>Only 14.3% of its 28,602 pages are hand-written</strong> — Sitemap measurements (2026-11-26, 17 sub-sitemaps): programmatic resource pages 18,376 = 64.2% (templates 3,997 / generate 4,526 / agents 3,169 / automate 2,361 / prompts 2,205 / convert 2,118); UGC app pages 6,135 = 21.4% (community apps plus 495 author pages); hand-written marketing content only 14.3% (blog 1,125 / marketing 867 / learn 435 / wiki 573 / docs 169 / compare 197 and so on). Inside the 197 comparison pages: 155 are free-<competitor>-alternative, 33 are pure third-party model comparisons (gpt-vs-claude and similar, unrelated to the product), and only 6 are taskade-vs-*. This isn't brand comparison; it is pure search-volume harvesting.</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">Time to value</div>
+    <div class="big">Not measured</div>
+    <div class="desc">No hands-on test this round; generating the first app is not counted as value and no minutes are claimed</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Core loop frequency</div>
+    <div class="big">Not disclosed</div>
+    <div class="desc">Only cumulative figures exist (3M+ automation executions, 500K+ agents); no frequency data, so none is invented</div>
+  </div>
+  <div class="num-card">
+    <div class="label">Moat score</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">My judgement, not a measurement; points lost on data model, interface freedom and brand narrative (hand-written content is 14.3%)</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>Product Snapshot</h3>
+    <span class="pill">What it really is</span>
+  </div>
+  <p class="section-intro">Beyond the marketing description — what this product actually is as a system.</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote"><strong>Product positioning</strong>: the official definition reads 'Taskade is an AI-native workspace. Taskade Genesis turns one prompt into a live, hosted app. Each app runs on Workspace DNA: Projects hold the data, AI agents add intelligence, and automations act across 100+ integrations.' Its SKILL.md is blunter: 'The user is usually a business owner, not a developer.' In plain terms: for people who have a business process and no engineer, one sentence produces a running, publishable app that reads and writes data.</div>
+      <h4>Core user promise</h4>
+      <p>The official claim is 'turn business processes into live apps'. In user language: you don't learn a new tool and you don't hire a developer — describe the process, get an app with a data table, an agent and automations, on your own domain; then clone somebody else's finished app and adjust it.</p>
+    </div>
+    <div class="info-card">
+      <h4>Category & positioning</h4>
+      <p>It stands where three shelves intersect: collaboration and project tools (Notion, Asana, ClickUp, Monday), automation platforms (Zapier, Make), and no-code app builders (Softr, Bubble, Glide). It sits in the middle, tilted toward 'system': more execution and interface than a collaboration tool, more data layer than an automation platform, more built-in data and agents than an app builder. That middle position is both its difference and its explanation cost.</p>
+      <h4 style="margin-top:14px;">Assumptions</h4>
+      <ul>
+        <li>[inferred] '28,602 pages' proves page scale, not traffic. Programmatic SEO only works if those pages rank, and no Similarweb or Ahrefs data was pulled this round, so its organic performance cannot be inferred from the sitemap.</li>
+        <li>[inferred] Its revenue core is Business and Pro, not Free/Starter: the Business tier is positioned as 'For agencies and client work' (unlimited domains, white-label, SEO, 10,000 runs), while Free allows 3 apps and 10 automation runs — not enough for a second client.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 PRODUCT TOUR (screenshots) -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>Product Tour</h3>
+    <span class="pill">Screenshots from the product</span>
+  </div>
+  <p class="section-intro">A visual pass through the surfaces we'll analyze next. Images sourced live from the product's public marketing pages.</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://www.taskade.com/static_images/taskade-genesis-mascot-2026.png" alt="Taskade's site hero: the 2026 claim is 'Turn Business Processes Into Live Apps' (official OG image from taskade.com)" loading="lazy"/><figcaption><span class="fig-num">Fig.01</span>Taskade's site hero: the 2026 claim is 'Turn Business Processes Into Live Apps' (official OG image from taskade.com)</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/landing/hp-1-prompt-it-poster.webp" alt="The Genesis block on the homepage: one prompt → a running, hosted app (image from taskade.com/static_images/landing)" loading="lazy"/><figcaption><span class="fig-num">Fig.02</span>The Genesis block on the homepage: one prompt → a running, hosted app (image from taskade.com/static_images/landing)</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/7iyc4shyd1f9eo1k-dealflow-crm.webp" alt="One of the App Factory community builds: DealFlow CRM (community app preview taken from the homepage app list)" loading="lazy"/><figcaption><span class="fig-num">Fig.03</span>One of the App Factory community builds: DealFlow CRM (community app preview taken from the homepage app list)</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/jiz9qqa3pono9ntq-minimalist-e-commerce-storefront.webp" alt="Community build: a minimalist e-commerce storefront — Genesis turning one dataset into an outward-facing shop" loading="lazy"/><figcaption><span class="fig-num">Fig.04</span>Community build: a minimalist e-commerce storefront — Genesis turning one dataset into an outward-facing shop</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/cibvdbpnmfh8ql8k-content-agent-chatbot.webp" alt="Community build: a content-agent chatbot — a public agent page can be embedded into external sites with 5 widget types" loading="lazy"/><figcaption><span class="fig-num">Fig.05</span>Community build: a content-agent chatbot — a public agent page can be embedded into external sites with 5 widget types</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/h42is85vu180almu-growth-dashboard.webp" alt="Community build: a growth dashboard — the same project data shown as boards and charts (community app preview)" loading="lazy"/><figcaption><span class="fig-num">Fig.06</span>Community build: a growth dashboard — the same project data shown as boards and charts (community app preview)</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>Target Users & Jobs-to-be-Done</h3>
+    <span class="pill">Who + why</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Primary user segments</h4>
+      <ul>
+        <li><strong>Small teams, one-person businesses, agencies (business owner, not developer)</strong> — This is the ICP the company writes down itself. What they want isn't better project management, it's small systems — a client portal, a CRM, an invoice flow, booking, a dashboard — and buying SaaS costs money while hiring a developer costs time. The free plan's 3-app allowance is enough to try one real scenario, and Pro's 10 custom domains are enough to serve clients.</li>
+        <li><strong>Creators (App Kit authors)</strong> — An App Kit packs 'app interface + projects + agents + automations' into one bundle, marks it free or paid, lets others clone it in one click, and pays the author from Earnings; the same app can also exist as a free and a Pro entry. So it is a creator distribution platform at the same time — the 495 author pages in the sitemap are the evidence.</li>
+        <li><strong>Teams moving house (Notion / Asana / ClickUp / Trello / Monday users)</strong> — It ships 30+ importers (Notion, Asana, ClickUp, Trello, Monday, Zapier, Make, Obsidian, Evernote, Roam, Logseq, Workflowy, Miro and more); an import becomes a project that can immediately take agents and automations. The 155 free-<competitor>-alternative pages exist precisely for these searchers.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Trigger & context</h4>
+      <p><strong>Trigger moment:</strong> The same process is run by hand for the third time: a client asks for progress and you type it, an invoice goes overdue and you chase it, an onboarding checklist needs watching. That is when people search 'is there a template for this' — and its 3,997 template pages plus 4,526 generator pages exist for that search.</p>
+      <p><strong>Frequency:</strong> Follows the process cadence (tickets, orders and follow-ups sit at daily-to-weekly volume); frequency is not disclosed, only 3M+ cumulative executions.</p>
+      <p><strong>Context:</strong> Desktop, mobile and a browser extension; data lives in Projects (10 views: List / Board / Table / Mind Map / Docs / Calendar / Gantt / Actionsheet / Org Chart and so on); judgement lives in Agents (instructions + knowledge + persistent memory + tools + slash commands); execution in Automations (4 trigger types + 5 action types + branch / loop / filter / approval); interface in Genesis App (publishable to *.taskade.app or your own domain); external calls via Hosted MCP and the REST API.</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done</h4>
+    <div class="jtbd-row">
+      <div class="who">Functional</div>
+      <div class="job">Turn one business process into one working system: data has a home, judgement has an owner, repetition runs itself, and the interface can face a customer. <br><em>"When ___, I want to ___, so I can ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Emotional</div>
+      <div class="job">Never admit you can't afford a developer. The emotional promise is 'you can build software too' — which is exactly why one-prompt Genesis is addictive: nothing stands between the idea and something clickable. <br><em>"I want to feel ___ / avoid feeling ___."</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">Social</div>
+      <div class="job">Be the person in a small team who gets the process running; to a client, deliver not a document but a portal they can log into, submit through and track. <br><em>"I want others to see me as ___."</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>Core Product Loop</h3>
+    <span class="pill">System dynamics</span>
+  </div>
+  <p class="section-intro">The engine — how a single user session compounds into retention and, if lucky, growth.</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">Trigger</div>
+      <div class="what">The repetitive job shows up again</div>
+      <div class="why">The trigger isn't 'I want AI', it's 'this happens every week and a human does it every time'. It makes triggers four kinds: internal Taskade events (task added / completed / assigned / field changed), external app events (Gmail / Slack / GitHub / Notion…), time (Schedule), and inbound (Webhook / Mailhook / Form).</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Action</div>
+      <div class="what">Either let an agent do it, or let an automation run it</div>
+      <div class="why">One process has two entrances: a person asks an agent (it carries knowledge, memory and tools, and each tool can be set to run automatically or require human approval), or the system runs an automation (trigger → action, with branch, loop, filter, delay and approval steps in between). Both share the same data, which makes 'run it by hand first, then let it run itself' the natural learning path of this product.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Reward</div>
+      <div class="what">Output lands back in the project, not in a chat window</div>
+      <div class="why">An agent's output can write back into Projects (create tasks, change fields, add comments); an automation's output can be new records, notifications, email or reports; a Genesis App wraps these into an interface for end users. Keeping output in the data layer is the precondition for the Living Loop to work.</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">Return</div>
+      <div class="what">Memory thickens, the next call gets better</div>
+      <div class="why">You come back not to generate again but because it remembers how this was handled last time. Persistent memory is stored as a Project — browsable, editable, forkable; knowledge sources can be files, projects, web pages, YouTube or cloud drives (50 per agent on paid tiers). The longer you use it, the less it behaves like a generic assistant.</div>
+    </div>
+  </div>
+  <div class="loop-note">"What it teaches is that the process itself is the product: once you have written one handling into a flow, you own an asset you can hand to a colleague, an agent or a customer."</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Acquisition loop</h4>
+      <p><strong>Traffic and exposure</strong>: a three-part structure, all countable. (1) Programmatic SEO: 64.2% of its 28,602 URLs are 'search anything, find a page' resource pages across templates / agents / automate / prompts / convert / generate. (2) A UGC clone factory: 6,135 community app pages plus 495 author pages in the sitemap, and every app a user publishes automatically ships robots.txt, sitemap.xml and llms.txt — customer output becomes a new discovery node. (3) An AI-native discovery layer (GEO): llms.txt (updated 2026-11-18, with TL;DR, facts, FAQ and a 'How to Cite Taskade' instruction), SKILL.md (an operating manual for agents), Hosted MCP (OAuth 2.0 + PKCE), .well-known metadata (api-catalog, mcp.json, server-card, agent-skills index), Accept: text/markdown, OpenAPI JSON, TSK-Bench, and a robots.txt that states ai-train=yes, search=yes, ai-input=yes.</p>
+    </div>
+    <div class="info-card">
+      <h4>Activation · Aha moment</h4>
+      <p>The most aha-shaped moment in the official narrative: one sentence becomes an app with a data table, an agent, automations and a publish button — nothing scheduled between the idea and something clickable. Not tested this round; this rests on the official llms.txt and About page, not on hands-on experience.</p>
+    </div>
+    <div class="info-card">
+      <h4>Retention drivers</h4>
+      <ul>
+        <li>Data and memory both live in the workspace: Projects hold business data and agent memory is stored as a Project, so leaving means rebuilding the whole context.</li>
+        <li>Once automations run, they are part of the process: 100+ integrations, webhooks, approval steps — replacing it means rewiring and re-validating.</li>
+        <li>Published apps have end users (App Users / GenesisAuth): a portal your customers use is the hardest retention there is — you're not swapping a tool, you're swapping your customers' front door.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Virality / network effects</h4>
+      <p>Yes, in three layers: clone-and-use (Free can clone 1,000+ free app kits, with each clone consuming one of the 3 free app slots), credits for being cloned ('Earn Credits When Others Clone'), and a built-in discovery layer on every published app (robots/sitemap/llms.txt) plus public agent pages with 5 widget embed options. 'Credits as currency, cloning as propagation, finished goods as merchandise' — a tighter loop than a plain free tier [inferred].</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>Product Architecture & UX System</h3>
+    <span class="pill">Surfaces + entities</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">Key product surfaces</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Projects (the data layer = Memory)</span><div class="desc">Structured data: a task tree plus custom fields plus 10 views (List / Board / Table / Mind Map / Docs / Calendar / Gantt / Actionsheet / Org Chart and more). Note that on the 2026 site 'notes' and 'mind map' are no longer separate objects but two views of a project — that detail is the key to reading its architecture.</div></div>
+    <div class="surface"><span class="name">AI Agents (the intelligence layer)</span><div class="desc">A role-shaped AI teammate: instructions + knowledge (files / projects / web / YouTube / cloud drives) + persistent memory + tools (research / documents / AI steps / workspace operations / external apps / custom) + slash commands. Each tool can run automatically or require human approval; multiple agents can form AI Teams (Auto / Everyone / Manual / Orchestrate).</div></div>
+    <div class="surface"><span class="name">Automations (the execution layer)</span><div class="desc">Triggers + actions + control flow (Branch / Loop / Filter / Delay / Approval) across 173 connectors in 6 categories. Four trigger types — internal Taskade events, external app events, time, and inbound (Webhook / Mailhook / Form); actions can return structured JSON for later steps to read fields from.</div></div>
+    <div class="surface"><span class="name">Genesis App (the interface layer)</span><div class="desc">A React app generated from one sentence, hosted by Taskade, reading and writing the three layers below; publishable to *.taskade.app or your own domain (with SSL), embeddable via iframe, password-protectable, and shipping App Users / GenesisAuth (an end-user login independent of Taskade accounts). This layer is what separates it from every 'templates + agent' product.</div></div>
+    <div class="surface"><span class="name">App Factory / App Kits (the distribution layer)</span><div class="desc">6,135 community app pages across 72 categories (48 types + 12 teams + 12 industries) plus 495 author pages; an App Kit can be cloned, distributed free or paid, exported as .tsk, or exported to GitHub. It turns 'finished goods' into a circulating asset — the next floor above the template business.</div></div>
+    <div class="surface"><span class="name">The machine entrance (MCP / SKILL.md / llms.txt)</span><div class="desc">A front door built for AI: Hosted MCP (https://www.taskade.com/mcp, OAuth 2.0 + PKCE) lets external agents read and write the workspace, SKILL.md teaches them how, and llms.txt even specifies how it wants to be cited. Most products treat AI as a user; this one treats AI as a customer too.</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">Core entities · what the system is built around</h4>
+  <div class="entity-row">
+    <span class="entity">Workspace (the top isolation unit: each workspace gets its own memory, intelligence and execution)</span>
+    <span class="entity">Project / Task / Field (dataset, row, column)</span>
+    <span class="entity">View (10 ways of looking at the same data)</span>
+    <span class="entity">Agent (instructions + knowledge + persistent memory + tools)</span>
+    <span class="entity">Automation / App Kit (the process and the circulating finished good)</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>IA logic</h4>
+      <p>The spine is the project: everything enters through Projects, grows upward into an Agent's knowledge and memory, outward into an Automation's triggers and actions, and is finally wrapped as an interface by Genesis App. The upside is that four wrappers share one dataset — change it once, all four entrances change. The cost is concept density: a user must hold ten objects at once (project, view, field, agent, tool, knowledge, memory, trigger, action, app kit) to get the whole product. That is the dividing line with Notion, which only asks you to understand blocks.</p>
+    </div>
+    <div class="info-card">
+      <h4>Navigation & interaction model</h4>
+      <p>Navigation is cut by what you do: Create (Genesis) / Projects / Agents / Automate / Apps / Templates / Integrations / Pricing / Learn / Docs. Notably /use-cases and /solutions both 404 on the 2026 site — scenarios are carried entirely by the 72 app-kit categories at /apps/categories and the /learn/projects/for-* audience pages. Not tested this round; interaction claims rest on site structure and docs only, with no experience verdict.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>Design Language & Craft Signals</h3>
+    <span class="pill">What craft actually means</span>
+  </div>
+  <p class="section-intro">Every craft decision points at one sentence: turn one-off delivery into a circulating asset. Templates copy, apps clone, memory forks, and every artifact ships its own discovery layer. When the assets circulate by themselves, the product doesn't need paid acquisition.</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">Make the AI's memory an editable Project</span><div class="body">The most copyable detail in the whole product: persistent memory is not hidden in the model, it lands as a Project that can be browsed, edited, searched and forked. Three consequences — users can see what the agent 'remembers', they can correct it, and they can copy that memory to another agent; meanwhile the memory doubles as a data asset inside the product.</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">The TSK ladder: pick a task level, not a vendor's model</span><div class="body">Five levels — TSK-Auto / Instant / Standard / Thinking / Reasoning — where the user chooses how hard the job is, not which model to use; from Pro you can bring your own key (OpenAI / Anthropic / Google, plus xAI / DeepSeek / Mistral / OpenRouter on Business). Models are consumables; the product is the routing from task to model. That is the right abstraction for 2026, because models change every six months and the user's mental model shouldn't change with them.</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">Three wrappers: templates give structure, App Kits give finished goods, MCP gives machines</span><div class="body">A Template is structure you adjust (3,997 project templates / 3,169 agents / 2,361 automation recipes); an App Kit is a finished good you take away (6,135 of them, cloneable, sellable, exportable as .tsk or to GitHub); MCP + SKILL.md is the interface that lets other agents call it. One object graph, three delivery granularities, three kinds of buyer.</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">Credits as currency: growth written into the billing rules</span><div class="body">The free plan has no monthly credits — they only come from inviting people or being cloned; and cloning someone's app consumes one of the free plan's 3 app slots. So acquisition and being copied stop being marketing campaigns and become the only route to allowance. That welds the growth motive into the ledger, far harder than 'invite a friend for points', and explains why it dares to make the free tier so small.</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">Every user's output ships with SEO / GEO built in</span><div class="body">Per the official publishing docs, every published app automatically produces robots.txt, sitemap.xml and llms.txt; Business+ adds an SEO Health score and app analytics. So every app a user publishes opens one more search and AI discovery node — UGC becomes distribution, which is the mechanism behind the 21.4% of pages that come from users.</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>Value Delivery & UX Quality</h3>
+    <span class="pill">Feel of the product</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">Time-to-value</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Time to value: not measured this round (no hands-on test; generating the first app is not counted as value, and no minutes are claimed)</span></div>
+  <div class="ux-bar"><span class="lbl">Cognitive load</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">Cognitive load: high (not measured; the verifiable part is that a user must hold ten objects at once — project, view, field, agent, tool, knowledge, memory, trigger, action, app kit)</span></div>
+  <div class="ux-bar"><span class="lbl">Delight density</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Delight: cloneable finished goods, apps on your own domain, model churn you never feel</span></div>
+  <div class="ux-bar"><span class="lbl">Trust signals</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">Trust: third-party ratings are respectable (Capterra 4.7/67, Product Hunt 4.7/108, Trustpilot 4.6/745, checked 2026-08/09), and the enterprise side has SAML (Business+) and SCIM (Enterprise). Two uncertainties remain: the activity and quality distribution of those 6,135 community apps were not verified, and there is no public failure-rate or rollback documentation for 'one sentence generates an app' running unattended in a real business.</span></div>
+  <div class="ux-bar"><span class="lbl">Struggle risk</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">Friction: concept density, credits pricing, inconsistent scale figures</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>Key delight moments</h4>
+      <ul>
+        <li>Clone-and-use App Kits: 6,135 community apps, and you can see an app's 'DNA' (which projects, agents and automations it uses) before cloning.</li>
+        <li>A one-sentence app can sit on your own domain (10 of them from Pro) with SSL, iframe embedding and end-user login.</li>
+        <li>Model generations pass invisibly: the TSK ladder exposes task levels, not vendor model names (and paid tiers allow BYOK).</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Where users likely struggle</h4>
+      <ul>
+        <li>Concept density is too high: ten objects must be understood before the product gives everything, while its rival Notion asks only for blocks. That is its biggest friction with a mainstream audience, and the reason it has to lower the bar with templates and App Kits.</li>
+        <li>Credits pricing is hostile to non-AI use: a team that just wants a project tool finds credits and automation-run allowances irrelevant, while the free plan has no monthly credits at all (only invites and clones earn them), so a newcomer can hit the limit on their first AI use.</li>
+        <li>Its own scale numbers don't line up: 1,000+ free app kits, 500+ community templates and 6,135 sitemap entries coexist; and apart from Pro at $20 monthly, monthly list prices were not verified. For a player whose pitch includes transparency, this is the easiest place to attack.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>Business Model & Monetization</h3>
+    <span class="pill">How it makes money</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">Revenue model</span><h5>Subscription plus credits (the allowance is both a cost and an acquisition currency)</h5><p>Free $0 (2 members / 3 apps / 1 agent / 10 automation runs per month / 250MB / 1 knowledge source / no monthly credits); Starter $6 (10K credits, 350 runs, 3 agents, 5GB); Pro $10 annual and $20 monthly (50K credits, 1,000 runs, unlimited agents, 10 custom domains, webhooks, .tsk and GitHub export, BYOK); Business $25 (150K credits, 10,000 runs, unlimited members and domains, white-label and SEO, SAML); Max $100 (400K credits); Enterprise $250 (1.1M credits, SCIM). Annual saves 50% from Pro up.</p></div>
+    <div class="biz-card"><span class="tag">Free ↔ Paid boundary</span><h5>Where free stops</h5><p>Free: 2 members, 3 live apps, 1 custom agent, 10 automation runs per month, 250MB, 1 knowledge source, 7-day version history, no custom domains or webhooks, no monthly credits. Paid: Starter $6 brings 10K credits and Hosted MCP; Pro $10 brings 50K credits, unlimited agents, 10 domains, webhooks, .tsk / GitHub export and BYOK; Business $25 brings 150K credits, unlimited members and domains, white-label and SEO, SAML and TSK-Reasoning; Max $100 brings 400K credits; Enterprise $250 brings 1.1M credits and SCIM.</p></div>
+    <div class="biz-card"><span class="tag">Monetization entry points</span><h5>The entry is unusually small; the money is in credits and in being allowed to publish</h5><p>The free tier gives 2 members, 3 apps, 1 agent and 10 automation runs — small enough to look deliberately walled: exactly enough to get one real scenario running, not enough for a second. Three paid steps: allowance and webhooks (Starter/Pro) → external branding and domains (unlimited domains plus white-label and SEO from Business) → enterprise identity (SAML and SCIM on Enterprise). It doesn't sell features; it sells how much you can deliver outward and how much AI you can run.</p></div>
+    <div class="biz-card"><span class="tag">UX ↔ Monetization alignment</span><h5>Are experience and monetisation aligned, or fighting?</h5><p>Structurally very aligned, and cleverly so: the free tier drops the cost of 'get one scenario running' to zero, and the paywall stands exactly at the moment you start delivering outward — more members (clients need a login), more apps (one portal per client), your own domain and white-label (someone else will look at it), more automation (the process starts depending on it). That line is better drawn than most SaaS manages, because it tracks 'the business is really using it' rather than 'the user feels like upgrading'. The one place they fight: credits and automation runs are two currencies, users cannot forecast whether they will exceed either, and the consequence of overage is more anxiety-inducing than a feature limit.</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>Competitor Landscape</h3>
+    <span class="pill">Positioning matrix</span>
+  </div>
+  <p class="section-intro">The list isn't guesswork; read its comparison-page structure directly. Of 197 /compare/* pages, 155 are free-<competitor>-alternative (free-notion-alternative, free-zapier-alternative and similar), 33 are pure third-party model comparisons (gpt-vs-claude, qwen-vs-kimi, glm-vs-gpt — unrelated to the product), and only 6 are taskade-vs-*. That says two things: what it is really chasing is the 'free alternative' search intent, against Notion / Asana / ClickUp / Trello / Monday / Zapier / Make; and it will take even the 'which model is better' traffic. Competitor prices were not verified this round, so no price comparison is offered.</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>Dimension</th>
+          <th>Taskade</th>
+          <th>Notion</th>
+          <th>Airtable</th>
+          <th>Zapier / Make</th>
+          <th>Softr / Bubble / Glide (app builders)</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>Main battleground</th><td class="own">AI collaboration / tasks and agents platform (one sentence builds an app)</td><td>The same people: small teams and creators who want one workspace where everything fits</td><td>Teams that want business data as tables and views (more structured than Taskade, less process-shaped)</td><td>People who already have tools and only need them connected (the automation link in the chain)</td><td>People who want 'turn data into an interface a client can use' — Genesis's most direct rivals</td></tr>
+        <tr><th>Data model</th><td class="own">Project/Task/Field plus 10 views, Agents with persistent memory, Automations across 173 integrations, and Genesis App — all four sharing one object graph</td><td>The block model (a page is data), extended into structure by database views</td><td>Relational base plus views and automation — stronger data model, AI layered later</td><td>A trigger-action orchestration engine; connector count is the moat, and it holds no data layer</td><td>No-code app builders: strong on interface, but data and automation come from outside (Airtable / Sheets / a database)</td></tr>
+        <tr><th>Distribution</th><td class="own">28,602 programmatic pages (64.2% programmatic / 21.4% UGC / 14.3% hand-written) plus an AI-native discovery layer of llms.txt / SKILL.md / MCP</td><td>Template ecosystem, community and word of mouth; Taskade runs 155 free-notion-alternative pages aimed straight at its substitute searches</td><td>Template gallery and enterprise sales; Taskade catches its searches with templates and automate pages</td><td>Integration directories plus long-tail 'X + Y integration' search; Taskade's automate (2,361 pages) and integrations (180 pages) point straight at it</td><td>Creator communities, template galleries and tutorial content</td></tr>
+        <tr><th>Price transparency</th><td class="own">All six annual-equivalent monthly prices are public ($0 / $6 / $10 / $25 / $100 / $250) with credits and run allowances spelled out; monthly list prices other than Pro's $20 were not verified</td><td>Not verified this round (Taskade's comparison pages carry the substitute narrative; neither price list was checked)</td><td>Not verified this round</td><td>Not verified this round</td><td>Not verified this round</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>Where the product wins:</strong> Three things rivals can't close quickly: four layers sharing one object graph (Notion lacks automation depth, Zapier lacks a data layer, Bubble lacks built-in data and automation); the circulation of App Kits (cloneable, sellable, exportable as .tsk or to GitHub — others ship templates, not assets); and the completeness of the GEO layer (llms.txt with citation guidance + SKILL.md + .well-known + MCP + markdown output + OpenAPI + TSK-Bench), which almost nobody has assembled.</div>
+  <div class="comp-verdict warn"><strong>Where rivals are catching up:</strong> Three gaps: brand and trust (Notion owns the word 'workspace', Taskade still intercepts with 155 substitute pages); data-model depth (Airtable's relational strength blocks complex businesses); and interface freedom (Bubble and Softr can build interfaces Genesis cannot). One deeper issue: it sells 'one sentence generates' as the headline, but the hard part of a real business app is design judgement, not generation speed.</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>Growth Strategy</h3>
+    <span class="pill">Explicit or inferred</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>Likely acquisition channels</h4>
+      <ul>
+        <li>A programmatic SEO matrix: 28,602 URLs, of which 18,376 are resource pages across templates / agents / automate / prompts / convert / generate (64.2%), plus 197 comparison pages (155 of them free-competitor-alternative) harvesting 'free alternative' searches.</li>
+        <li>A UGC clone factory: 6,135 community app pages and 495 author pages in the sitemap, credits for being cloned, a revenue share on sales, and a discovery layer on every published app — user output is its content asset.</li>
+        <li>An AI-native discovery layer (GEO): llms.txt (including 'How to Cite Taskade') + SKILL.md + Hosted MCP + .well-known metadata + Accept: text/markdown + OpenAPI + TSK-Bench, with robots.txt explicitly stating ai-train=yes / search=yes / ai-input=yes. It treats 'being cited by AI' as a formal channel.</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>Primary growth loops</h4>
+      <ul>
+        <li><strong>The credits-as-currency loop</strong> — The free plan has no monthly credits; they can only be earned by inviting people ('Earn AI Credits by Inviting Friends') or by being cloned ('Earn Credits When Others Clone'). So inviting and being copied become the only ways a user gets allowance — growth written directly into the billing rules, harder than 'earn points for referrals'.</li>
+        <li><strong>The programmatic SEO + GEO loop</strong> — Five families of programmatic pages catch every long tail → landing pages feed the free tier → a user clones a finished app and publishes their own → the new app automatically ships robots/sitemap/llms.txt and becomes another discovery node. The first two are written by Taskade; the third is written by its users on its behalf.</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">Expansion vectors</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>Horizontal</h5><ul><li>From task to app: Genesis upgrades 'manage a thing' into 'deliver a system' — same data, one layer of interface added.</li><li>From self-use to sale: App Kits make finished goods cloneable, priceable and exportable, turning users into channels ([inferred] the only route around template commoditisation).</li></ul></div>
+    <div class="growth-col"><h5>Vertical</h5><ul><li>72 app-kit categories: 48 types (CRM, client portal, dashboards, invoicing, booking, trackers, knowledge base, chatbot, landing page, storefront, forms, calculators…) plus 12 teams and 12 industries.</li><li>Agencies and client delivery (the Business tier is literally called 'For agencies and client work'): one app per client, white-label plus own domain plus end-user login.</li></ul></div>
+    <div class="growth-col"><h5>Platform</h5><ul><li>Open interfaces are complete: Hosted MCP (OAuth 2.0 + PKCE), REST v1 GA, Action v2 Beta, webhook / mailhook, OpenAPI JSON (v1/v2), .well-known metadata, and mcp / skills / cli / awesome-vibe-coding on GitHub.</li><li>[inferred] Its platform play is two-sided: let other agents read and write it over MCP (it is a tool), and publish user apps as standalone sites (it is a host). That two-sided position is more aggressive than Slack's bidirectional MCP, because its apps can live off the taskade.com domain entirely.</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>Application six-dim</h3>
+    <span class="pill">how well the model is used</span>
+  </div>
+  <p class="section-intro">Six dimensions are the main framework: the first three are about value, the last three about trust and switching cost.</p>
+  <p class="section-intro">Classified as **原生**. 拔电测试：拿走 AI，产品消失 → AI 原生 (basis: 人工名单)</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① What step it replaces</h4>
+      <p>What it replaces is the 'find someone to build a small system' step: a SaaS purchase or a developer used to take weeks, now it is one sentence plus a template tweak, minutes to hours. Cost moves from development and procurement to subscription plus credits (from $0). That is its sharpest edge and its most interruptible one — once upstream models produce apps directly, the margin disappears.</p>
+    </div>
+    <div class="info-card">
+      <h4>② Who does the dirty work</h4>
+      <p>It eats five jobs — data storage, views, judgement (agents), execution (automations) and interface (Genesis) — and hands back one: design judgement. One sentence can generate an app, but how the business should run, which fields to use, who may see what still belongs to a human. It takes the engineering work and leaves the product work.</p>
+    </div>
+    <div class="info-card">
+      <h4>③ Is the output usable</h4>
+      <p>Usable after one editing pass: an App Kit is a starting point to adjust, not a final product; a generated app in a real business usually needs fields, permissions and flow tuned. Not tested this round — this judgement rests on the official docs and on the recipe structure of App Kits (for example Invoice Generator Pro = 3 projects + 1 agent + 3 automations).</p>
+    </div>
+    <div class="info-card">
+      <h4>④ How errors are caught</h4>
+      <p>Its safety net is better designed than peers: agent tools can require human approval, automations have an Approval step, and EVE asks for approval. But 'one sentence generates an app' has no published failure rate or rollback story — that layer of fallback is still blank.</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ Cost of one error</h4>
+      <p>Mostly reversible: .tsk export, GitHub export and version history (7 days on Free, 1 year on Pro, 5 years on Business) all provide a way out. What is irreversible is pulling a customer into your app: once they have submitted data through a portal, switching tools means migrating customers.</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ What replaces it</h4>
+      <p>An individual can switch (Notion templates plus Zapier covers most of it); a team cannot: data, agent memory, automation wiring and the end users of published apps all live here. Its retention comes from 'the asset is here', not from 'the features are better'.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>What Metrics They Actually Optimize For</h3>
+    <span class="pill">[Inferred] north-star + guardrails</span>
+  </div>
+  <p class="section-intro">The company publishes only three cumulative figures (150,000+ Genesis apps built, 500K+ AI agents deployed, 3M+ automation executions) plus sitemap scale. What follows separates verifiable public facts from [inferred] 'what it should be watching' — the latter is not real data.</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">North Star</span>
+      <h5>Live apps used by a real business each week (as opposed to created) ([inferred])</h5>
+      <p>[inferred] It charges by credits and app count, but value only exists when an app actually has users. 'Apps built' inflates easily via one-sentence generation (the 150,000+ figure is exactly that kind of number), so the true north star must be weekly active published apps.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 1</span>
+      <h5>Clone → publish → end-user conversion funnel</h5>
+      <p>Its growth leans entirely on 'clone and use' (Free can clone 1,000+ free kits). But cloning isn't use: what drives revenue is whether a clone gets published and whether a published app ever sees an App User log in. Those two actions are what 'the business is using it' means.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 2</span>
+      <h5>Weekly automation executions and failure rate</h5>
+      <p>Automation is the line between 'a tool' and 'a process'. Execution count drives stickiness; failure rate drives trust — a payment-chase flow that fails once a day churns a customer faster than having no flow at all.</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">Input metric · 3</span>
+      <h5>Number of creators earning from paid App Kit clones and how concentrated that revenue is</h5>
+      <p>If 'creators can earn from App Kits' holds, it stops being SaaS and becomes a marketplace, and marketplace network effects beat features. This metric reads the creator-side concentration of earnings: if only a handful make money, the market hasn't formed.</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">Guardrail</span>
+      <h5>AI credit cost coverage + credit consumption by free-tier users</h5>
+      <p>The free plan has no monthly credits, yet free users still burn inference and hosting costs while cloning, building apps and calling agents. The more popular free gets, the sooner cost explodes — without this guardrail, growth eats the margin first.</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">Blindspot</span>
+      <h5>No public retention curve, paid conversion rate, or activity distribution across the 6,135 community apps [inferred]</h5>
+      <p>[inferred] Programmatic scale is countable (28,602), but traffic cannot be derived from a sitemap — no Similarweb or Ahrefs data was pulled this round. A second blind spot is GEO effectiveness: there is no public way to measure whether llms.txt and SKILL.md actually cause AI to recommend it, so that layer currently counts as 'did the right moves', not 'got the result'.</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>Friction & Weaknesses</h3>
+    <span class="pill">Critical PM lens</span>
+  </div>
+  <p class="section-intro">Explicit and opinionated. Where the system leaks, breaks, or over-designs.</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">Concept density: ten objects before the product gives everything</span><span class="sev">高 · High</span></div>
+      <div class="body">Project, view, field, agent, tool, knowledge, memory, trigger, action, app kit — all ten have to be understood to use the four-layer architecture. Notion only asks for blocks. This isn't a design defect; it is the inevitable result of compressing a platform and a tool into one product. But it means new users must start from a template or an App Kit, or their first screen is an empty workspace.</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">Two currencies, no way to budget</span><span class="sev">高 · High</span></div>
+      <div class="body">Credits (AI building and calls) and automation runs are two separate allowances, each different across six tiers, and the free plan has no monthly credits at all. What users fear isn't cost, it's not knowing whether they'll exceed the limit this month. For a product that sells transparency, this is the first thing to fix.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Its own scale figures don't line up</span><span class="sev">中 · Medium</span></div>
+      <div class="body">1,000+ free app kits, 500+ community templates and 6,135 sitemap entries coexist officially; the cumulative figures (150,000+ apps, 500K+ agents, 3M+ executions) carry no cut-off date either. Externally that is a credibility issue; internally it signals that operating metrics aren't unified.</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">Huge page footprint, but hand-written content is only 14.3%</span><span class="sev">中 · Medium</span></div>
+      <div class="body">Of 28,602 pages, hand-written marketing content is 14.3% (blog 1,125 / marketing 867 / learn 435 / wiki 573 / docs 169 / compare 197 and so on); the rest is programmatic and UGC. That makes its brand narrative thin: people usually encounter it as 'some template page' rather than 'a point of view'. For a product trying to rise from tool to platform, that is a long-term risk.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>Risk Matrix</h3>
+    <span class="pill">Severity × Likelihood</span>
+  </div>
+  <p class="section-intro">Risks ordered by likelihood × impact; severity is my judgement, not a company disclosure.</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>Risk</th><th>Category</th><th>Severity</th><th>Likelihood</th><th>Mitigation</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>'One sentence builds an app' commoditised by upstream models and general agents</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>Hold the three things upstream can't do: persistence and permissions for real data (App Users / SAML / SCIM), hosting and domains for publishing, and circulating assets (App Kit / .tsk). Treat generation as the entrance; treat hosting, permissions and distribution as the business.</td></tr>
+      <tr><td><strong>Fighting three markets at once, each with a more focused rival</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>Pick one mainline to win (my suggestion: agency client delivery — the Business tier already says so) and make the other two capabilities rather than selling points.</td></tr>
+      <tr><td><strong>Programmatic SEO at scale, but a thin brand narrative</strong></td><td>Growth</td><td class="sev-med">Medium</td><td>Medium</td><td>Route the traffic from those 155 free-competitor-alternative pages to a brand page with a point of view (why finished goods beat templates). Today only 14.3% of its 28,602 pages are hand-written, and better storytellers will intercept it eventually.</td></tr>
+      <tr><td><strong>Credits cost mismatched against free-tier consumption</strong></td><td>Business</td><td class="sev-med">Medium</td><td>Medium</td><td>Give the free tier a real cost guardrail rather than an allowance guardrail: cap concurrent agent calls, queue heavy jobs, and reduce credit burn for BYOK users. The more popular free gets, the more this matters.</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>Opportunities & Redesign Ideas</h3>
+    <span class="pill">Actionable PM thinking</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">Improvement · 1</div>
+      <h5>(My judgement) Copy 'Living Loop' as the default shape of a memory product</h5>
+      <div class="desc">How: make the AI's memory a table the user can browse, edit, search and fork rather than something hidden in a vector store, and let every task's output write back into it automatically. Why: it is the most portable decision in Taskade's whole architecture and the most overlooked — most AI products keep memory a black box the user can neither see nor correct.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 2</div>
+      <h5>(My judgement) GEO isn't writing articles, it's finishing the machine-readable interfaces</h5>
+      <div class="desc">How: the minimum is three pieces — llms.txt (facts, FAQ and how to cite you) + SKILL.md (an operating manual for agents) + one MCP endpoint; then .well-known metadata, Accept: text/markdown and OpenAPI. Why: Taskade shows this can be a standard move, while most teams are still at 'publish a blog post about AI'.</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">Improvement · 3</div>
+      <h5>(My judgement) Use the allowance as an acquisition currency — but leave non-AI users a clean path</h5>
+      <div class="desc">How: copy 'credits for invites and for being cloned' (it genuinely welds the growth motive into the ledger), but also offer a plain per-seat tier for people who just want project management. Why: Taskade's free tier is deliberately tiny (3 apps, 10 runs) to force growth actions; that works for it, but it drives away teams who only want to track projects. Two audiences shouldn't share one pricing model.</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">Strategic shift</div>
+      <h5>Its bet: make finished goods circulate, instead of making features stronger</h5>
+      <div class="desc">Three moves stacked: compress four layers into one object graph (one dataset, four wrappers), turn finished goods into cloneable, sellable, exportable App Kits, and finish the machine entrances (MCP + SKILL.md + llms.txt) so AI distributes it on its behalf. The first two are product moves; the third is the real bet — in an era where AI is the main entrance, 'being cited by AI' may be cheaper than 'being found by people'. The price: it has to build for three markets at once (collaboration tool, automation platform, app builder), and each has a more focused rival.</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 Moonshot</div>
+      <h5>Endgame: people who can't code deliver software anyway</h5>
+      <div class="desc">If 'one sentence generates a working app' really becomes reliable, small-business software buying shifts from 'subscribe to SaaS' to 'generate my own app' — a far bigger market than project management, and one that carries distribution inside it, since every app is its own site. The distance isn't generation (that layer is oversupplied) but two things: whether a generated app can be trusted enough to run unreviewed (failure rate, rollback, audit), and the data boundary between apps (why should data in one client's portal be visible to another client). It is currently patching the second with App Users, SAML and SCIM.</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>Final PM Verdict</h3>
+    <span class="pill">Synthesis</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>Why it wins</h5>
+      <p>Four layers sharing one object graph, agent memory made editable as a Project, 6,135 cloneable App Kits, 28,602 pages of programmatic SEO plus UGC, a full GEO interface set (llms.txt / SKILL.md / MCP / .well-known), and a growth mechanism that uses allowance as currency.</p>
+    </div>
+    <div class="final-col break">
+      <h5>Where it breaks</h5>
+      <p>Large enterprises needing strong collaboration and governance (member limits, permission granularity and compliance are not enough); teams that just want a project tool and no AI (credits pricing is noise); businesses with complex relational data (weaker than Airtable); products needing heavily customised interfaces (less freedom than Bubble).</p>
+    </div>
+    <div class="final-col moat">
+      <h5>Long-term moat</h5>
+      <p>The moat is moderate: strong on the four-layer architecture and distribution scale (28,602 pages, 6,135 UGC apps, a complete GEO layer), weak because each layer can be pierced by a more focused rival (Airtable on data model, Zapier on connectors, Bubble on interface, Notion on brand). Its real asset is the Living Loop and the creator-side asset market — if App Kits genuinely let people earn, it becomes a market rather than a tool, and that is the only part nobody copies quickly.</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>Competitive map</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">This list isn't guesswork; read its own comparison pages. Of 197 /compare/* URLs, <strong>155 are free-&lt;competitor&gt;-alternative</strong> (free-notion-alternative, free-zapier-alternative and similar), <strong>33 are pure third-party model comparisons</strong> (gpt-vs-claude, qwen-vs-kimi, glm-vs-gpt — unrelated to the product), and <strong>only 6 are taskade-vs-*</strong>. Its SEO battleground isn't brand comparison but the 'free alternative' intent — whoever gets searched as 'a free alternative to X' is a rival.</p><table class="risk-table"><thead><tr><th>Who</th><th>Fighting for the same need</th><th>Fighting for the same link in the chain</th><th>Where users actually go</th></tr></thead><tbody><tr><td>Notion</td><td>The same need: one workspace where everything fits, for small teams and creators</td><td>Data and documents (Notion's block model versus Taskade's project/task/field model)</td><td>It keeps a free-notion-alternative page for Notion, and 30+ importers pulling data out of Notion — attacking from both sides</td></tr><tr><td>Asana / ClickUp / Monday / Trello</td><td>Teams that need projects tracked</td><td>The task-and-process link (Taskade answers with projects plus automations)</td><td>Four free-alternative pages plus importers; but its real difference isn't project management, it's that a project can become an app</td></tr><tr><td>Zapier / Make</td><td>People who already have tools and only need them connected</td><td>The automation link (trigger-action orchestration)</td><td>Its automate (2,361 pages) and integrations (180 pages) point straight at it; Zapier holds no data layer, which is the opening</td></tr><tr><td>Softr / Bubble / Glide</td><td>People who want data turned into an interface a client can use</td><td>The interface link — Genesis's most direct rivals</td><td>The hardest cell to win: their interface freedom is higher, and Taskade trades on data + agents + automation being in one place</td></tr><tr><td>Airtable</td><td>Teams needing strong structured data and views</td><td>The data-model link</td><td>Complex businesses get blocked by Airtable; Taskade avoids the fight by selling process and agents rather than field power</td></tr><tr><td>General AI agents (ChatGPT / Claude and peers)</td><td>Everyone who wants to 'say one sentence and have it done'</td><td>The intelligence link, with no interface baggage</td><td>The least certain front: if users talk to an agent directly, the workspace in between becomes optional</td></tr></tbody></table><p class="section-intro">How to read the map: its position is unusual — not the centre of project management but the middle of the collaboration × automation × app-builder triangle. The upside is that almost nobody is isomorphic to it; the downside is that every cell has a more focused specialist, and a user can always ask 'why not just Zapier plus Bubble?'. Competitor prices were not verified this round, so no price comparison is offered.</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>Rivals' technical base</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro"><strong>How the AI is built (turning atoms into workflows)</strong>: (1) four layers — Memory (Projects hold data) / Intelligence (Agents decide) / Execution (Automations across 100+ integrations) / Interface (Genesis App); (2) one loop — the Living Loop: Memory gives context → Intelligence decides → Execution produces results → results flow back as new Memory; (3) eight primitives — Project/Task/Field, View, AI Agent, Agent Tool/Skill, Knowledge Source, Automation Trigger/Action, Genesis App, App Kit; (4) one formula — data × intelligence (instructions + knowledge + tools + memory) × execution × interface = a Living App. So its AI is not 'an assistant added on' but a workspace rewritten in four layers with AI growing on each one. The table below opens its own assembly line first, then what each rival's base locks up.</p><table class="risk-table"><thead><tr><th>Product</th><th>Base</th><th>What that base locks up</th></tr></thead><tbody><tr><td>Taskade</td><td>One object graph (Project/Task/Field) + four wrappers (Projects / Agents / Automations / Genesis App) + model routing (the TSK ladder, BYOK allowed) + hosting and publishing (own domain, App Users)</td><td>Locks up the whole path from data to a deliverable interface: rivals sell a segment, it welds the four together</td></tr><tr><td>Notion</td><td>The block model (a page is data) plus database views and a template ecosystem</td><td>Locks up the 'knowledge and documents' mindshare and template distribution; automation and execution are bolt-ons</td></tr><tr><td>Airtable</td><td>Relational bases plus views and automation</td><td>Locks up structured data modelling: field types and relations are its moat</td></tr><tr><td>Zapier / Make</td><td>A trigger-action engine plus a very large connector library</td><td>Locks up the glue between systems — connector count is itself a barrier — but it stores no data and builds no interface</td></tr><tr><td>Softr / Bubble / Glide</td><td>No-code interface builders on top of external data sources</td><td>Locks up interface freedom: they can look like custom software, but data and AI come from outside</td></tr></tbody></table><p class="section-intro">[inferred] <strong>The real moat isn't 'one sentence generates' — it's the three things after generation: where the data lives, how permissions are handed out, and how the output is distributed.</strong> Generation comes from a model anyone can call; App Users (an end-user system), own domains with SSL, and cloneable/sellable/exportable App Kits are engineering Taskade built itself. It puts those on the paywall (white-label and SEO from Business, SCIM on Enterprise), which shows it knows where the money is.<br>Its most fragile layer is generation itself: once an upstream model can build and host an app from one sentence, its entry value is siphoned off. That is why it rushed MCP + SKILL.md + llms.txt — not for fashion, but to make sure that even if AI becomes the entrance, it remains the execution layer being called.</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>Portable opportunities (my judgement)</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <ol><li><strong>Copy the Living Loop as the default shape of a memory product</strong> — memory lands as a table the user can browse, edit, search and fork, and every output writes back automatically. Why: it is the most portable and most overlooked decision in its architecture; most AI products keep memory a black box the user can neither see nor correct. <em>Lightest option — it changes storage shape, not the model.</em></li><li><strong>GEO isn't writing articles, it's finishing the machine-readable interfaces</strong> — minimum: llms.txt (facts + FAQ + how to cite you), SKILL.md (an agent operating manual), one MCP endpoint; then .well-known, Accept: text/markdown, OpenAPI. Why: it proves this can be a standard move while most teams are still writing blog posts about AI. <em>Fastest payoff — a week's work.</em></li><li><strong>Use the allowance as an acquisition currency</strong> — credits for invites and for being cloned is the only route to allowance, which welds the growth motive into the ledger. But leave a clean path (a plain per-seat price) for people who only want the basic product; two audiences shouldn't share one pricing model.</li><li><strong>Ship a discovery layer with every user output</strong> — every published artifact automatically produces robots/sitemap/llms.txt. For any product with 'user work', this should be on by default: UGC becomes a search and AI discovery node. <em>Hardest to copy, because it requires your product to have published artifacts first.</em></li></ol><p class="section-intro">Which first? <strong>Number 2</strong> — it needs no product rebuild, only that you write the machine-facing page properly. Which gets ignored? <strong>Number 1</strong> — everyone treats memory as a technical problem when it is a product problem: can the user see it, and can they change it?</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>Traffic and monetisation</h3>
+    <span class="pill">Appendix A</span>
+  </div>
+  <p class="section-intro">First the scale (official sitemaps measured 2026-11-26; 17 sub-sitemaps totalling <strong>28,602</strong> URLs). The structure matters more than the total: <strong>programmatic resource pages 18,376 = 64.2%</strong> (templates 3,997 / generate 4,526 / agents 3,169 / automate 2,361 / prompts 2,205 / convert 2,118), <strong>UGC app pages 6,135 = 21.4%</strong> (community apps plus 495 author pages), and <strong>hand-written marketing content only 14.3%</strong> (blog 1,125 / marketing 867 / wiki 573 / learn 435 / docs 169 / compare 197 / integrations 180 / ai 43 and so on). Then a layer nobody else has: the <strong>GEO discovery layer</strong> — llms.txt (including a 'How to Cite Taskade' instruction), SKILL.md, Hosted MCP, .well-known metadata, Accept: text/markdown, OpenAPI and TSK-Bench, with robots.txt stating ai-train=yes / search=yes / ai-input=yes.</p><table class="risk-table"><thead><tr><th>Stage</th><th>What it does</th><th>Why it works / where it leaks</th></tr></thead><tbody><tr><td>Acquisition</td><td>18,376 programmatic resource pages + 197 comparison pages (155 free-competitor-alternative) + 6,135 UGC pages + the GEO layer</td><td>Works: search intent coverage is very broad, including high-converting 'free alternative' terms. Leak: a sitemap proves page scale, not traffic; no Similarweb/Ahrefs data this round</td></tr><tr><td>Activation</td><td>Clone and use (Free can clone 1,000+ free kits) + one-sentence Genesis + adjust a template</td><td>Works: a newcomer starts from someone else's finished app, not an empty workspace. Leak: a clone consumes one of Free's 3 app slots, so the second clone hits the wall</td></tr><tr><td>Retention</td><td>Data + agent memory + automation wiring + the end users of published apps (App Users)</td><td>Works: all four live here, so leaving means rebuilding the business. Leak: retention presumes the app actually runs, and the activity distribution of those 6,135 community apps was not verified</td></tr><tr><td>Monetisation</td><td>Subscription plus credits: Free $0 / Starter $6 / Pro $10 (monthly $20) / Business $25 / Max $100 / Enterprise $250</td><td>Works: the paywall stands at the moment you start delivering outward (more members, more apps, own domain, white-label). Leak: credits and runs are two currencies, so budgets can't be forecast</td></tr><tr><td>Expansion</td><td>Three axes at once — members, apps and credits; unlimited members and domains from Business; SCIM on Enterprise</td><td>[inferred] The smoothest axis is agencies: one app per client naturally pushes both app count and domain count up</td></tr></tbody></table><p class="section-intro">The three arbitrage questions. <strong>Whose pocket does the money come from:</strong> the operating budget of small businesses and agencies (not IT budget), which is why the $6–$25 credit-card tiers are the main line rather than enterprise-first. <strong>How long can it keep taking it:</strong> [inferred] the combination of programmatic SEO + UGC + GEO has a one-to-two-year window; once everyone ships llms.txt, the relative advantage goes to zero. <strong>Why does it get it:</strong> because it welds generation → hosting → permissions → distribution together, and the engineering difficulty rises along that chain — generation is easiest, hosting and permissions are hardest.</p><p class="section-intro">The weakest beam: <strong>the 'one sentence generates' entrance</strong>. It is both its loudest selling point and the layer most easily eaten upstream. The real moat sits after the entrance — the end users of published apps, sellable App Kits, and the discovery layer each app carries. As long as marketing stays on 'one sentence', it stands where it is easiest to replace; when the emphasis moves to 'finished assets', it stands up.</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>Sources：</strong>Every factual claim comes from the public pages below; first-hand observations come from the hands-on test.
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://www.taskade.com/llms.txt" target="_blank" rel="noopener">Official llms.txt (Workspace DNA / Living Loop definitions, six-tier pricing and allowances, How to Cite Taskade; updated 2026-11-18)</a></li>
+    <li><a href="https://www.taskade.com/SKILL.md" target="_blank" rel="noopener">Official SKILL.md ('The user is usually a business owner, not a developer'; connection and tool list)</a></li>
+    <li><a href="https://www.taskade.com/pricing" target="_blank" rel="noopener">Pricing (Free / Starter / Pro / Business / Max / Enterprise with the feature matrix)</a></li>
+    <li><a href="https://www.taskade.com/create" target="_blank" rel="noopener">Genesis entry point (one prompt to a live app)</a></li>
+    <li><a href="https://www.taskade.com/agents" target="_blank" rel="noopener">Agents (agent template library by role)</a></li>
+    <li><a href="https://www.taskade.com/automate" target="_blank" rel="noopener">Automate (automation recipe library)</a></li>
+    <li><a href="https://www.taskade.com/apps" target="_blank" rel="noopener">App Factory / App Kits (community builds, cloneable, 72 categories)</a></li>
+    <li><a href="https://www.taskade.com/integrations" target="_blank" rel="noopener">Integrations (173 connectors in 6 categories)</a></li>
+    <li><a href="https://www.taskade.com/mcp" target="_blank" rel="noopener">Hosted MCP (OAuth 2.0 + PKCE)</a></li>
+    <li><a href="https://www.taskade.com/robots.txt" target="_blank" rel="noopener">robots.txt (the ai-train=yes, search=yes, ai-input=yes Content-Signal statement)</a></li>
+    <li><a href="https://www.taskade.com/sitemap.xml" target="_blank" rel="noopener">Sitemap index (17 sub-sitemaps, 28,602 URLs in total)</a></li>
+    <li><a href="https://www.taskade.com/learn/automation/triggers" target="_blank" rel="noopener">Automation trigger docs (internal / external app / time / inbound)</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/agent-tools" target="_blank" rel="noopener">Agent tools docs (Research / Documents / AI / Workspace / External apps / Custom, each with human-approval option)</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/knowledge" target="_blank" rel="noopener">Persistent memory docs (memory stored as a Project, browsable and forkable)</a></li>
+    <li><a href="https://www.taskade.com/learn/account/clone-creator-credits" target="_blank" rel="noopener">Earning credits through clones and invites</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/sell-app-kits" target="_blank" rel="noopener">Selling App Kits (let others clone; withdraw from Earnings)</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/publishing" target="_blank" rel="noopener">Publishing and custom domains (*.taskade.app or your own domain with SSL)</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/app-users" target="_blank" rel="noopener">App Users / GenesisAuth (an end-user system independent of Taskade accounts)</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/thinking-modes" target="_blank" rel="noopener">TSK model ladder (Auto / Instant / Standard / Thinking / Reasoning)</a></li>
+    <li><a href="https://www.taskade.com/about" target="_blank" rel="noopener">About (founded 2017, YC S19, 2022 Taskade AI, 2024 Workspace DNA, 2025 Genesis, 2026 '80 releases in 5 months')</a></li>
+    <li><a href="https://www.taskade.com/press" target="_blank" rel="noopener">Press (150,000+ Genesis apps built / 500K+ AI agents deployed / 3M+ automation executions)</a></li>
+    <li><a href="https://techcrunch.com/2019/10/24/yc-grad-taskade-raises-5m-to-take-on-notion-with-a-more-collaborative-productivity-platform/" target="_blank" rel="noopener">TechCrunch (2019-10-24, 'YC grad Taskade raises $5M')</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 100 AI Product Teardowns.</div>
+      <div class="brand-sub">— Product Teardown · Principal PM Analysis</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

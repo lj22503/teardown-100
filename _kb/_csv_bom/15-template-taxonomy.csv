@@ -1,0 +1,118 @@
+﻿platform,facet,value,count,parent,note,url,evidence_url
+gamma,format,演示文稿,,格式,顶部格式筛选,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,format,文档,,格式,顶部格式筛选,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,format,社交轮播卡片,,格式,顶部格式筛选,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,format,网页,,格式,顶部格式筛选,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,课程,223,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,提案,183,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,营销材料,173,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,报告,166,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,融资演讲稿,154,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,培训,127,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,商业规划,117,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,活动,116,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,研究,96,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,社交媒体,85,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,学校项目,60,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,宣传册,57,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,作品集,53,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,会议,49,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,电子书,21,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,项目管理,19,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,信息图,15,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,好玩有趣,13,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,category,简历,5,类别,左侧类别筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,商业,361,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,教育,293,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,艺术,216,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,科学,149,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,数据与分析,132,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,自然,115,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,财务,97,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,技术,93,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,食物,86,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,历史与社会研究,84,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,工程,63,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,法律与政府,60,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,健康,54,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,房地产与建筑,50,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,旅行,49,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,心理学与自我提升,37,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,体育运动,19,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,theme,宗教与信仰,13,主题,左侧主题筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,视觉,454,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,醒目,363,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,插画风格,315,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,温馨友好,228,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,现代,221,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,活泼,205,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,专业,197,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,优雅,195,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,深色,177,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,学术与技术,133,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,复古,131,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,简洁,101,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,文字型,84,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,自然有机,58,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,可爱,26,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,style,未来感,13,风格,左侧风格筛选（已展开全部）,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+gamma,color,色块筛选,,颜色,颜色为色块，文字值未取；示例：绿色 96,https://app.gamma.app/#gamma-templates,https://app.gamma.app/#gamma-templates
+notion,marketplace_tab,探索,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,marketplace_tab,模板,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,marketplace_tab,代理,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,marketplace_tab,顾问,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,marketplace_tab,技能,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,marketplace_tab,连接,,市集,应用内市集一级入口,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,template_scope,工作,,模板,模板页顶部范围,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,template_scope,生活,,模板,模板页顶部范围,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,template_scope,学校,,模板,模板页顶部范围,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,市场营销,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,风险投资,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,金融,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,网站建设,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,产品,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,用户调研,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,企业版,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,教学,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,创始人,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,工程,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,咨询,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,创意机构,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,非营利组织,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,房地产,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,数据科学,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,销售,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,启动,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,业务,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,招聘,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,公共关系与传播,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,设计,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,自由职业者,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,IT,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,人力资源,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,use_case,经理,,Use Case,业务场景筛选（25 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_category,写作技能,,技能,技能页分类,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_category,总结与整理技能,,技能,技能页分类,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_category,分析技能,,技能,技能页分类,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,会议纪要,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,翻译成英文,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,校对,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,零基础解释,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,将笔记整理成文档,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+notion,skill_example,创建技能,,技能/示例,技能页示例（前 6 个）,https://app.notion.com/marketplace,https://app.notion.com/marketplace
+figma,section,AI workflows,20+,资源板块,Figma Weave 工作流,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Website templates,5,资源板块,Figma Sites 网站模板,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,UI kits,5,资源板块,iOS / Material 3 / Simple Design System 等,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Skills,6,资源板块,可复用指令,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Presentations,,资源板块,Figma Slides,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Assets,,资源板块,图标/插画/照片/图案,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Riffs,,资源板块,创作过程快照,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Figma Make,,资源板块,Prompt to Code,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Extensions,,资源板块,插件/组件,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Whiteboarding,,资源板块,白板,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Websites,,资源板块,网站,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,section,Design resources,,资源板块,设计资源总入口,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,ai_workflow_subcategory,Product & brand,,AI workflows,AI workflows 子类,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,ai_workflow_subcategory,Marketing,,AI workflows,AI workflows 子类,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,ai_workflow_subcategory,Character & narrative,,AI workflows,AI workflows 子类,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community
+figma,ai_workflow_subcategory,Ideation,,AI workflows,AI workflows 子类,https://www.figma.com/files/team/1666643033011782866/resources/community,https://www.figma.com/files/team/1666643033011782866/resources/community

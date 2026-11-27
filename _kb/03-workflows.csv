@@ -1,0 +1,82 @@
+﻿workflow_id,product,workflow_name,input,atoms_used,steps,output,who_uses,evidence_url
+WF-SL-01,slack,对话里问 → Slackbot 调 MCP → 结果回频道,一句自然语言问题,Message + Slackbot + MCP Tool + Channel,发起 → Slackbot 路由到专用 agent → 工具执行 → 回帖,答案 / 动作结果（留在对话流）,全员,https://slack.com/features/agentic-platform
+WF-SL-02,slack,Huddle 开会 → AI 记录 → 摘要与行动项,一场会议,Huddle + AI 摘要 + Canvas/Message,开会 → 转写 → 摘要 → 发到频道/画布,会议纪要 + 后续动作,会议参与者,https://slack.com/features/huddles
+WF-SL-03,slack,表单 → 审批 → 通知（Workflow Builder）,一条表单提交,Workflow Trigger + Step + Message + App,触发 → 收集 → 审批 → 通知 → 记录,一条被审批的请求,运营/HR/IT,https://slack.com/features/workflow-automation
+WF-SL-04,slack,频道内项目跟踪（List）,项目任务清单,List + Channel + Message,建列表 → 分派 → 更新 → 在频道同步,可跟踪的项目清单,项目团队,https://slack.com/features/task-list
+WF-SL-05,slack,跨公司协作（Connect）,外部合作伙伴,Slack Connect + Channel,建外部频道 → 邀请 → 按频道隔离权限,与客户/供应商的协作空间,销售/客户成功,https://slack.com/connect
+WF-SL-06,slack,对话式 CRM,与客户的对话,Channel + Native CRM + App,对话 → 提取联系人 → 推进商机 → 回写,CRM 记录与下一步,销售,https://slack.com/crm
+WF-SL-07,slack,企业搜索查答案,一个问题,Enterprise Search + 各 app 索引,提问 → 跨系统检索 → 分组结果,答案 + 来源,全员,https://slack.com/features/enterprise-search
+WF-SL-08,slack,人机共建（Code Channel）,一段需求/代码,Code Channel + App + Agent,拉人+拉 agent → 协作 → 记录,代码与讨论记录,工程团队,https://slack.com/features/code-channels
+WF-SL-09,slack,装一个 app → 在频道里用,第三方能力,Marketplace App + Channel + Command,安装 → 授权 → 命令/事件调用,频道内的新能力,全员,https://slack.com/marketplace
+WF-SL-10,slack,Salesforce/Agentforce agent 进 Slack,一条业务请求,Agentforce + Slackbot + 数据,请求 → agent 处理 → 回写记录,业务动作与记录,销售/服务团队,https://slack.com/ai-agents
+WF-TD-01,taskade,从项目模板开始,一个业务场景,Template + Project + Task,选模板 → 克隆 → 改任务 → 指派,可运行的项目,团队,https://www.taskade.com/templates
+WF-TD-02,taskade,配置一个 AI Agent,一个角色需求,AI Agent + Agent Tool + Knowledge,定角色 → 挂工具 → 挂知识 → 试跑,能执行任务的 agent,团队/个人,https://www.taskade.com/agents
+WF-TD-03,taskade,自动化：触发器 → 动作,一个事件,Automation Trigger + Action + Agent,设触发 → 选动作 → 绑定对象,自动执行的流程,运营,https://www.taskade.com/automate
+WF-TD-04,taskade,Genesis 生成完整 app,一句话需求,Genesis App + Project + Agent + Automation,描述 → 生成 → 试用 → 改,一个可用 app,个人/小团队,https://www.taskade.com/apps
+WF-TD-05,taskade,克隆社区 app 改成自己的,一个现成 app,Clone + Template + Project,找 app → 克隆 → 改数据/流程,自己的版本,个人/小团队,https://www.taskade.com/apps
+WF-TD-06,taskade,生成 X（generate 页）,一个生成需求,AI 生成 + Template,选场景 → 填参数 → 生成结构,初稿结构,个人,https://www.taskade.com/generate
+WF-TD-07,taskade,X 转 Y（convert 页）,一份旧格式内容,Convert + Project/Doc,上传/粘贴 → 转换 → 得到新结构,转换后的结构,个人/团队,https://www.taskade.com/convert
+WF-TD-08,taskade,提示词 → agent 使用,一个 prompt,Prompts + AI Agent,选提示词 → 粘进 agent → 执行,执行结果,个人,https://www.taskade.com/prompts
+WF-TD-09,taskade,连接外部应用,外部系统里的数据,Integration + Agent/Automation,授权连接 → 读/写 → 进入工作流,跨系统数据流,团队,https://www.taskade.com/integrations
+WF-TD-10,taskade,外部 agent 调 Taskade（MCP）,外部 agent 的请求,MCP Server + SKILL.md,配置 MCP → agent 调用 → 返回结果,Taskade 数据被外部 agent 使用,开发者,https://www.taskade.com/mcp
+WF-TD-11,taskade,仪表盘/运营/电商 app 克隆,一个管理场景,Clone + Dashboard/Operations/Commerce 分类,选分类 → 克隆 → 接数据,管理类 app,小团队,https://www.taskade.com/apps/categories
+WF-TD-12,taskade,作者主页 → 作品被克隆,一个可复用作品,Community Profile + App,发布作品 → 主页展示 → 他人克隆,可复制的作品 + 曝光,创作者,https://www.taskade.com/sitemaps/community-profiles.xml
+WF-TD-13,taskade,一句话 → Genesis app（EVE 构建）,一句业务描述,EVE + Genesis App + Projects + Agents + Automations,描述 → EVE 规划 → 建界面/数据/agent/自动化 → 发布,一个托管上线的 app,业务主/一人公司,https://www.taskade.com/create
+WF-TD-14,taskade,App Kit 上架 → 他人克隆/购买,一个原创 app,App Kit + Clone + Earnings,发布 kit → 设免费/付费 → 用户克隆 → 创作者提现,可流通的成品资产,创作者,https://www.taskade.com/llms.txt
+WF-TD-15,taskade,公开 agent → 嵌入网站,一个 agent,Public Agent + Embed Widget + Visitor Inbox,发布 → 复制 embed → 访客对话 → 进入收件箱/自动化,网站上的 AI 客服/助手,商家/创作者,https://www.taskade.com/llms.txt
+WF-TD-16,taskade,外部 agent 经 MCP 操作工作区,外部 agent 的请求,Hosted MCP + SKILL.md + 工具集,配置 MCP → OAuth → 调工具读写任务/项目/agent,外部 agent 能操作 Taskade 数据,开发者/重度用户,https://www.taskade.com/SKILL.md
+H-001-W1,notion,模板 → 工作区,一个模板,Template/Page/Database,选模板 → Duplicate → 改字段/视图,可用的工作区,个人/团队,https://www.notion.com/templates
+H-001-W2,notion,数据库 → 多视图,一批结构化数据,Database/Property/View,建库 → 加字段 → 切视图,看板/日历/表格,项目/运营,https://www.notion.com/
+H-001-W3,notion,页面 → AI 总结/改写,一篇长文,Page/Block/AI,打开页 → 选 AI 操作 → 采用结果,摘要/改写稿,个人,https://www.notion.com/product/ai
+H-001-W4,notion,Agent 读库 → 产出,一个数据库,Agent/Database/MCP,配 agent → 授权读库 → 触发执行,摘要/任务/更新,团队,https://www.notion.com/custom-agent-templates
+H-001-W5,notion,外部 agent → 读写工作区,外部请求,MCP/API/Database,授权 → 调工具 → 写回,跨系统工作流,开发者,https://developers.notion.com/
+H-002-W1,obsidian,剪藏 → 链接 → 图谱,网页/想法,Clipper/Note/Wikilink,剪藏 → 建笔记 → 加双链 → 看图谱,关联好的笔记,个人,https://obsidian.md/clipper
+H-002-W2,obsidian,每日笔记 → 任务,当天事项,Note/Template/Tag,每日笔记 → 套模板 → 打标签,当天记录,个人,https://help.obsidian.md/plugins/templates
+H-002-W3,obsidian,Canvas 整理想法,零散笔记,Canvas/Note,拉笔记到画布 → 连线 → 输出结构,一张结构图,个人/团队,https://obsidian.md/canvas
+H-002-W4,obsidian,插件扩展工作流,一个需求,Plugin/Vault,装插件 → 配置 → 用命令触发,被扩展的能力,个人,https://community.obsidian.md/plugins
+H-002-W5,obsidian,Publish 发布,一批笔记,Publish/Vault,选笔记 → 发布 → 自定义域名,公开站点,创作者,https://obsidian.md/publish
+H-003-W1,capacities,每日笔记 → 对象,当天碎片,Daily Note/Object,每日笔记记碎片 → 升级成 object → 加属性/链接,结构化知识,个人,https://capacities.io/why-capacities
+H-003-W2,capacities,对象 → AI 问答,一个问题,Object/AI Chat,选范围 → 提问 → 回链,答案+出处,个人,https://capacities.io/
+H-003-W3,capacities,外部 AI → 建对象,外部对话,AI Connector/API,授权 → 调接口 → 建/改 object,库里的新对象,个人,https://capacities.io/
+H-003-W4,capacities,导出 → 外部 AI,一批笔记,API/Export,导出 Markdown/JSON → 喂给外部 AI,外部上下文,个人,https://capacities.io/
+H-003-W5,capacities,对象图 → 回顾,一个领域,Backlink/Object/Query,按对象类型筛 → 看反链 → 回顾,领域视图,个人,https://capacities.io/
+H-004-W1,reflect-notes,会议/日历 → 今天,会议与日程,Daily Note/Calendar,会议笔记/日历/联系人落进当天,当天一篇,个人,https://reflect.app/
+H-004-W2,reflect-notes,⌘J 问笔记,一个问题,AI Ask/Backlink,提问 → 答案 → 回链源笔记,答案+出处,个人,https://reflect.app/
+H-004-W3,reflect-notes,语音备忘 → 笔记,一段语音,Voice Memo/AI/Note,录音 → 转写 → 存笔记,文字笔记,个人,https://reflect.app/
+H-004-W4,reflect-notes,自定义提示词 → 改写,一段文字,Custom Prompt/AI,选提示词 → 改写/摘要,改写稿,个人,https://reflect.app/
+H-004-W5,reflect-notes,剪藏 → 当天笔记,网页,Clipper/Daily Note,剪藏 → 进当天 → 加双链,素材,个人,https://reflect.app/
+H-005-W1,hynote-ai,录音 → 转写 → 摘要,一段会议录音,Multi-input/Transcript/AI Summary,录音 → 转写 → 摘要/行动项,会议笔记,个人/团队,https://hynote.ai/
+H-005-W2,hynote-ai,PDF/视频 → 学习笔记,PDF 或视频,Transcript/Template/AI,导入 → 转写 → 套模板 → 生成,学习笔记,学生,https://hynote.ai/
+H-005-W3,hynote-ai,笔记 → AI Skill → 日历/提醒,一段笔记,Action Item/AI Skill/native app,选文本 → 点技能 → 确认 → 写进日历,日程/提醒,个人,https://hynote.ai/features/ai-skills
+H-005-W4,hynote-ai,模板 → 结构化输出,一个写作任务,Template/AI/Export,选模板 → 填内容 → 生成 → 导出,FAQ/简历/大纲,个人,https://hynote.ai/features/faq-template
+H-005-W5,hynote-ai,Claude/ChatGPT → 查笔记（MCP）,外部 agent 请求,MCP/Integration/Note,配 MCP → 搜索/读取 → 写回,跨工具检索,个人,https://hynote.ai/integrations
+H-006-W1,claude,对话 → Artifact,一个需求,Chat/Artifact,对话 → 生成 → 编辑/导出,文档/代码/页面,个人,https://www.anthropic.com/claude
+H-006-W2,claude,项目 → 带上下文对话,一批资料,Project/Chat,建项目 → 放资料 → 项目内提问,有上下文的答案,团队,https://www.anthropic.com/claude
+H-006-W3,claude,MCP → 调外部工具,一个任务,MCP/Connector/Chat,授权 → 调工具 → 返回结果,跨系统动作,开发者,https://modelcontextprotocol.io/
+H-006-W4,claude,Claude Code → 改代码,一个仓库,Claude Code/Model/MCP,读仓库 → 改 → 跑测试,代码变更,工程,https://www.anthropic.com/claude
+H-006-W5,claude,对话 → 多模态文档,一份内容,Chat/Artifact,生成 docx/pptx/xlsx,可交付文件,职场,https://www.anthropic.com/claude
+H-007-W1,framer,设计 → CMS → 发布,一个站点需求,Canvas/Component/CMS/Hosting,设计 → 接 CMS → 绑定域名 → 发布,上线站点,设计/市场,https://www.framer.com/
+H-007-W2,framer,Agent 生成布局,一句描述,Agent/Canvas/Component,描述 → agent 生成区块 → 调,初版页面,设计,https://www.framer.com/
+H-007-W3,framer,模板 → Remix → 改,一个模板,Template/Canvas/CMS,选模板 → Remix → 改内容 → 发布,自己的站,个人/团队,https://www.framer.com/marketplace/templates/
+H-007-W4,framer,MCP → 外部 agent 改站,外部请求,MCP/Agent/Canvas,授权 → agent 读/改 → 预览,被改的站点,开发者,https://www.framer.com/
+H-007-W5,framer,发布 → 分析 → 迭代,已上线站点,Analytics/SEO/AEO,看数据 → 改页面/SEO,迭代后的站,市场,https://www.framer.com/
+H-009-W1,figma,设计 → 原型 → 交付,一个页面需求,Frame/Component/Prototype/Dev Mode,设计 → 连原型 → Dev Mode 出规格,可交付设计,设计团队,https://www.figma.com/
+H-009-W2,figma,Make 生成界面,一句描述,Make/Frame,描述 → 生成 → 改,可编辑界面,设计/产品,https://www.figma.com/
+H-009-W3,figma,Agent 改文件,一个修改需求,Agent/File/MCP,让 agent 读文件 → 改 → 审,改后的文件,设计,https://www.figma.com/
+H-009-W4,figma,Community → Duplicate,一个模板,Community/Template/File,找文件 → Duplicate → 改,自己的文件,设计,https://www.figma.com/community
+H-009-W5,figma,Sites 发布,一个设计稿,Sites/Frame,选页面 → 发布 → 绑域名,上线网站,设计/市场,https://www.figma.com/
+H-010-W1,fathom,会 → 转写 → 摘要 → CRM,一场会,Meeting/Transcript/Summary/CRM Sync,授权 → 采集 → 摘要 → 回写,会议记录+CRM 更新,销售,https://www.fathom.ai/
+H-010-W2,fathom,Trackers → 提醒,关键话题,Tracker/Transcript,设话题 → 自动标记 → 提醒,风险/机会提示,销售管理,https://www.fathom.ai/
+H-010-W3,fathom,Ask → 跨会议问答,一个问题,Ask Fathom/Transcript,提问 → 检索所有会议 → 回答,答案+来源,团队,https://www.fathom.ai/features/ask-fathom
+H-010-W4,fathom,Scorecards → 教练,一批销售会,Scorecard/Meeting,评分 → 看差距 → 训练,教练报告,销售管理,https://www.fathom.ai/
+H-010-W5,fathom,MCP → ChatGPT/Claude 查历史,外部提问,MCP/Transcript,配 MCP → 查询 → 回答,跨工具会议记忆,个人,https://www.fathom.ai/features/mcp-server
+H-011-W1,elevenlabs,脚本 → 选声 → 生成 → 导出,一段稿子,TTS/Voice,贴稿 → 选声 → 调参 → 生成 → 导出,音频,创作者,https://elevenlabs.io/
+H-011-W2,elevenlabs,克隆 → 生成,一段样本,Voice Clone/TTS,上传样本 → 克隆 → 生成,自己的声音,创作者,https://elevenlabs.io/
+H-011-W3,elevenlabs,配音本地化,一段视频/音频,Dubbing/Voice,上传 → 选语言 → 生成,多语言版本,媒体,https://elevenlabs.io/
+H-011-W4,elevenlabs,语音 agent 接电话,一个客服场景,Agent/Workflow/Voice,配 agent → 接电话/网页 → 护栏,自动语音客服,企业,https://elevenlabs.io/agents
+H-011-W5,elevenlabs,API → 产品内语音,产品请求,API/TTS/STT,接 API → 实时生成/识别,产品内语音能力,开发者,https://elevenlabs.io/docs
+H-012-W1,gamma-3,需求 → 大纲 → 卡片 → 导出,一句需求,Prompt/Outline/Card/Format,描述 → 选场景 → 大纲 → 逐卡确认 → 导出,deck/文档/网页,职场,https://gamma.app/
+H-012-W2,gamma-3,模板 → 内容 → 生成,一个模板+内容,Template/Theme/Prompt,选模板 → 填内容 → 生成,成品,市场/教育,https://gamma.app/templates
+H-012-W3,gamma-3,连接器 → 导入 → 生成,外部文档,Connector/Prompt,连 Slack/Notion/Dropbox → 提内容 → 生成,基于真实内容的 deck,团队,https://gamma.app/
+H-012-W4,gamma-3,主题/风格切换,一份成品,Theme/Style/Card,换主题/风格 → 重排,统一视觉版本,设计,https://gamma.app/templates
+H-012-W5,gamma-3,API → 批量生成,批量请求,API/Prompt/Format,调 API → 生成 → 回收,批量内容,开发者,https://gamma.app/

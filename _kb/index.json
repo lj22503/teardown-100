@@ -1,0 +1,268 @@
+{
+  "name": "teardown-100-kb",
+  "generated_at": "2026-11-26 11:53",
+  "db": "db/kb.sqlite",
+  "counts": {
+    "products": 14,
+    "atoms": 143,
+    "workflows": 81,
+    "channels": 25,
+    "resources": 81,
+    "template_modules": 95,
+    "template_fit": 30,
+    "template_catalog": 14,
+    "template_taxonomy": 117
+  },
+  "tables": {
+    "products": {
+      "columns": [
+        "no",
+        "slug",
+        "name",
+        "category",
+        "one_liner",
+        "icp_primary",
+        "icp_secondary",
+        "jtbd",
+        "core_scenarios",
+        "ai_mode",
+        "pricing_model",
+        "free_tier",
+        "paid_tiers",
+        "atoms_count",
+        "workflows_count",
+        "primary_channels",
+        "moat_hypothesis",
+        "evidence_urls",
+        "updated_at"
+      ],
+      "rows": 14
+    },
+    "atoms": {
+      "columns": [
+        "atom_id",
+        "product",
+        "atom_name",
+        "atom_type",
+        "what_it_does",
+        "composable_with",
+        "evidence_url"
+      ],
+      "rows": 143
+    },
+    "workflows": {
+      "columns": [
+        "workflow_id",
+        "product",
+        "workflow_name",
+        "input",
+        "atoms_used",
+        "steps",
+        "output",
+        "who_uses",
+        "evidence_url"
+      ],
+      "rows": 81
+    },
+    "channels": {
+      "columns": [
+        "channel_id",
+        "product",
+        "channel_type",
+        "mechanics",
+        "url_pattern",
+        "scale_note",
+        "replicable_score",
+        "evidence_url"
+      ],
+      "rows": 25
+    },
+    "resources": {
+      "columns": [
+        "resource_id",
+        "product",
+        "resource_name",
+        "resource_type",
+        "problem_solved",
+        "how_to_access",
+        "reuse_form",
+        "reuse_score",
+        "migration_cost",
+        "evidence_strength",
+        "evidence_url"
+      ],
+      "rows": 81
+    },
+    "template_modules": {
+      "columns": [
+        "template_id",
+        "product",
+        "template_name",
+        "template_one_liner",
+        "module_no",
+        "module_name",
+        "module_type",
+        "detail",
+        "composition",
+        "evidence_url"
+      ],
+      "rows": 95
+    },
+    "template_fit": {
+      "columns": [
+        "template_id",
+        "product",
+        "template_name",
+        "for_whom",
+        "scenario",
+        "how_to_use",
+        "value",
+        "what_it_is",
+        "composition",
+        "evidence_url",
+        "fit_basis"
+      ],
+      "rows": 30
+    },
+    "template_catalog": {
+      "columns": [
+        "no",
+        "product",
+        "has_gallery",
+        "gallery_type",
+        "gallery_url",
+        "url_pattern",
+        "scale_note",
+        "access",
+        "modules_available",
+        "sampled_templates",
+        "notes",
+        "evidence_url"
+      ],
+      "rows": 14
+    },
+    "template_taxonomy": {
+      "columns": [
+        "platform",
+        "facet",
+        "value",
+        "count",
+        "parent",
+        "note",
+        "url",
+        "evidence_url"
+      ],
+      "rows": 117
+    }
+  },
+  "products": [
+    {
+      "no": "001",
+      "slug": "notion",
+      "name": "Notion",
+      "category": "AI 工作空间 / 知识管理",
+      "one_liner": "它卖的不是 AI 能力，是「你的工作已经在它里面」"
+    },
+    {
+      "no": "002",
+      "slug": "obsidian",
+      "name": "Obsidian",
+      "category": "notes-documents · 本地知识管理",
+      "one_liner": "它卖的不是笔记软件，是「你的知识以任何 AI 都读得懂的格式躺在你自己硬盘上」"
+    },
+    {
+      "no": "003",
+      "slug": "capacities",
+      "name": "Capacities",
+      "category": "notes-documents · 个人知识管理",
+      "one_liner": "它卖的不是 AI，是「你不用再花三个月把笔记系统搭出来」"
+    },
+    {
+      "no": "004",
+      "slug": "reflect-notes",
+      "name": "Reflect",
+      "category": "notes-documents · 个人知识管理（PKM）",
+      "one_liner": "它卖的不是功能，是把「第一分钟」做到零决策——打开就是今天"
+    },
+    {
+      "no": "005",
+      "slug": "hynote-ai",
+      "name": "HyNote AI",
+      "category": "notes-documents · AI 笔记与转录",
+      "one_liner": "永远不要再做笔记了——它把「整理」从用户手里拿走，只留下「喂素材」这一个动作"
+    },
+    {
+      "no": "006",
+      "slug": "claude",
+      "name": "Claude",
+      "category": "AI 对话 / 基础模型（LLM · AI Chatbots）",
+      "one_liner": "它不是助手，是插座——模型能力做成订阅卖给你，再用 MCP 把别人的 agent 插上来"
+    },
+    {
+      "no": "007",
+      "slug": "framer",
+      "name": "Framer",
+      "category": "建站工具 / AI 设计代理（Website Builders）",
+      "one_liner": "它不是「AI 建站」，是「设计即上线」——画布上的东西就是生产环境"
+    },
+    {
+      "no": "008",
+      "slug": "cursor",
+      "name": "Cursor",
+      "category": "AI 编程工具 / 代码编辑器（AI coding agent）[推断]",
+      "one_liner": "Cursor 是您的编程智能体，助您构建雄心勃勃的软件"
+    },
+    {
+      "no": "009",
+      "slug": "figma",
+      "name": "Figma",
+      "category": "设计工具 / 协作式界面设计平台",
+      "one_liner": "它不是「AI 设计工具」，是「设计协作的默认工作台」"
+    },
+    {
+      "no": "010",
+      "slug": "fathom",
+      "name": "Fathom",
+      "category": "AI 会议记录 / 会议智能（ai-meeting-notetakers）",
+      "one_liner": "它不是「会议记录工具」，是「会议的下游工厂」——纪要、行动项、跟进邮件"
+    },
+    {
+      "no": "011",
+      "slug": "elevenlabs",
+      "name": "ElevenLabs",
+      "category": "AI 语音生成 / 语音智能体（ai-voice-agents · text-to-speech）",
+      "one_liner": "它不是「配音工具」，是「声音的组件库＋插座」"
+    },
+    {
+      "no": "012",
+      "slug": "gamma-3",
+      "name": "Gamma",
+      "category": "AI 演示文稿 / 视觉叙事平台（ai-presentation · docs-decks-sites）",
+      "one_liner": "它不是「PPT 生成器」，是「审美流水线＋人类判断的检查站」"
+    },
+    {
+      "no": "013",
+      "slug": "slack",
+      "name": "Slack",
+      "category": "B2B 协作 / AI 工作平台",
+      "one_liner": "把团队沟通、协作和 AI agent 放进同一个工作场所：频道承载对话，Slackbot 承载执行"
+    },
+    {
+      "no": "014",
+      "slug": "taskade",
+      "name": "Taskade",
+      "category": "AI 协作 / 任务与 Agent 平台",
+      "one_liner": "一个工作区里同时有项目、文档、思维导图、AI agent 与自动化；还能一键克隆别人的成品 app"
+    }
+  ],
+  "query_order": [
+    "problem-to-component (md)",
+    "template_fit",
+    "template_modules",
+    "atoms",
+    "workflows",
+    "resources",
+    "raw"
+  ],
+  "notes": "所有条目均带 evidence_url；无出处条目不入库。判断类字段标 fit_basis / evidence_strength。"
+}

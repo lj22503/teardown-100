@@ -1,0 +1,22 @@
+# Teardown-100 KB（AI 产品拆解知识库）
+
+> 100 个 AI 产品的结构化拆解库。当前已入库：013 Slack、014 Taskade。
+> 主库：db/kb.sqlite（7 表 + FTS5）。索引：index.json。人读：06/09/10 md。
+> 每条记录带 evidence_url；判断类字段带 fit_basis / evidence_strength。
+
+## 结构
+- products：定位（为谁/解决什么/场景/定价/AI 模式/渠道/护城河）
+- atoms：原子能力（类型/做什么/能和什么组合）
+- workflows：官方成品组合（输入→原子→步骤→输出）
+- channels：流量渠道（机制/URL 模式/规模/可复制性）
+- resources：资源目录（解决什么问题/怎么拿/复用价值）
+- template_fit：模板适配（适合谁/场景/怎么用/价值）
+- template_modules：模板模块（模块名/类型/说明/组合计数）
+
+## 如何使用
+- 机器：读 SKILL.md 的查询套路，用 SQL 查 db/kb.sqlite。
+- 人：06-problem-to-component.md → 10-template-picker.md → 09-template-anatomy.md。
+- 原文：raw/slack-raw.md、raw/taskade-raw.md。
+
+## 引用
+Teardown-100 KB, generated 2026-11-26. Facts from official pages; URLs kept in evidence_url.

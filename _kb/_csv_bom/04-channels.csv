@@ -1,0 +1,26 @@
+﻿channel_id,product,channel_type,mechanics,url_pattern,scale_note,replicable_score,evidence_url
+CH-SL-01,slack,SEO-本地化矩阵,"同一套营销页 × 13 个语种（en-US 1,769 页 / zh-CN 1,478 页）",slack.com/intl/<locale>/...,"sitemap 实测：en-US 1,769；zh-CN 1,478；13 个语种子 sitemap",5,https://slack.com/sitemaps/sitemap_en-us.xml
+CH-SL-02,slack,SEO-应用目录,每个 app 一个详情页，进 marketplace sitemap,slack.com/marketplace/<APP_ID>-<slug>,"sitemap 实测：en-US 2,881 条",4,https://slack.com/sitemaps/sitemap_marketplace_en-us.xml
+CH-SL-03,slack,SEO-帮助中心,按功能/问题建帮助文章页,slack.com/help/articles/<id>-<slug>,sitemap 实测：en-US 579 条（另有 13 个语种子 sitemap）,3,https://slack.com/sitemaps/sitemap_help_en-us.xml
+CH-SL-04,slack,SEO-对比页,专门吃「Slack vs X」决策搜索,slack.com/compare/<a>-vs-<b>,官网导航直接放「Slack vs Teams」,5,https://slack.com/compare/slack-vs-teams
+CH-SL-05,slack,市场目录/生态,"2,600+ apps 把 Slack 带进别人的采购清单",slack.com/marketplace,"官网自述 2,600+ apps",4,https://slack.com/marketplace
+CH-SL-06,slack,PLG 免费档,免费档做楔子，靠团队扩散升级,slack.com/get-started,Free：90 天历史/10 apps/1:1,5,https://slack.com/pricing
+CH-SL-07,slack,企业销售与 Partner,Demo → 销售 → 合作伙伴实施,slack.com/contact-sales; /partners,导航设 Partner Program / Partner Offers,2,https://slack.com/partners
+CH-SL-08,slack,社区/活动/客户故事,社区、活动、客户案例做信任,slack.com/community; /events; /customer-stories,导航三处入口,3,https://slack.com/customer-stories
+CH-TD-01,taskade,SEO-模板矩阵,每种项目模板一个页面,taskade.com/templates/<slug>,"sitemap 实测：3,997 条",5,https://www.taskade.com/sitemaps/sitemap-templates.xml
+CH-TD-02,taskade,SEO-生成矩阵,「生成 X」工具页,taskade.com/generate/<slug>,"sitemap 实测：4,526 条",4,https://www.taskade.com/sitemaps/sitemap-generate.xml
+CH-TD-03,taskade,SEO-Agent 模板,每个 agent 模板一个页面,taskade.com/agents/<slug>,"sitemap 实测：3,169 条",5,https://www.taskade.com/sitemaps/sitemap-agents.xml
+CH-TD-04,taskade,SEO-自动化模板,每个自动化配方一个页面,taskade.com/automate/<slug>,"sitemap 实测：2,361 条",5,https://www.taskade.com/sitemaps/sitemap-automate.xml
+CH-TD-05,taskade,SEO-提示词,每个 prompt 一个页面,taskade.com/prompts/<slug>,"sitemap 实测：2,205 条",4,https://www.taskade.com/sitemaps/sitemap-prompts.xml
+CH-TD-06,taskade,SEO-转换页,「X 转 Y」,taskade.com/convert/<slug>,"sitemap 实测：2,118 条",4,https://www.taskade.com/sitemaps/sitemap-convert.xml
+CH-TD-07,taskade,SEO-对比页,「vs Notion/Asana/ClickUp」类,taskade.com/compare/<slug>,sitemap 实测：197 条,5,https://www.taskade.com/sitemaps/sitemap-compare.xml
+CH-TD-08,taskade,UGC-社区 app,用户克隆作品生成页面，进 sitemap,taskade.com/apps/all/<slug>,"sitemap 实测：6,135 条",3,https://www.taskade.com/sitemaps/community-apps.xml
+CH-TD-09,taskade,UGC-作者主页,作者主页也进 sitemap,taskade.com/@<id>,sitemap 实测：495 条,3,https://www.taskade.com/sitemaps/community-profiles.xml
+CH-TD-10,taskade,GEO / AI 原生发现,llms.txt + SKILL.md + MCP，让 AI 找到并调用,taskade.com/llms.txt; /SKILL.md; /mcp,导航专设 For agents 四项；robots 声明 ai-train=yes,4,https://www.taskade.com/agents
+CH-TD-11,taskade,内容博客,博客做长尾与信任,taskade.com/blog/<slug>,"sitemap 实测：1,125 条",3,https://www.taskade.com/sitemaps/sitemap-blog.xml
+CH-TD-12,taskade,学习中心/文档,learn/wiki/docs 三层教学资产,taskade.com/learn|/wiki|/docs,sitemap：learn 435 / wiki 573 / docs 169,3,https://www.taskade.com/sitemaps/sitemap-learn.xml
+CH-TD-13,taskade,GEO-llms.txt,给 AI 的站点说明书，含 TL;DR、事实、FAQ 与「How to Cite Taskade」指定引用措辞,taskade.com/llms.txt,2026-11-18 更新；单文件覆盖全站,5,https://www.taskade.com/llms.txt
+CH-TD-14,taskade,GEO-.well-known 元数据,api-catalog / mcp.json / mcp server-card / agent-skills index / oauth metadata,taskade.com/.well-known/*,至少 5 个机器可读端点（llms.txt 末段列出）,4,https://www.taskade.com/llms.txt
+CH-TD-15,taskade,GEO-Markdown 出口,任意页面加 Accept: text/markdown 即返回 Markdown,任意 taskade.com 页面,llms.txt 明确说明,4,https://www.taskade.com/llms.txt
+CH-TD-16,taskade,UGC-发布 app 自带发现层,用户发布的每个 app 自动带 robots.txt / sitemap.xml / llms.txt,your-app.taskade.app,官方 Publish 说明；每个客户 app 都是发现节点,5,https://www.taskade.com/llms.txt
+CH-TD-17,taskade,SEO-替代品页（结构化）,197 页 compare 里：155 页 free-<竞品>-alternative、33 页纯模型对比、6 页 taskade-vs-*,taskade.com/compare/free-<competitor>-alternative,纯吃「免费替代品/模型对比」搜索量，不是品牌对比,4,https://www.taskade.com/sitemaps/sitemap-compare.xml

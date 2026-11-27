@@ -1,0 +1,262 @@
+{
+  "product": {
+    "no": "002",
+    "slug": "obsidian",
+    "name": "Obsidian",
+    "category": "notes-documents · 本地知识管理",
+    "one_liner": "它卖的不是笔记软件，是「你的知识以任何 AI 都读得懂的格式躺在你自己硬盘上」",
+    "icp_primary": "个人，愿意为自己搭系统的人",
+    "icp_secondary": "把 vault 当 AI 上下文的工程师；受合规或保密约束的个人（企业内自下而上）",
+    "jtbd": "解决知识的关联，不是知识的存放——存放用文件夹就够了，关联才需要双链和图谱",
+    "core_scenarios": "建库→写→加双链→形成本地纯文本库→外部 AI 直接读库/社区 AI 插件扩展",
+    "ai_mode": "非 AI（官方零 AI 功能，AI 在用户手里）",
+    "pricing_model": "软件白送，卖同步与发布，加 Catalyst 一次性与商业授权",
+    "free_tier": "免费（原话 Free without limits, no sign-up required，无需注册）",
+    "paid_tiers": "Sync $4/人/月；Publish $8/站/月；Catalyst 一次性；商业授权 $50/人/年",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "口碑社区（Reddit／YouTube／Discord）＋社区插件与主题作者自带流量＋PH 五次发布",
+    "moat_hypothesis": "护城河是格式不是功能——功能会被追平，格式不会，AI 越强纯文本越值钱",
+    "evidence_urls": "https://obsidian.md/; https://obsidian.md/pricing; https://community.obsidian.md/",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-002-01",
+      "product": "obsidian",
+      "atom_name": "Vault",
+      "atom_type": "容器",
+      "what_it_does": "本地文件夹即知识库",
+      "composable_with": "note/link/plugin",
+      "evidence_url": "https://obsidian.md/"
+    },
+    {
+      "atom_id": "H-002-02",
+      "product": "obsidian",
+      "atom_name": "Note",
+      "atom_type": "容器",
+      "what_it_does": "Markdown 笔记",
+      "composable_with": "link/tag/template",
+      "evidence_url": "https://obsidian.md/"
+    },
+    {
+      "atom_id": "H-002-03",
+      "product": "obsidian",
+      "atom_name": "Wikilink",
+      "atom_type": "工具",
+      "what_it_does": "双向链接",
+      "composable_with": "note/graph",
+      "evidence_url": "https://obsidian.md/"
+    },
+    {
+      "atom_id": "H-002-04",
+      "product": "obsidian",
+      "atom_name": "Tag",
+      "atom_type": "工具",
+      "what_it_does": "主题/状态标签",
+      "composable_with": "note/search",
+      "evidence_url": "https://obsidian.md/"
+    },
+    {
+      "atom_id": "H-002-05",
+      "product": "obsidian",
+      "atom_name": "Canvas",
+      "atom_type": "界面",
+      "what_it_does": "无限画布组织笔记/网页",
+      "composable_with": "note/canvas",
+      "evidence_url": "https://obsidian.md/canvas"
+    },
+    {
+      "atom_id": "H-002-06",
+      "product": "obsidian",
+      "atom_name": "Plugin",
+      "atom_type": "工具",
+      "what_it_does": "社区插件扩展功能",
+      "composable_with": "vault/note",
+      "evidence_url": "https://community.obsidian.md/plugins"
+    },
+    {
+      "atom_id": "H-002-07",
+      "product": "obsidian",
+      "atom_name": "Template",
+      "atom_type": "工具",
+      "what_it_does": "新建笔记套结构",
+      "composable_with": "note",
+      "evidence_url": "https://help.obsidian.md/plugins/templates"
+    },
+    {
+      "atom_id": "H-002-08",
+      "product": "obsidian",
+      "atom_name": "Web Clipper",
+      "atom_type": "工具",
+      "what_it_does": "网页剪藏进 vault",
+      "composable_with": "note/clipper",
+      "evidence_url": "https://obsidian.md/clipper"
+    },
+    {
+      "atom_id": "H-002-09",
+      "product": "obsidian",
+      "atom_name": "Sync / Publish",
+      "atom_type": "分发",
+      "what_it_does": "多端同步/发布站点",
+      "composable_with": "vault",
+      "evidence_url": "https://obsidian.md/sync"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-002-W1",
+      "product": "obsidian",
+      "workflow_name": "剪藏 → 链接 → 图谱",
+      "input": "网页/想法",
+      "atoms_used": "Clipper/Note/Wikilink",
+      "steps": "剪藏 → 建笔记 → 加双链 → 看图谱",
+      "output": "关联好的笔记",
+      "who_uses": "个人",
+      "evidence_url": "https://obsidian.md/clipper"
+    },
+    {
+      "workflow_id": "H-002-W2",
+      "product": "obsidian",
+      "workflow_name": "每日笔记 → 任务",
+      "input": "当天事项",
+      "atoms_used": "Note/Template/Tag",
+      "steps": "每日笔记 → 套模板 → 打标签",
+      "output": "当天记录",
+      "who_uses": "个人",
+      "evidence_url": "https://help.obsidian.md/plugins/templates"
+    },
+    {
+      "workflow_id": "H-002-W3",
+      "product": "obsidian",
+      "workflow_name": "Canvas 整理想法",
+      "input": "零散笔记",
+      "atoms_used": "Canvas/Note",
+      "steps": "拉笔记到画布 → 连线 → 输出结构",
+      "output": "一张结构图",
+      "who_uses": "个人/团队",
+      "evidence_url": "https://obsidian.md/canvas"
+    },
+    {
+      "workflow_id": "H-002-W4",
+      "product": "obsidian",
+      "workflow_name": "插件扩展工作流",
+      "input": "一个需求",
+      "atoms_used": "Plugin/Vault",
+      "steps": "装插件 → 配置 → 用命令触发",
+      "output": "被扩展的能力",
+      "who_uses": "个人",
+      "evidence_url": "https://community.obsidian.md/plugins"
+    },
+    {
+      "workflow_id": "H-002-W5",
+      "product": "obsidian",
+      "workflow_name": "Publish 发布",
+      "input": "一批笔记",
+      "atoms_used": "Publish/Vault",
+      "steps": "选笔记 → 发布 → 自定义域名",
+      "output": "公开站点",
+      "who_uses": "创作者",
+      "evidence_url": "https://obsidian.md/publish"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-002-1",
+      "product": "obsidian",
+      "resource_name": "社区插件库",
+      "resource_type": "插件",
+      "problem_solved": "缺功能（日历/看板/同步等）",
+      "how_to_access": "community.obsidian.md/plugins",
+      "reuse_form": "装插件；或读源码改成自己的",
+      "reuse_score": "4",
+      "migration_cost": "2",
+      "evidence_strength": "A",
+      "evidence_url": "https://community.obsidian.md/plugins"
+    },
+    {
+      "resource_id": "RS-HIST-002-2",
+      "product": "obsidian",
+      "resource_name": "社区主题库",
+      "resource_type": "主题",
+      "problem_solved": "想换外观/排版",
+      "how_to_access": "community.obsidian.md/themes",
+      "reuse_form": "装主题；或照它的 CSS 改",
+      "reuse_score": "3",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://community.obsidian.md/themes"
+    },
+    {
+      "resource_id": "RS-HIST-002-3",
+      "product": "obsidian",
+      "resource_name": "核心 Templates 插件",
+      "resource_type": "模板",
+      "problem_solved": "新建笔记想套固定结构",
+      "how_to_access": "help.obsidian.md/plugins/templates",
+      "reuse_form": "设模板文件夹 → 新建时插入",
+      "reuse_score": "3",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://help.obsidian.md/plugins/templates"
+    },
+    {
+      "resource_id": "RS-HIST-002-4",
+      "product": "obsidian",
+      "resource_name": "Web Clipper",
+      "resource_type": "工具",
+      "problem_solved": "网页内容要进库",
+      "how_to_access": "obsidian.md/clipper",
+      "reuse_form": "浏览器扩展剪藏",
+      "reuse_score": "4",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://obsidian.md/clipper"
+    },
+    {
+      "resource_id": "RS-HIST-002-5",
+      "product": "obsidian",
+      "resource_name": "Canvas",
+      "resource_type": "界面",
+      "problem_solved": "要白板式组织笔记",
+      "how_to_access": "obsidian.md/canvas",
+      "reuse_form": "建 canvas → 拖笔记/网页",
+      "reuse_score": "3",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://obsidian.md/canvas"
+    },
+    {
+      "resource_id": "RS-HIST-002-6",
+      "product": "obsidian",
+      "resource_name": "CLI",
+      "resource_type": "工具",
+      "problem_solved": "要脚本化操作 vault",
+      "how_to_access": "obsidian.md/cli",
+      "reuse_form": "命令行调用",
+      "reuse_score": "3",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://obsidian.md/cli"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [],
+  "template_catalog": [
+    {
+      "no": "002",
+      "product": "Obsidian",
+      "has_gallery": "no",
+      "gallery_type": "社区（插件/主题）+ 工具",
+      "gallery_url": "https://community.obsidian.md/plugins",
+      "url_pattern": "/plugins/<slug>",
+      "scale_note": "社区插件与主题为主，无官方模板市场；另有 Clipper/Canvas/CLI",
+      "access": "public",
+      "modules_available": "n/a",
+      "sampled_templates": "0",
+      "notes": "无模板库；模板是用户自建 vault，官方只提供 Templates 核心插件；插件/主题/Clipper/Canvas/CLI 是主要资源",
+      "evidence_url": "https://community.obsidian.md/plugins"
+    }
+  ]
+}

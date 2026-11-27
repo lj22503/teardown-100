@@ -2,3 +2,7 @@
 .DS_Store
 Thumbs.db
 _tools/run/auto-*/
+
+_kb/history/
+_kb/logs/
+__pycache__/

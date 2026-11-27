@@ -1,0 +1,1085 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>产品拆解 · Taskade — Principal PM 深度分析</title>
+<!--
+  Product Teardown Report Template · Product Teardown Skill
+  - 单文件 + 一个 Google Fonts 链接（用于 CJK PDF 嵌入）
+  - 视觉系统：cream/sand + 双 accent + 衬线大标题（沿用 JD Skill 视觉）
+  - 数据全部以  标记，由 skill 在生成时填充
+  - 11 节结构 = Product Teardown 框架
+-->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@400;500;700;900&family=Noto+Serif+SC:wght@400;700;900&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #0a0a0a;
+    --ink-2: #1f1f1d;
+    --paper: #fafaf7;
+    --paper-2: #f3f3ee;
+    --paper-3: #ebebe4;
+    --muted: #6b6b66;
+    --muted-2: #9a9a92;
+    --line: #d9d9d2;
+    --line-soft: #e6e6df;
+    --go: #18a957;
+    --go-soft: #d8f3e0;
+    --warn: #d97706;
+    --warn-soft: #fef0d4;
+    --stop: #c2410c;
+    --stop-soft: #fde0d2;
+    --hint: #2563eb;
+    --accent: #facc15;
+    --serif: "Times New Roman", "Noto Serif SC", "Songti SC", Georgia, serif;
+    --display: "SF Pro Display", -apple-system, "Helvetica Neue", "Noto Sans SC", "PingFang SC", sans-serif;
+    --body: -apple-system, BlinkMacSystemFont, "SF Pro Text", "Helvetica Neue", "Noto Sans SC", "PingFang SC", "Microsoft YaHei", sans-serif;
+    --mono: "SF Mono", "JetBrains Mono", Menlo, "Noto Sans SC", monospace;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; padding: 0; background: var(--paper); color: var(--ink); }
+  body { font-family: var(--body); font-size: 15px; line-height: 1.62; -webkit-font-smoothing: antialiased; }
+  a { color: var(--hint); text-decoration: none; border-bottom: 1px solid currentColor; }
+  code { font-family: var(--mono); font-size: 0.88em; background: var(--paper-2); padding: 1px 5px; border-radius: 3px; }
+  .page { max-width: 960px; margin: 0 auto; padding: 56px 56px 96px; }
+
+  .meta-strip { display: flex; gap: 16px; align-items: center; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 14px; flex-wrap: wrap; }
+  .meta-strip .dot { width: 5px; height: 5px; border-radius: 50%; background: var(--ink); display: inline-block; }
+  h1 { font-family: var(--display); font-weight: 800; font-size: 58px; line-height: 1.04; letter-spacing: -0.025em; margin: 0 0 14px; }
+  h1 .tag { display: block; font-size: 17px; font-weight: 500; color: var(--muted); letter-spacing: 0; margin-top: 14px; line-height: 1.55; }
+  .header-rule { height: 2px; background: var(--ink); margin: 28px 0 28px; }
+  .role-row { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); padding: 16px 0; margin-bottom: 32px; }
+  .role-row .cell { padding: 0 18px; border-left: 1px solid var(--line); }
+  .role-row .cell:first-child { border-left: 0; padding-left: 0; }
+  .role-row .label { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .role-row .value { font-size: 14px; font-weight: 600; line-height: 1.35; }
+
+  .toc { background: var(--paper-2); border: 1px solid var(--line); padding: 18px 22px; border-radius: 4px; margin-bottom: 36px; display: grid; grid-template-columns: 100px 1fr; gap: 18px; align-items: start; }
+  .toc .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); padding-top: 4px; }
+  .toc ol { margin: 0; padding-left: 0; list-style: none; columns: 2; column-gap: 28px; font-size: 13px; }
+  .toc li { padding: 2px 0; break-inside: avoid; }
+  .toc a { color: var(--ink); border: none; }
+  .toc a:hover { border-bottom: 1px solid var(--ink); }
+
+  .notice { background: #fff8e6; border-left: 4px solid var(--accent); padding: 16px 20px; border-radius: 0 3px 3px 0; margin-bottom: 36px; font-size: 13px; color: #4a3f1e; line-height: 1.65; }
+  .notice strong { color: #2a2308; }
+
+  .verdict { background: var(--ink); color: var(--paper); padding: 36px 40px 34px; border-radius: 6px; display: grid; grid-template-columns: 1fr auto; gap: 32px; align-items: center; margin-bottom: 36px; }
+  .verdict .left .kicker { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; margin-bottom: 10px; }
+  .verdict .left h2 { font-size: 32px; font-weight: 800; line-height: 1.18; margin: 0 0 12px; letter-spacing: -0.012em; }
+  .verdict .left .sub { font-size: 14px; color: #c8c8c3; max-width: 520px; line-height: 1.6; }
+  .stars .row { font-size: 38px; letter-spacing: 4px; color: var(--accent); line-height: 1; margin-bottom: 10px; text-align: right; }
+  .stars .label { font-size: 11px; letter-spacing: 0.16em; text-transform: uppercase; color: #999; text-align: right; }
+
+  .tldr { border: 1px solid var(--ink); border-radius: 6px; padding: 24px 28px; margin-bottom: 56px; background: white; }
+  .tldr .kicker { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--muted); margin-bottom: 14px; }
+  .tldr ul { margin: 0; padding-left: 0; list-style: none; counter-reset: tldr; }
+  .tldr li { counter-increment: tldr; padding: 12px 0 12px 44px; border-bottom: 1px dashed var(--line); position: relative; font-size: 14px; line-height: 1.55; }
+  .tldr li::before { content: counter(tldr); position: absolute; left: 0; top: 12px; font-family: var(--display); font-size: 28px; font-weight: 800; line-height: 1; color: var(--ink); }
+  .tldr li:last-child { border-bottom: 0; }
+
+  .numbers { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 18px; margin-bottom: 56px; }
+  .num-card { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 22px 22px; }
+  .num-card .label { font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 10px; }
+  .num-card .big { font-family: var(--display); font-size: 42px; font-weight: 800; line-height: 1; letter-spacing: -0.025em; margin-bottom: 12px; }
+  .num-card .big small { font-size: 20px; font-weight: 700; color: var(--muted); }
+  .num-card .desc { font-size: 12.5px; color: #2a2a26; line-height: 1.55; }
+
+  section { margin-bottom: 64px; scroll-margin-top: 24px; }
+  .section-head { display: flex; align-items: baseline; gap: 18px; margin-bottom: 24px; border-bottom: 1px solid var(--ink); padding-bottom: 12px; }
+  .section-head .num { font-family: var(--serif); font-style: italic; font-size: 18px; color: var(--muted); min-width: 30px; }
+  .section-head h3 { font-family: var(--display); font-size: 26px; font-weight: 800; margin: 0; letter-spacing: -0.015em; flex: 1; }
+  .section-head .pill { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 4px 10px; border-radius: 999px; }
+  .section-intro { font-size: 14px; color: var(--muted); max-width: 720px; margin-bottom: 24px; line-height: 1.6; }
+
+  /* Two-column info blocks (used across multiple sections) */
+  .info-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 20px; }
+  .info-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 20px 22px; }
+  .info-card h4 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 12px; color: var(--muted); font-weight: 700; }
+  .info-card ul { margin: 0; padding-left: 18px; font-size: 13.5px; line-height: 1.6; }
+  .info-card ul li { padding: 3px 0; }
+  .info-card p { font-size: 13.5px; line-height: 1.6; margin: 0 0 10px; }
+  .info-card .quote { font-family: var(--serif); font-style: italic; font-size: 15px; color: var(--ink-2); border-left: 3px solid var(--accent); padding: 4px 0 4px 14px; margin-bottom: 14px; line-height: 1.55; }
+
+  /* JTBD */
+  .jtbd-row { display: grid; grid-template-columns: 140px 1fr; gap: 16px; padding: 14px 0; border-bottom: 1px dashed var(--line); font-size: 13.5px; line-height: 1.6; }
+  .jtbd-row:last-child { border-bottom: 0; }
+  .jtbd-row .who { font-family: var(--display); font-weight: 700; font-size: 13px; color: var(--ink); }
+  .jtbd-row .job { color: #2a2a26; }
+  .jtbd-row .job em { font-family: var(--serif); font-style: italic; color: var(--muted); }
+
+  /* Loop diagram: Trigger → Action → Reward → Return */
+  .loop { display: grid; grid-template-columns: 1fr 32px 1fr 32px 1fr 32px 1fr; align-items: stretch; gap: 0; margin: 24px 0 20px; }
+  .loop-step { background: var(--paper-2); border-right: 1px solid white; padding: 18px 18px 20px 22px; font-size: 12.5px; line-height: 1.5; position: relative; }
+  .loop-step:first-child { border-radius: 4px 0 0 4px; }
+  .loop-step:nth-child(7) { background: var(--ink); color: var(--paper); }
+  .loop-step:nth-child(7) .kicker { color: var(--accent); }
+  .loop-step .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 6px; }
+  .loop-step .what { font-weight: 700; font-size: 13.5px; margin-bottom: 4px; }
+  .loop-step .why { color: var(--muted); }
+  .loop-step:nth-child(7) .why { color: #c8c8c3; }
+  .loop-arrow { display: flex; align-items: center; justify-content: center; background: var(--paper); font-size: 22px; color: var(--ink); font-weight: 800; }
+  .loop-note { font-family: var(--serif); font-style: italic; font-size: 13.5px; color: var(--muted); border-top: 1px dashed var(--line); border-bottom: 1px dashed var(--line); padding: 12px 0; text-align: center; margin: 12px 0 8px; }
+
+  /* Architecture surface grid */
+  .surface-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-bottom: 16px; }
+  .gallery { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-top: 4px; }
+  .gallery .shot { margin: 0; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; display: flex; flex-direction: column; transition: transform 120ms ease, box-shadow 120ms ease; }
+  .gallery .shot:hover { transform: translateY(-2px); box-shadow: 0 10px 28px rgba(10,10,10,0.09); }
+  .gallery .shot img { display: block; width: 100%; aspect-ratio: 3 / 2; object-fit: contain; background: var(--paper-2); }
+  .gallery .shot figcaption { font-size: 13px; letter-spacing: 0.02em; color: var(--ink-2); padding: 12px 16px; border-top: 1px solid var(--line); font-family: var(--display); font-weight: 600; }
+  .gallery .shot .fig-num { font-family: var(--serif); font-style: italic; color: var(--muted); margin-right: 8px; font-weight: 400; }
+  .surface { background: var(--paper-2); border-left: 3px solid var(--ink); padding: 14px 16px; border-radius: 0 4px 4px 0; font-size: 13px; line-height: 1.55; }
+  .surface .name { font-family: var(--mono); font-size: 12px; background: white; padding: 2px 8px; border-radius: 3px; border: 1px solid var(--line); color: var(--ink); display: inline-block; margin-bottom: 8px; }
+  .surface .desc { color: #2a2a26; }
+
+  /* Entities row */
+  .entity-row { display: flex; gap: 10px; flex-wrap: wrap; margin: 12px 0 20px; }
+  .entity { background: white; border: 1px solid var(--ink); border-radius: 999px; padding: 6px 14px; font-family: var(--mono); font-size: 12px; color: var(--ink); }
+
+  /* UX quality bars */
+  .ux-bar { display: grid; grid-template-columns: 160px 1fr 80px; gap: 14px; align-items: center; padding: 12px 0; border-bottom: 1px dashed var(--line); font-size: 13px; }
+  .ux-bar:last-child { border-bottom: 0; }
+  .ux-bar .lbl { font-weight: 700; font-size: 13px; color: var(--ink); }
+  .ux-bar .track { position: relative; height: 10px; background: var(--paper-2); border: 1px solid var(--line); border-radius: 999px; }
+  .ux-bar .fill { position: absolute; top: 0; bottom: 0; border-radius: 999px; background: linear-gradient(90deg, var(--go), #0d8a45); }
+  .ux-bar .fill.warn { background: linear-gradient(90deg, #f59e0b, var(--warn)); }
+  .ux-bar .fill.stop { background: linear-gradient(90deg, #f97316, var(--stop)); }
+  .ux-bar .val { font-family: var(--mono); font-size: 12px; font-weight: 700; color: var(--muted); text-align: right; }
+
+  /* Business model canvas */
+  .biz-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .biz-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .biz-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .biz-card h5 { font-size: 15px; margin: 0 0 8px; font-weight: 700; }
+  .biz-card p { font-size: 13px; color: #2a2a26; line-height: 1.55; margin: 0; }
+
+  /* Growth vectors */
+  .growth-cols { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; margin-top: 14px; }
+  .growth-col { background: var(--paper-2); border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; }
+  .growth-col h5 { font-size: 13px; letter-spacing: 0.08em; text-transform: uppercase; margin: 0 0 10px; color: var(--ink); font-weight: 800; }
+  .growth-col ul { margin: 0; padding-left: 16px; font-size: 12.5px; line-height: 1.55; }
+
+  /* AI readiness meter */
+  .ai-meter { display: grid; grid-template-columns: repeat(3, 1fr); gap: 0; margin: 12px 0 20px; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .ai-stage { padding: 16px 18px; text-align: center; border-right: 1px solid var(--line); background: var(--paper-2); }
+  .ai-stage:last-child { border-right: 0; }
+  .ai-stage.active { background: var(--ink); color: var(--paper); }
+  .ai-stage .lvl { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); margin-bottom: 4px; }
+  .ai-stage.active .lvl { color: var(--accent); }
+  .ai-stage .name { font-family: var(--display); font-weight: 700; font-size: 14px; }
+
+  /* Friction / weakness list */
+  .friction-list { display: grid; gap: 12px; }
+  .friction-item { background: var(--warn-soft); border-left: 3px solid var(--warn); padding: 14px 18px; border-radius: 0 4px 4px 0; }
+  .friction-item.high { background: var(--stop-soft); border-left-color: var(--stop); }
+  .friction-item .head { display: flex; align-items: baseline; gap: 10px; margin-bottom: 6px; }
+  .friction-item .head .title { font-weight: 700; font-size: 14px; color: var(--ink); }
+  .friction-item .head .sev { font-family: var(--mono); font-size: 10px; padding: 2px 6px; border-radius: 3px; background: rgba(255,255,255,0.6); color: var(--ink-2); letter-spacing: 0.06em; text-transform: uppercase; }
+  .friction-item .body { font-size: 13px; color: var(--ink-2); line-height: 1.55; }
+
+  /* Opportunity cards */
+  .opp-grid { display: grid; gap: 14px; margin-bottom: 20px; }
+  .opp-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 22px; border-left: 3px solid var(--go); }
+  .opp-card.strategic { border-left-color: var(--hint); background: #f0f5ff; }
+  .opp-card.moonshot { border-left-color: var(--stop); background: var(--stop-soft); }
+  .opp-card .kicker { font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--go); font-weight: 700; margin-bottom: 6px; }
+  .opp-card.strategic .kicker { color: var(--hint); }
+  .opp-card.moonshot .kicker { color: var(--stop); }
+  .opp-card h5 { font-size: 16px; font-weight: 700; margin: 0 0 8px; }
+  .opp-card .desc { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+  .opp-card .desc strong { color: var(--ink); }
+
+  /* Final verdict panel */
+  .final { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; margin-top: 16px; }
+  .final-col { padding: 20px 22px; border-radius: 6px; font-size: 13px; line-height: 1.6; }
+  .final-col.win { background: var(--go-soft); border-left: 3px solid var(--go); }
+  .final-col.break { background: var(--stop-soft); border-left: 3px solid var(--stop); }
+  .final-col.moat { background: var(--paper-2); border-left: 3px solid var(--ink); }
+  .final-col h5 { font-size: 12px; letter-spacing: 0.14em; text-transform: uppercase; margin: 0 0 10px; font-weight: 800; }
+  .final-col.win h5 { color: var(--go); }
+  .final-col.break h5 { color: var(--stop); }
+  .final-col.moat h5 { color: var(--ink); }
+
+  footer { margin-top: 72px; padding-top: 28px; border-top: 1px solid var(--line); font-size: 11px; color: var(--muted); line-height: 1.75; }
+  footer .sig { font-family: var(--serif); font-style: italic; font-size: 13px; color: var(--ink); margin-bottom: 6px; }
+  footer code { background: transparent; padding: 0; color: var(--ink); font-weight: 600; }
+  .brand-block { display: grid; grid-template-columns: 1fr auto; gap: 36px; align-items: end; padding: 44px 0 36px; border-bottom: 1px solid var(--line); margin-bottom: 28px; }
+  .brand-block .brand-mark { font-family: var(--display); font-weight: 800; font-size: 108px; line-height: 0.92; letter-spacing: -0.045em; color: var(--ink); margin: 0; }
+  .brand-block .brand-mark .dot-yellow { color: var(--accent); -webkit-text-stroke: 1px var(--ink); }
+  .brand-block .brand-sub { font-family: var(--serif); font-style: italic; font-size: 16px; color: var(--muted); margin-top: 10px; letter-spacing: 0.02em; }
+  .brand-block .brand-sub strong { font-style: normal; font-family: var(--display); font-weight: 700; color: var(--ink); letter-spacing: 0; }
+  .socials { display: flex; gap: 12px; align-items: center; }
+  .socials a { display: inline-flex; align-items: center; justify-content: center; width: 46px; height: 46px; border: 1.5px solid var(--ink); border-radius: 50%; background: var(--paper); color: var(--ink); border-bottom: 1.5px solid var(--ink); transition: all 0.18s ease; }
+  .socials a:hover { background: var(--ink); color: var(--paper); transform: translateY(-2px); }
+  .socials a svg { width: 20px; height: 20px; display: block; }
+  .socials a.xhs { width: 46px; height: 46px; padding: 0; border-radius: 11px; background: #ff2442; border: 1.5px solid #ff2442; color: white; font-family: "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif; font-weight: 900; font-size: 11px; font-style: italic; letter-spacing: -0.02em; line-height: 1; }
+  .socials a.xhs span { display: inline-block; transform: skewX(-6deg); white-space: nowrap; }
+  .socials a.xhs:hover { background: #d11838; border-color: #d11838; transform: translateY(-2px); }
+
+  /* Header brand chip (yellow highlighted, one per skill family) */
+  .brand-chip {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--accent); color: var(--ink);
+    font-family: var(--display); font-weight: 900;
+    font-size: 17px; letter-spacing: 0.005em; line-height: 1.1;
+    padding: 8px 16px;
+    border-radius: 5px;
+    border: 1.75px solid var(--ink);
+    box-shadow: 3px 3px 0 var(--ink);
+    margin-bottom: 22px;
+  }
+
+  /* Language switcher — floating bottom-right (brutalist: dark pill + hard offset) */
+  .report-tools { position: fixed; right: 24px; bottom: 24px; z-index: 9999; display: flex; gap: 10px; align-items: center; }
+  .lang-tools { display: flex; gap: 0; background: var(--ink); border: 1.75px solid var(--ink); border-radius: 999px; padding: 4px; box-shadow: 3px 3px 0 var(--ink); }
+  .lang-btn {
+    display: inline-flex; align-items: center; justify-content: center;
+    min-width: 60px; padding: 9px 16px;
+    background: transparent; color: #9a9a92;
+    border: none; border-radius: 999px;
+    font-family: var(--mono); font-size: 12px; font-weight: 700; letter-spacing: 0.08em;
+    text-decoration: none;
+    cursor: pointer;
+    transition: background 160ms ease, color 160ms ease;
+  }
+  .lang-btn:hover { color: #fafaf7; }
+  .lang-btn.active { background: var(--accent); color: var(--ink); pointer-events: none; }
+  .lang-btn.active:hover { background: var(--accent); color: var(--ink); }
+  .export-btn {
+    background: var(--ink); color: #fafaf7;
+    border: 1.75px solid var(--ink);
+    padding: 12px 20px; border-radius: 999px;
+    font-family: var(--body); font-size: 13px; font-weight: 700; letter-spacing: 0.02em;
+    cursor: pointer;
+    box-shadow: 3px 3px 0 var(--ink);
+    transition: transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  .export-btn:hover { transform: translate(2px, 2px); box-shadow: 1px 1px 0 var(--ink); }
+
+  /* Craft signals */
+  .craft-list { display: grid; gap: 12px; margin-top: 8px; }
+  .craft-item { border: 1px solid var(--line); background: var(--paper-2); padding: 14px 18px; border-radius: 4px; display: grid; grid-template-columns: 42px 1fr; gap: 14px; align-items: start; }
+  .craft-item .idx { font-family: var(--serif); font-style: italic; font-size: 22px; color: var(--muted); line-height: 1; padding-top: 2px; }
+  .craft-item .name { font-family: var(--display); font-weight: 700; font-size: 14px; color: var(--ink); display: block; margin-bottom: 6px; }
+  .craft-item .body { font-size: 13px; color: #2a2a26; line-height: 1.6; }
+
+  /* Competitor + risk tables */
+  .comp-wrap { overflow-x: auto; margin-bottom: 6px; }
+  .comp-table, .risk-table { width: 100%; border-collapse: collapse; margin: 6px 0 12px; font-size: 12.5px; background: white; border: 1px solid var(--line); border-radius: 6px; overflow: hidden; }
+  .comp-table th, .comp-table td, .risk-table th, .risk-table td { padding: 10px 12px; text-align: left; border-bottom: 1px solid var(--line-soft); vertical-align: top; line-height: 1.5; }
+  .comp-table thead th, .risk-table thead th { background: var(--paper-2); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); font-weight: 700; }
+  .comp-table tbody th { font-weight: 700; color: var(--ink); background: var(--paper); font-size: 12.5px; text-transform: none; letter-spacing: 0; }
+  .comp-table td.own { background: #fff8e6; font-weight: 600; color: var(--ink); }
+  .comp-verdict { font-size: 13px; padding: 12px 16px; border-left: 3px solid var(--go); background: var(--go-soft); border-radius: 0 4px 4px 0; margin-top: 10px; line-height: 1.55; }
+  .comp-verdict.warn { border-left-color: var(--stop); background: var(--stop-soft); }
+  .risk-table td.sev-high { color: var(--stop); font-weight: 700; }
+  .risk-table td.sev-med { color: var(--warn); font-weight: 700; }
+  .risk-table td.sev-low { color: var(--go); font-weight: 700; }
+
+  /* Metrics grid */
+  .metrics-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 14px; }
+  .metric-card { background: white; border: 1px solid var(--line); border-radius: 6px; padding: 18px 20px; border-left: 3px solid var(--line); }
+  .metric-card .tag { display: inline-block; font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: var(--muted); background: var(--paper-2); padding: 3px 9px; border-radius: 999px; margin-bottom: 10px; font-weight: 700; }
+  .metric-card h5 { font-size: 14px; margin: 0 0 8px; font-weight: 700; line-height: 1.4; }
+  .metric-card p { font-size: 12.5px; color: #2a2a26; line-height: 1.55; margin: 0; }
+  .metric-card.north { border-left-color: var(--ink); }
+  .metric-card.north .tag { background: var(--ink); color: var(--paper); }
+  .metric-card.guard { border-left-color: var(--warn); }
+  .metric-card.guard .tag { background: var(--warn-soft); color: var(--warn); }
+  .metric-card.blind { border-left-color: var(--stop); }
+  .metric-card.blind .tag { background: var(--stop-soft); color: var(--stop); }
+
+  @media print {
+    @page { margin: 14mm; }
+    body { background: white; }
+    .page { padding: 0; max-width: none; }
+    h1 { font-size: 42px; }
+    .lang-tools, .lang-btn, .report-tools, .export-btn { display: none !important; }
+    * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .verdict, .tldr li, .num-card, .info-card, .surface, .biz-card, .growth-col,
+    .friction-item, .opp-card, .final-col, .loop-step, .toc, .notice, .role-row,
+    .ux-bar, .jtbd-row, .craft-item, .metric-card, .comp-wrap, .risk-table {
+      break-inside: avoid; page-break-inside: avoid;
+    }
+    h1, h2, h3, h4, .section-head { break-after: avoid; page-break-after: avoid; }
+    section { margin-bottom: 18px; }
+  }
+
+  @media (max-width: 720px) {
+    .page { padding: 32px 22px 64px; }
+    h1 { font-size: 36px; }
+    .role-row, .toc { grid-template-columns: 1fr; }
+    .toc ol { columns: 1; }
+    .verdict, .numbers, .info-grid, .biz-grid, .surface-grid, .growth-cols, .ai-meter, .final, .metrics-grid { grid-template-columns: 1fr; }
+    .loop { grid-template-columns: 1fr; }
+    .loop-arrow { display: none; }
+    .loop-step { border-right: 0; border-bottom: 1px solid white; border-radius: 0 !important; }
+    .ux-bar { grid-template-columns: 1fr; }
+    .stars .row, .stars .label { text-align: left; }
+    .brand-block { grid-template-columns: 1fr; gap: 18px; }
+    .brand-block .brand-mark { font-size: 64px; }
+    .socials { justify-content: flex-start; }
+  }
+</style>
+<style>.ux-bar{display:none!important}.stars{display:none!important}</style>
+</head>
+<body>
+
+<div class="report-tools" role="toolbar" aria-label="报告工具栏">
+  <div class="lang-tools" role="group" aria-label="语言切换">
+    <a href="teardown-en.html" class="lang-btn " aria-label="英文版本">EN</a>
+    <a href="teardown-zh.html" class="lang-btn active" aria-label="中文版本 · 当前">中文</a>
+  </div>
+  <button type="button" class="export-btn" onclick="reportExportMarkdown()">导出 MD</button>
+  <button type="button" class="export-btn" onclick="window.print()">导出 PDF</button>
+</div>
+
+<div class="page">
+
+<div class="brand-chip">📊 拆解100个AI+产品</div>
+
+<div class="meta-strip">
+  <span>产品拆解 · Principal PM 分析</span>
+  <span class="dot"></span>
+  <span>生成于 2026-11-26</span>
+  <span class="dot"></span>
+  <span>产品：Taskade</span>
+</div>
+
+<h1>Taskade<span class="tag">它不是任务工具，是一台「把业务流程一句话变成可运行 app」的机器：Projects 存数据、Agents 做判断、Automations 跑执行、Genesis App 当界面——官方把这套叫 Workspace DNA，把结果回流的机制叫 Living Loop。</span></h1>
+
+<div class="header-rule"></div>
+
+<div class="role-row">
+  <div class="cell"><div class="label">品类</div><div class="value">AI 协作 / 任务与 Agent 平台（Workspace DNA：Memory + Intelligence + Execution + Interface）</div></div>
+  <div class="cell"><div class="label">用户规模</div><div class="value">官方 press 页只给三个累计量：150,000+ Genesis apps built、500K+ AI agents deployed、3M+ automation executions（未写统计截止日）。第三方评价：Capterra 4.7/5（67 条）、Product Hunt 4.7（108 条）、Trustpilot 4.6（745 条），2026-08/09 核对。可数的规模在 sitemap：17 个子 sitemap 合计 28,602 条 URL。MAU、付费用户、ARR 均未披露，本卡不编。</div></div>
+  <div class="cell"><div class="label">商业模式</div><div class="value">订阅 + credits 双轨。Free $0 永久（2 成员、3 个 Live app、1 个 agent、10 次自动化/月、250MB、1 个知识源，且无月度 credits，只能靠邀请/克隆赚）；Starter $6、Pro $10（月付 $20）、Business $25、Max $100、Enterprise $250（均为年付折算月价；年付对 Pro 及以上省 50%）。无学生/教育/非营利折扣（官方明确）。</div></div>
+  <div class="cell"><div class="label">阶段</div><div class="value">成长期偏成熟，且刚完成一次平台化转身。公司 TASKCADE INC.，2017 年成立，旧金山，Y Combinator S19；2019-10 TechCrunch 报道 $5M 融资。产品线：2022-12 Taskade AI 上线 → 2024 Workspace DNA（Memory / Intelligence / Execution）成型、Automation v2 支持 durable execution → 2025 Genesis + Platform V6（Aurora 设计系统）→ 2026 平台化（API、MCP v2、100+ 集成、agent 发布），官方称 80 releases in 5 months。六个付费档，从 $0 到 $250。</div></div>
+</div>
+
+<nav class="toc">
+  <span class="kicker">目录</span>
+  <ol>
+    <li><a href="#tldr">核心结论 · TL;DR</a></li>
+    <li><a href="#metrics">关键信号</a></li>
+    <li><a href="#s1">1. 产品快照</a></li>
+    <li><a href="#gallery">· 产品截图</a></li>
+    <li><a href="#s2">2. 目标用户 & JTBD</a></li>
+    <li><a href="#s3">3. 核心产品循环</a></li>
+    <li><a href="#s4">4. 架构 & 交互体系</a></li>
+    <li><a href="#s5">5. 设计语言 & 手艺细节</a></li>
+    <li><a href="#s6">6. 价值交付 & 体验质感</a></li>
+    <li><a href="#s7">7. 商业模式</a></li>
+    <li><a href="#s8">8. 竞品全景 & 定位</a></li>
+    <li><a href="#s9">9. 增长策略</a></li>
+    <li><a href="#s10">10. 应用层六维</a></li>
+    <li><a href="#s11">11. 他们真正在优化的指标</a></li>
+    <li><a href="#s12">12. 摩擦 & 短板</a></li>
+    <li><a href="#s13">13. 风险矩阵</a></li>
+    <li><a href="#s14">14. 机会 & 重设计</a></li>
+    <li><a href="#s15">15. 终局判断</a></li>
+      <li><a href="#s16">16. 对标竞品地图</a></li>
+    <li><a href="#s17">17. 竞品技术底座</a></li>
+    <li><a href="#s18">18. 可迁移的机会（我的判断）</a></li>
+    <li><a href="#s19">19. 流量与变现拆解</a></li>
+  </ol>
+</nav>
+
+<div class="notice">
+  <strong>前提假设：</strong> 可核实：官方 llms.txt 与 SKILL.md 原文（Workspace DNA、Living Loop、The user is usually a business owner, not a developer）、六档定价与功能矩阵（年付折算月价、credits 与 runs 数值、BYOK 与 SAML/SCIM 分布）、17 个子 sitemap 的页数（合计 28,602）与结构占比、197 条对比页的构成（155 / 33 / 6）、GEO 层的具体做法（llms.txt / SKILL.md / MCP / .well-known / Markdown 出口 / robots.txt 信号）、第三方评分（Capterra 4.7/67、PH 4.7/108、Trustpilot 4.6/745）、公司史与融资（2017 成立、YC S19、2019-10 TechCrunch $5M）。推断并已标注：频次、北美星与输入/护栏指标、竞品价格与协议细节（本次未核验）、App Kit 市场的实际活跃度。本期没有实测，所有体验类结论均不出。
+</div>
+
+<!-- VERDICT -->
+<section id="tldr" class="verdict">
+  <div class="left">
+    <div class="kicker">Principal PM 判断</div>
+    <h2>它把「一个工作区」拆成四层同构（数据/智能/执行/界面），再用四种封装（项目/agent/自动化/app）把同一份对象图卖四遍；护城河不在模板数量，在「结果回流成记忆」这条环。</h2>
+    <div class="sub">拔电测试判为原生：拿走 agents、automations 与 Genesis 一句话建站，剩下的是一张任务表加十种视图，价值掉一半——因为它卖的就是「不用写代码也有一个 app」。但要看清楚它的 AI 是什么：不是模型能力，是「任务到模型的路由」（TSK 阶梯）加上把业务流程塞进可控容器的工程能力。这也解释了它为什么敢同时卖模板、卖 agent、卖 app——它们本来就是同一份数据的不同壳。</div>
+  </div>
+  <div class="stars">
+    <div class="row">★★★★☆</div>
+    <div class="label">4 / 5 · 战略强度</div>
+  </div>
+</section>
+
+<div class="tldr">
+  <div class="kicker">如果你只看三件事 —</div>
+  <ul>
+    <li><strong>四层同构：一份数据，四种封装</strong> — Memory（Projects 存数据）→ Intelligence（Agents 做判断）→ Execution（Automations 跨 100+ 集成执行）→ Interface（Genesis App 当界面）。四种入口指向同一个对象图：Projects 给人用、Agents 给问的人用、Automations 给系统用、Genesis App 给终端客户用。所以它既能卖模板，也能卖 agent，也能卖 app——不是三条产品线，是同一层的三种包装。</li>
+    <li><strong>Living Loop：结果必须回流成记忆</strong> — 官方原话：Memory 提供上下文 → Intelligence 做决定 → Execution 产出结果 → 结果回流成新的 Memory。最具体的一处设计是「agent 的记忆不是一个黑盒，而是一个 Project」——可浏览、可编辑、可搜索、可 fork。这一招把「AI 记忆」从不可控，变成工作区里一张能被人改的表；也决定它每用一次会比上一次更准。</li>
+    <li><strong>28,602 页里，只有 14.3% 是手写的</strong> — sitemap 实测（2026-11-26，17 个子 sitemap）：程序化资源页 18,376 页 = 64.2%（templates 3,997 / generate 4,526 / agents 3,169 / automate 2,361 / prompts 2,205 / convert 2,118）；UGC app 页 6,135 页 = 21.4%（community apps + 495 个作者页）；手写营销内容只占 14.3%（blog 1,125 / marketing 867 / learn 435 / wiki 573 / docs 169 / compare 197 等）。197 条对比页再拆：155 条是 free-<竞品>-alternative，33 条是纯第三方模型对比（gpt-vs-claude 这类），只有 6 条是 taskade-vs-*。这不是品牌对比，是纯吃搜索量的结构。</li>
+  </ul>
+</div>
+
+<!-- KEY SIGNALS -->
+<section id="metrics" class="numbers">
+  <div class="num-card">
+    <div class="label">价值到达时间</div>
+    <div class="big">未测</div>
+    <div class="desc">本期没有实测；不把「生成出第一个 app」当成价值到达，也不换算成分钟</div>
+  </div>
+  <div class="num-card">
+    <div class="label">核心循环频次</div>
+    <div class="big">未公开</div>
+    <div class="desc">官方只给累计量（3M+ automation executions、500K+ agents），没有频次数据，不编</div>
+  </div>
+  <div class="num-card">
+    <div class="label">护城河评分</div>
+    <div class="big">6<small>/10</small></div>
+    <div class="desc">我的评分，不是测量；扣分在数据模型、界面自由度与品牌叙事（手写内容只占 14.3%）</div>
+  </div>
+</section>
+
+<!-- §1 SNAPSHOT -->
+<section id="s1">
+  <div class="section-head">
+    <span class="num">01</span>
+    <h3>产品快照</h3>
+    <span class="pill">它到底是什么</span>
+  </div>
+  <p class="section-intro">抛开营销话术 — 把这个产品当成一个「系统」来看，它到底是什么。</p>
+  <div class="info-grid">
+    <div class="info-card">
+      <div class="quote"><strong>产品定位</strong>：官方定义原文是 Taskade is an AI-native workspace. Taskade Genesis turns one prompt into a live, hosted app. Each app runs on Workspace DNA: Projects hold the data, AI agents add intelligence, and automations act across 100+ integrations。它在 SKILL.md 里写得更直白：The user is usually a business owner, not a developer。换成人话：给「有业务流程但没有工程师」的人，一句话生成一个能跑、能发布、能读写数据的 app。</div>
+      <h4>核心用户承诺</h4>
+      <p>官方主张是「把业务流程变成 live app」。用户语言：你不用先学一套工具，也不用找人开发——把流程说出来，它给你一个带数据表、带 agent、带自动化、能挂自己域名的 app，然后你可以克隆别人的成品改一改。</p>
+    </div>
+    <div class="info-card">
+      <h4>品类 & 定位</h4>
+      <p>它站在三条货架的交口：协作与项目工具（Notion、Asana、ClickUp、Monday）、自动化平台（Zapier、Make）、以及 no-code app builder（Softr、Bubble、Glide）。位置上它在中间偏「系统」：比协作工具多执行与界面，比自动化平台多数据层，比 app builder 多内建的数据与 agent。这个「中间位」既是它的差异，也是它的解释成本。</p>
+      <h4 style="margin-top:14px;">前提假设</h4>
+      <ul>
+        <li>[推断] 「28,602 页」证明的是页面规模，不是流量。程序化 SEO 的有效性取决于这些页有没有排名，而本期未取 Similarweb / Ahrefs 类数据，所以不能据此推断它的自然搜索表现。</li>
+        <li>[推断] 它的收入主力是 Business 与 Pro，而不是 Free/Starter：依据是 Business 档的定位写的就是 For agencies and client work（无限域名 + 白标 + SEO + 10,000 runs），而 Free 只有 3 个 app、10 次自动化，跑不了第二个客户。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §1.5 产品截图 -->
+<section id="gallery">
+  <div class="section-head">
+    <span class="num">·</span>
+    <h3>产品截图</h3>
+    <span class="pill">来自产品官方页面</span>
+  </div>
+  <p class="section-intro">在深入拆解之前，先直观感受一下这款产品长什么样。图片实时抓取自产品公开的营销页面。</p>
+  <div class="gallery">
+    <figure class="shot"><img src="https://www.taskade.com/static_images/taskade-genesis-mascot-2026.png" alt="Taskade 官网主图：2026 年的主张是「Turn Business Processes Into Live Apps」（取自 taskade.com 官方 OG 图）" loading="lazy"/><figcaption><span class="fig-num">图 01</span>Taskade 官网主图：2026 年的主张是「Turn Business Processes Into Live Apps」（取自 taskade.com 官方 OG 图）</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/landing/hp-1-prompt-it-poster.webp" alt="官网首页的 Genesis 首屏素材：一句话提示词 → 一个可运行、可托管的 app（取自 taskade.com/static_images/landing）" loading="lazy"/><figcaption><span class="fig-num">图 02</span>官网首页的 Genesis 首屏素材：一句话提示词 → 一个可运行、可托管的 app（取自 taskade.com/static_images/landing）</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/7iyc4shyd1f9eo1k-dealflow-crm.webp" alt="App Factory 社区成品之一：DealFlow CRM（社区 app 预览图，取自 taskade.com 首页社区 app 列表）" loading="lazy"/><figcaption><span class="fig-num">图 03</span>App Factory 社区成品之一：DealFlow CRM（社区 app 预览图，取自 taskade.com 首页社区 app 列表）</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/jiz9qqa3pono9ntq-minimalist-e-commerce-storefront.webp" alt="社区成品：极简电商店铺（同名 slug 的 app 预览图）——Genesis 能把一份数据变成对外可卖的界面" loading="lazy"/><figcaption><span class="fig-num">图 04</span>社区成品：极简电商店铺（同名 slug 的 app 预览图）——Genesis 能把一份数据变成对外可卖的界面</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/cibvdbpnmfh8ql8k-content-agent-chatbot.webp" alt="社区成品：内容 agent 聊天机器人——agent 可以被发布成公共页并用 5 种 widget 嵌到外部网站" loading="lazy"/><figcaption><span class="fig-num">图 05</span>社区成品：内容 agent 聊天机器人——agent 可以被发布成公共页并用 5 种 widget 嵌到外部网站</figcaption></figure>
+    <figure class="shot"><img src="https://www.taskade.com/static_images/community-apps/h42is85vu180almu-growth-dashboard.webp" alt="社区成品：增长仪表盘——同一份 project 数据用 board / chart 视图呈现（社区 app 预览图）" loading="lazy"/><figcaption><span class="fig-num">图 06</span>社区成品：增长仪表盘——同一份 project 数据用 board / chart 视图呈现（社区 app 预览图）</figcaption></figure>
+  </div>
+</section>
+
+<!-- §2 USERS & JTBD -->
+<section id="s2">
+  <div class="section-head">
+    <span class="num">02</span>
+    <h3>目标用户 & Jobs-to-be-Done</h3>
+    <span class="pill">谁 + 为什么</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要用户分层</h4>
+      <ul>
+        <li><strong>小团队 / 一人公司 / 代理机构（business owner, not developer）</strong> — 这是它自己写明的 ICP。他们要的不是「更好的项目管理」，是「客户门户 / CRM / 发票流程 / 预约 / 仪表盘」这类小系统，而买一套 SaaS 要钱、找人开发要时间。Free 档的 3 个 app 额度正好够试一个真实场景，Pro 的 10 个自定义域名正好够接客户。</li>
+        <li><strong>创作者（App Kit 作者）</strong> — App Kit 可以把「app 界面 + projects + agents + automations」打成一包，设成免费或付费，别人一键克隆，作者从 Earnings 提现；同一份 app 还可以出 free 与 Pro 两个条目。所以它同时是一个创作者分发平台——sitemap 里 495 个作者页就是证据。</li>
+        <li><strong>想搬家的团队（Notion / Asana / ClickUp / Trello / Monday 用户）</strong> — 它做了 30+ 个导入器（Notion、Asana、ClickUp、Trello、Monday、Zapier、Make、Obsidian、Evernote、Roam、Logseq、Workflowy、Miro…），导入即成为 project，可立刻挂 agent 与自动化。对比页里 155 条 free-<竞品>-alternative 正是给这批人搜的。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>触发 & 场景</h4>
+      <p><strong>触发时刻：</strong> 业务里同一个流程第三次靠人肉跑：客户问进度要手打、发票逾期要手催、入职清单要人盯。这时候人会去搜「有没有现成模板」，而它 3,997 个模板页 + 4,526 个生成器页就是为这个搜索准备的。</p>
+      <p><strong>使用频次：</strong> 按业务流程频次走（工单/订单/客户跟进落在日到周的量级）；官方未披露使用频次，只披露累计执行量 3M+。</p>
+      <p><strong>使用场景：</strong> 桌面/移动/浏览器扩展；数据在 Projects（10 种视图：List / Board / Table / Mind Map / Docs / Calendar / Gantt / Actionsheet / Org Chart 等）；判断在 Agents（指令 + 知识 + 持久记忆 + 工具 + slash 命令）；执行在 Automations（4 类触发 + 5 类动作 + 分支/循环/过滤/审批）；界面在 Genesis App（可发布到 *.taskade.app 或自有域名）；外部调用走 Hosted MCP 与 REST API。</p>
+    </div>
+  </div>
+  <div class="info-card" style="margin-top:8px;">
+    <h4>Jobs-to-be-Done · 用户「雇佣」这个产品去做什么</h4>
+    <div class="jtbd-row">
+      <div class="who">功能层</div>
+      <div class="job">把「一个业务的流程」变成「一个能跑的系统」：数据有地方存、判断有人做、重复动作自己跑、界面能给客户看。 <br><em>"当 ___ 的时候，我想要 ___，这样我就能 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">情感层</div>
+      <div class="job">不用承认自己请不起开发。它对用户的情绪承诺是「你也能做出一个软件」——这也是 Genesis 一句话生成最上瘾的地方：从想法到能点，中间没有排期。 <br><em>"我想要感受到 ___ / 避免感受到 ___。"</em></div>
+    </div>
+    <div class="jtbd-row">
+      <div class="who">社交层</div>
+      <div class="job">在小团队里成为「把流程跑起来的人」；对客户，交付的不是一份文档，而是一个能登录、能提交、能看进度的门户。 <br><em>"我想要别人把我看成 ___。"</em></div>
+    </div>
+  </div>
+</section>
+
+<!-- §3 CORE LOOP -->
+<section id="s3">
+  <div class="section-head">
+    <span class="num">03</span>
+    <h3>核心产品循环</h3>
+    <span class="pill">系统动力学</span>
+  </div>
+  <p class="section-intro">引擎 — 一次使用如何滚成留存，运气好还能滚成增长。</p>
+
+  <div class="loop">
+    <div class="loop-step">
+      <div class="kicker">触发 · Trigger</div>
+      <div class="what">重复的活儿又来了</div>
+      <div class="why">触发点不是「我要用 AI」，是「这件事每周都要做一遍，而每次都是人在做」。它把触发做成四种：Taskade 内部事件（任务新增/完成/指派/字段变更）、外部 app 事件（Gmail / Slack / GitHub / Notion…）、时间（Schedule）、入站（Webhook / Mailhook / Form）。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">行动 · Action</div>
+      <div class="what">要么让 agent 做，要么让自动化跑</div>
+      <div class="why">同一个流程有两条入口：人问 agent（它带知识、带记忆、带工具，工具可设「自动执行」或「需人工批准」）；或者系统跑 automation（触发 → 动作，中间可插分支、循环、过滤、延时、审批）。两条入口共享同一份数据，所以「先手动跑通，再让它自动跑」是这个产品最自然的学习路径。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">奖赏 · Reward</div>
+      <div class="what">产物落回项目里，而不是落在聊天窗口</div>
+      <div class="why">agent 的产出可以写回 Projects（建任务、改字段、加评论），automation 的产出可以是新记录、通知、邮件、报告；Genesis App 则是把这些能力包成一个界面给终端用户。产出留在数据层，是 Living Loop 能成立的前提。</div>
+    </div>
+    <div class="loop-arrow">→</div>
+    <div class="loop-step">
+      <div class="kicker">回访 · Return</div>
+      <div class="what">记忆变厚，下一次判断更准</div>
+      <div class="why">回来的理由不是「再生成一次」，是「它记得上次是怎么处理的」。持久记忆存成 Project，可浏览可编辑可 fork；知识源可以挂文件、项目、网页、YouTube、云盘（付费档 50 个/agent）。用得越久，越不像一个通用助手。</div>
+    </div>
+  </div>
+  <div class="loop-note">"它真正教用户的是「流程本身就是产品」：当你把一次处理写成一条 flow，你就有了一个可以交给别人、交给 agent、交给客户的资产。"</div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>获取循环</h4>
+      <p><strong>流量曝光</strong>：三合一结构，全部可数。① 程序化 SEO：28,602 条 URL 里 64.2% 是 templates / agents / automate / prompts / convert / generate 这类「搜什么有什么」的资源页；② UGC 克隆工厂：6,135 个社区 app 页 + 495 个作者页进 sitemap，且每个用户发布的 app 自动带 robots.txt / sitemap.xml / llms.txt——客户的产出变成新的发现节点；③ AI 原生发现层（GEO）：llms.txt（2026-11-18 更新，含 TL;DR、事实、FAQ、How to Cite Taskade 的指定引用措辞）、SKILL.md（给 agent 的操作手册）、Hosted MCP（OAuth 2.0 + PKCE）、.well-known 元数据（api-catalog、mcp.json、server-card、agent-skills 索引）、Accept: text/markdown、OpenAPI JSON、TSK-Bench，以及 robots.txt 里写明 ai-train=yes, search=yes, ai-input=yes。</p>
+    </div>
+    <div class="info-card">
+      <h4>激活 · Aha 时刻</h4>
+      <p>官方叙事里最像 aha 的一刻：一句话 → 一个有数据表、有 agent、有自动化、能发布的 app，从想法到能点中间没有排期。本期未实测，这一点只据官方 llms.txt 与 About 页描述，不作体验结论。</p>
+    </div>
+    <div class="info-card">
+      <h4>留存驱动</h4>
+      <ul>
+        <li>数据 + 记忆都在工作区里：Projects 存业务数据，agent 的持久记忆也存成 Project，搬走等于重建整个上下文。</li>
+        <li>自动化一旦跑起来就是流程的一部分：100+ 集成、webhook、审批步，替换等于重新接线并重新验证。</li>
+        <li>已发布 app 有终端用户（App Users / GenesisAuth）：客户在用的门户，是最硬的留存——你不是在换工具，是在换客户的入口。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>裂变 / 网络效应</h4>
+      <p>有，而且做了三层：克隆即用（Free 可克隆 1,000+ free app kits，每次克隆占 Free 的 3 个 app 额度）、克隆给 credits（Earn Credits When Others Clone）、已发布 app 自带发现层（robots/sitemap/llms.txt）与公共 agent 页 + 5 种 widget 嵌入。「用额度做货币、用克隆做传播、用成品做商品」——这条闭环比单纯免费档更狠 [推断]。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §4 ARCHITECTURE -->
+<section id="s4">
+  <div class="section-head">
+    <span class="num">04</span>
+    <h3>产品架构 & 交互体系</h3>
+    <span class="pill">界面 + 实体</span>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:8px 0 10px;">核心产品界面（Surfaces）</h4>
+  <div class="surface-grid">
+    <div class="surface"><span class="name">Projects（数据层 = Memory）</span><div class="desc">结构化数据：任务树 + 自定义字段 + 10 种视图（List / Board / Table / Mind Map / Docs / Calendar / Gantt / Actionsheet / Org Chart 等）。注意 2026 版站点里「笔记 / 思维导图」已经不是独立对象，而是 project 的两种视图——这是理解它架构的关键。</div></div>
+    <div class="surface"><span class="name">AI Agents（智能层 = Intelligence）</span><div class="desc">一个有角色的 AI 队友：指令 + 知识（文件/项目/网页/YouTube/云盘）+ 持久记忆 + 工具（研究/文档/AI 步骤/工作区操作/外部 app/自定义）+ slash 命令。工具可各自设「自动执行」或「需人工批准」；多 agent 可组 AI Teams（Auto / Everyone / Manual / Orchestrate 四种模式）。</div></div>
+    <div class="surface"><span class="name">Automations（执行层 = Execution）</span><div class="desc">触发器 + 动作 + 控制流（Branch / Loop / Filter / Delay / Approval）+ 173 个连接器（6 类）。触发有四类：Taskade 内部事件、外部 app 事件、时间、入站（Webhook / Mailhook / Form）；动作可返回结构化 JSON 供后续步骤取字段。</div></div>
+    <div class="surface"><span class="name">Genesis App（界面层 = Interface）</span><div class="desc">一句话生成的 React app，由 Taskade 托管，读写上面三层；可发布到 *.taskade.app 或自有域名（含 SSL）、可 iframe 嵌入、可密码保护，并自带 App Users / GenesisAuth（独立于 Taskade 账号的终端用户登录）。这一层是它区别于所有「模板 + agent」产品的关键。</div></div>
+    <div class="surface"><span class="name">App Factory / App Kits（分发层）</span><div class="desc">6,135 个社区 app 页 + 72 个分类（48 类型 + 12 团队 + 12 行业）+ 495 个作者页；App Kit 可克隆、可免费/付费分发、可导出 .tsk、可导出 GitHub。它把「成品」变成了可流通资产——这是模板生意的下一层。</div></div>
+    <div class="surface"><span class="name">机器入口（MCP / SKILL.md / llms.txt）</span><div class="desc">给 AI 用的门面：Hosted MCP（https://www.taskade.com/mcp，OAuth 2.0 + PKCE）让外部 agent 读写工作区，SKILL.md 教它怎么用，llms.txt 连「该怎么引用我」都写好了。大多数产品把 AI 当用户，它把 AI 也当客户。</div></div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:18px 0 10px;">核心实体 · 整个系统绕着什么转</h4>
+  <div class="entity-row">
+    <span class="entity">Workspace（顶层隔离单元：每个 workspace 有自己的 memory / intelligence / execution）</span>
+    <span class="entity">Project / Task / Field（数据、行、列）</span>
+    <span class="entity">View（同一份数据的 10 种看法）</span>
+    <span class="entity">Agent（指令 + 知识 + 持久记忆 + 工具）</span>
+    <span class="entity">Automation / App Kit（流程与可流通的成品）</span>
+  </div>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>信息架构逻辑</h4>
+      <p>主轴是「项目」：一切从 Projects 进来，向上长成 Agent 的知识与记忆，向外长成 Automation 的触发与动作，最后被 Genesis App 包成界面。好处是四种封装共享同一份数据——改一处，四种入口都变；代价是概念密度极高：一个用户要同时理解 project、view、field、agent、tool、knowledge、memory、trigger、action、app kit 十个对象，才能完整发挥它。这也是它和 Notion 一类的分野：Notion 只要求你理解 block。</p>
+    </div>
+    <div class="info-card">
+      <h4>导航 & 交互模型</h4>
+      <p>导航按「做什么」切：Create（Genesis）/ Projects / Agents / Automate / Apps / Templates / Integrations / Pricing / Learn / Docs。值得注意的是 /use-cases 与 /solutions 在 2026 版站点是 404——场景全部由 /apps/categories 的 72 类 app kits 与 /learn/projects/for-* 人群页承载。本期未实测，交互结论只据站点结构与文档，不下体验判断。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §5 CRAFT SIGNALS -->
+<section id="s5">
+  <div class="section-head">
+    <span class="num">05</span>
+    <h3>设计语言 & 手艺细节</h3>
+    <span class="pill">「品味」到底体现在哪</span>
+  </div>
+  <p class="section-intro">它的所有工艺都指向一句话：把「一次性交付」变成「可流通的资产」。模板可复制、app 可克隆、记忆可 fork、每个产物自带发现层——资产能自己流通，产品就不需要靠投放获客。</p>
+  <div class="craft-list">
+    <div class="craft-item"><div class="idx">01</div><div><span class="name">把 AI 的记忆做成一个能编辑的 Project</span><div class="body">这是全站最值得抄的一处：持久记忆不是藏在模型里，而是落成一个 Project，可浏览、可编辑、可搜索、可 fork。结果有三：用户能看见 agent「记住了什么」，能改错，能把记忆复制给另一个 agent；同时记忆顺带变成了产品里的数据资产。</div></div></div>
+    <div class="craft-item"><div class="idx">02</div><div><span class="name">TSK 阶梯：按任务档位选模型，而不是按厂商型号</span><div class="body">TSK-Auto / Instant / Standard / Thinking / Reasoning 五档，用户选的是「这活有多难」，不是「用哪个模型」；Pro 起可 BYOK（OpenAI / Anthropic / Google，Business 再加 xAI / DeepSeek / Mistral / OpenRouter）。模型是耗材，产品是「任务到模型的路由」——这是 2026 年 AI 产品该有的抽象，因为模型半年换一代，而用户的心智不该跟着换。</div></div></div>
+    <div class="craft-item"><div class="idx">03</div><div><span class="name">三种封装：模板给结构、App Kit 给成品、MCP 给机器</span><div class="body">Template 是「改一改就能用」的结构（3,997 项目模板 / 3,169 agent / 2,361 自动化配方）；App Kit 是「拿走就能跑」的成品（6,135 个，可克隆可售卖可导出 .tsk / GitHub）；MCP + SKILL.md 是「让别的 agent 直接调用」的接口。同一份对象图，三种交付粒度，三种买家。</div></div></div>
+    <div class="craft-item"><div class="idx">04</div><div><span class="name">用额度当货币，把增长写进计费规则</span><div class="body">Free 档没有月度 credits，只能靠邀请与被克隆赚；克隆别人的 app 又会占用 Free 的 3 个 app 额度。于是「拉新」和「被复制」不再是运营活动，而是用户拿到额度的唯一路径。这是把增长动机直接焊进账本，比「邀请送积分」硬得多，也解释了它为什么敢把免费档做小。</div></div></div>
+    <div class="craft-item"><div class="idx">05</div><div><span class="name">让用户的产出自动带 SEO / GEO</span><div class="body">官方 Publish 说明：每个已发布的 app 自动产出 robots.txt、sitemap.xml、llms.txt；Business+ 还带 SEO Health 评分与 app analytics。也就是说用户每发布一个 app，就替它多开一个搜索与 AI 发现节点——UGC 直接变成分发资产，这是它 21.4% 页面来自 UGC 的机制原因。</div></div></div>
+  </div>
+</section>
+
+<!-- §6 UX QUALITY -->
+<section id="s6">
+  <div class="section-head">
+    <span class="num">06</span>
+    <h3>价值交付 & 体验质感</h3>
+    <span class="pill">产品的手感</span>
+  </div>
+
+  <div class="ux-bar"><span class="lbl">价值到达速度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">价值到达时间：本次未测（本期没有实测，不把「生成出第一个 app」当成价值到达，也不换算成分钟）</span></div>
+  <div class="ux-bar"><span class="lbl">认知负荷</span><div class="track"><div class="fill warn" style="width:%"></div></div><span class="val">认知负荷：高（未实测；可核实的是用户要同时理解 project / view / field / agent / tool / knowledge / memory / trigger / action / app kit 十个对象）</span></div>
+  <div class="ux-bar"><span class="lbl">惊喜密度</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">惊喜点：成品可克隆、app 能上自有域名、模型换代无感</span></div>
+  <div class="ux-bar"><span class="lbl">信任信号</span><div class="track"><div class="fill" style="width:%"></div></div><span class="val">信任：第三方口碑不弱（Capterra 4.7/67、Product Hunt 4.7/108、Trustpilot 4.6/745，2026-08/09 核对）；企业侧有 SAML（Business+ 起）与 SCIM（Enterprise）。但两处不确定：6,135 个社区 app 的活跃度与质量分布未核验；「一句话生成的 app」在真实业务里能不能无人复核地跑，官方没有公开的失败率或回滚机制说明。</span></div>
+  <div class="ux-bar"><span class="lbl">用户挣扎风险</span><div class="track"><div class="fill stop" style="width:%"></div></div><span class="val">摩擦：概念密度、credits 计价、规模口径不一致</span></div>
+
+  <div class="info-grid" style="margin-top:20px;">
+    <div class="info-card">
+      <h4>关键惊喜时刻</h4>
+      <ul>
+        <li>App Kit 克隆即用：6,135 个社区 app，打开就能看到它的「DNA」（用了哪些 project / agent / automation）。</li>
+        <li>一句话生成的 app 能直接挂自有域名（Pro 起 10 个），带 SSL、可 iframe 嵌入、可加终端用户登录。</li>
+        <li>模型换代用户无感：TSK 阶梯只暴露「任务档位」，不暴露厂商型号（付费档还可 BYOK）。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>用户可能卡壳的地方</h4>
+      <ul>
+        <li>概念密度过高：要理解十个对象才能发挥全部能力，而它的对手（Notion）只要求理解 block。这是它做大众市场最大的摩擦，也是它必须靠模板与 App Kit 降低门槛的原因。</li>
+        <li>credits 计价对「非 AI 用法」不友好：一个只想拿它当项目管理工具的团队，会觉得 credits 与 automation runs 的额度跟自己无关；而 Free 档没有月度 credits（只能靠邀请/克隆赚），新人第一次用 AI 就可能撞额度。</li>
+        <li>规模口径自己没对齐：官方同时存在 1,000+ free app kits、500+ community templates、sitemap 6,135 三个数；另外月付挂牌价除 Pro $20 外都未核验。对一个主打「透明」的 GEO 玩家，这是它最容易被挑的一处。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<!-- §7 BUSINESS MODEL -->
+<section id="s7">
+  <div class="section-head">
+    <span class="num">07</span>
+    <h3>商业模式 & 变现</h3>
+    <span class="pill">怎么赚钱</span>
+  </div>
+  <div class="biz-grid">
+    <div class="biz-card"><span class="tag">收入模型</span><h5>订阅 + credits 双轨（额度既是成本也是拉新货币）</h5><p>Free $0（2 成员 / 3 app / 1 agent / 10 次自动化/月 / 250MB / 1 知识源 / 无月度 credits）；Starter $6（10K credits、350 runs、3 agent、5GB）；Pro $10 年付、$20 月付（50K credits、1,000 runs、无限 agent、10 个自定义域名、webhook、.tsk 与 GitHub 导出、BYOK）；Business $25（150K credits、10,000 runs、无限成员与域名、白标与 SEO、SAML）；Max $100（400K credits）；Enterprise $250（1.1M credits、SCIM）。年付对 Pro 及以上省 50%。</p></div>
+    <div class="biz-card"><span class="tag">免费 ↔ 付费 分水岭</span><h5>免费停在哪</h5><p>免费：2 成员、3 个 Live app、1 个自定义 agent、10 次自动化/月、250MB、1 个知识源、7 天版本历史、无自定义域名与 webhook、无月度 credits。付费：Starter $6 给 10K credits 与 Hosted MCP；Pro $10 给 50K credits、无限 agent、10 个域名、webhook、.tsk / GitHub 导出与 BYOK；Business $25 给 150K credits、无限成员与域名、白标与 SEO、SAML、TSK-Reasoning；Max $100 给 400K credits；Enterprise $250 给 1.1M credits 与 SCIM。</p></div>
+    <div class="biz-card"><span class="tag">变现入口</span><h5>入口小得反常，钱收在 credits 与「能对外发布」上</h5><p>Free 档只给 2 个成员、3 个 app、1 个 agent、10 次自动化——小到像刻意设的墙：刚好够跑通一个真实场景，不够跑第二个。付费的三次跳：额度与 webhook（Starter/Pro）→ 对外品牌与域名（Business 起无限域名 + 白标 + SEO）→ 企业身份（Enterprise 的 SAML + SCIM）。它卖的不是功能，是「你能对外交付多少」与「你能跑多少 AI」。</p></div>
+    <div class="biz-card"><span class="tag">体验 ↔ 变现 是否同向</span><h5>体验与变现是对齐的，还是打架的？</h5><p>结构上高度对齐，且对齐得很聪明：免费档把「跑通一个场景」的成本降到零，付费墙则立在「你开始对外交付」这一刻——更多成员（客户要登录）、更多 app（一个客户一个门户）、自有域名与白标（要给别人看）、更多自动化（流程开始依赖它）。这条线切得比多数 SaaS 准，因为它对应的是「业务真的在用」而不是「用户想不想升级」。打架的地方只有一处：credits 与 automation runs 是两种货币，用户很难预估「我这个月会不会超」，而超额的后果比功能受限更焦虑。</p></div>
+  </div>
+</section>
+
+<!-- §8 COMPETITOR LANDSCAPE -->
+<section id="s8">
+  <div class="section-head">
+    <span class="num">08</span>
+    <h3>竞品全景 & 定位对比</h3>
+    <span class="pill">定位矩阵</span>
+  </div>
+  <p class="section-intro">名单不靠猜，直接读它的对比页结构：197 条 compare 里，155 条是 free-<竞品>-alternative（free-notion-alternative、free-zapier-alternative 这类），33 条是纯第三方模型对比（gpt-vs-claude、qwen-vs-kimi、glm-vs-gpt 这类，与产品无关），只有 6 条是 taskade-vs-*。这说明两件事：一是它真正在抢的是「免费替代品」这个搜索意图，对手是 Notion / Asana / ClickUp / Trello / Monday / Zapier / Make 这一串；二是它连「模型之间谁强」这种流量都要。竞品价格本次全部未核验，不做价格对比。</p>
+  <div class="comp-wrap">
+    <table class="comp-table">
+      <thead>
+        <tr>
+          <th>维度</th>
+          <th>Taskade</th>
+          <th>Notion</th>
+          <th>Airtable</th>
+          <th>Zapier / Make</th>
+          <th>Softr / Bubble / Glide（app builder）</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr><th>主战场</th><td class="own">AI 协作 / 任务与 Agent 平台（一句话建 app）</td><td>同一批人：想要一个「什么都能放」的工作区的小团队与创作者</td><td>要把业务数据做成表与视图的团队（它更结构化，Taskade 更流程化）</td><td>已经有工具、只需要把工具连起来的人（「自动化」这一段链路）</td><td>要「把数据做成一个能给客户用的界面」的人——这是 Genesis 最直接的对手</td></tr>
+        <tr><th>数据模型</th><td class="own">Project/Task/Field + 10 视图 + Agent（含持久记忆）+ Automation（173 集成）+ Genesis App，四层共享一份对象图</td><td>block 模型（页面即数据），靠数据库视图扩展结构化能力</td><td>关系型 base + view + automation，数据模型更强、AI 更后置</td><td>触发-动作编排引擎，连接器数量是护城河；不持有数据层</td><td>no-code app builder：界面能力强，但数据与自动化要外接（Airtable / Sheets / 数据库）</td></tr>
+        <tr><th>分发方式</th><td class="own">程序化 SEO 28,602 页（64.2% 程序化 / 21.4% UGC / 14.3% 手写）+ llms.txt / SKILL.md / MCP 的 AI 原生发现层</td><td>模板生态 + 社区 + 口碑；Taskade 有 155 条 free-notion-alternative 页直接抢它的替代词</td><td>模板库 + 企业销售；Taskade 用 templates / automate 程序化页接它的搜索</td><td>集成目录 + 长尾「X + Y integration」搜索；Taskade 的 automate（2,361 页）与 integrations（180 页）正对着打</td><td>创作者社区 + 模板 + 教程内容</td></tr>
+        <tr><th>价格可见性</th><td class="own">六档年付折算月价全公开（$0 / $6 / $10 / $25 / $100 / $250），credits 与 runs 额度写清；但除 Pro $20 外月付挂牌价未核验</td><td>本次未核验（Taskade 的对比页给了替代叙事，但两边价格未在本期核对）</td><td>本次未核验</td><td>本次未核验</td><td>本次未核验</td></tr>
+      </tbody>
+    </table>
+  </div>
+  <div class="comp-verdict"><strong>本产品的赢面:</strong> 三处别人短期不好补：一是四层共享一份对象图（Notion 缺自动化深度、Zapier 缺数据层、Bubble 缺数据与自动化的一体内置）；二是 App Kit 的可流通性（可克隆、可售卖、可导出 .tsk / GitHub，别人多是「模板」而不是「资产」）；三是 GEO 层的完整度（llms.txt 含引用指南 + SKILL.md + .well-known + MCP + Markdown 出口 + OpenAPI + TSK-Bench），这一套目前极少有产品做全。</div>
+  <div class="comp-verdict warn"><strong>竞品正在追平的地方:</strong> 三条缝：品牌与信任（Notion 是工作区的默认词，Taskade 还需要靠 155 条替代品页去截流）；数据模型的深度（Airtable 的关系型能力更强，复杂业务会被它挡住）；界面的自由度（Bubble / Softr 能做的界面，Genesis 还做不到）。还有一条更根本的：它把「一句话生成」当卖点，但真实业务 app 的难点在设计判断，不在生成速度。</div>
+</section>
+
+<!-- §9 GROWTH -->
+<section id="s9">
+  <div class="section-head">
+    <span class="num">09</span>
+    <h3>增长策略</h3>
+    <span class="pill">明牌或推断</span>
+  </div>
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>主要获取渠道</h4>
+      <ul>
+        <li>程序化 SEO 矩阵：28,602 条 URL，其中 18,376 条是 templates / agents / automate / prompts / convert / generate 六类资源页（64.2%）；另有 197 条对比页（155 条 free-竞品-alternative）纯吃「免费替代品」搜索。</li>
+        <li>UGC 克隆工厂：6,135 个社区 app 页 + 495 个作者页进 sitemap，克隆给 credits、售卖抽成、已发布 app 自动带发现层——用户的产出就是它的内容资产。</li>
+        <li>AI 原生发现层（GEO）：llms.txt（含 How to Cite Taskade）+ SKILL.md + Hosted MCP + .well-known 元数据 + Accept: text/markdown + OpenAPI + TSK-Bench，robots.txt 明确 ai-train=yes / search=yes / ai-input=yes。它把「被 AI 引用」当成一条正式渠道在做。</li>
+      </ul>
+    </div>
+    <div class="info-card">
+      <h4>主要增长循环</h4>
+      <ul>
+        <li><strong>额度货币环</strong> — Free 档没有月度 credits，只能靠邀请（Earn AI Credits by Inviting Friends）与被克隆（Earn Credits When Others Clone）赚。于是「拉人」与「被复制」成了用户获得额度的唯一方式——这是把增长动作直接写进计费规则，比「邀请得积分」更硬。</li>
+        <li><strong>程序化 SEO + GEO 环</strong> — 模板/agent/配方/提示词/生成器五套程序化页承接各种长尾搜索 → 落地页给 Free 档 → 用户克隆成品后自己发布 app → 新 app 自动带 robots/sitemap/llms.txt，成为新的发现节点。前两条是它写的，第三条是用户替它写的。</li>
+      </ul>
+    </div>
+  </div>
+
+  <h4 style="font-size:12px; letter-spacing:0.14em; text-transform:uppercase; color:var(--muted); margin:20px 0 10px;">扩张向量</h4>
+  <div class="growth-cols">
+    <div class="growth-col"><h5>横向</h5><ul><li>从任务到 app：Genesis 把「管理一件事」升级成「交付一个系统」——同一份数据，多了一层界面。</li><li>从自用到售卖：App Kit 让成品可克隆、可定价、可导出，把用户变成渠道（[推断] 这是它唯一能绕开「模板同质化」的方向）。</li></ul></div>
+    <div class="growth-col"><h5>纵向</h5><ul><li>72 类 app kits：48 类型（CRM、客户门户、仪表盘、发票、预约、追踪器、知识库、聊天机器人、落地页、店铺、表单、计算器…）+ 12 团队 + 12 行业。</li><li>代理机构与客户交付（Business 档就叫 For agencies and client work）：一个客户一个 app，白标 + 自有域名 + 终端用户登录。</li></ul></div>
+    <div class="growth-col"><h5>平台</h5><ul><li>开放接口齐全：Hosted MCP（OAuth 2.0 + PKCE）、REST v1 GA、Action v2 Beta、webhook / mailhook、OpenAPI JSON（v1/v2）、.well-known 元数据、GitHub 上的 mcp / skills / cli / awesome-vibe-coding。</li><li>[推断] 它的平台策略是「两端都做」：一边让别的 agent 通过 MCP 读写它（它当工具），一边把用户的 app 发布成独立站点（它当宿主）。这个双面位置比 Slack 的双向 MCP 更激进——因为它的 app 可以不挂在 taskade.com 域名下。</li></ul></div>
+  </div>
+</section>
+
+<!-- §10 AI READINESS -->
+<section id="s10">
+  <div class="section-head">
+    <span class="num">10</span>
+    <h3>应用层六维</h3>
+    <span class="pill">模型用得好不好</span>
+  </div>
+  <p class="section-intro">六维是本系列的主框架：前三条看值不值，后三条看敢不敢用、会不会留下。</p>
+  <p class="section-intro">本片判为 **原生**。拔电测试：拿走 AI，产品消失 → AI 原生。（依据：人工名单）</p>
+
+  <div class="info-grid">
+    <div class="info-card">
+      <h4>① 替掉哪一步</h4>
+      <p>替掉的是「找人做一个小系统」这一段：原来要买一套 SaaS 或找开发（周级），现在一句话生成 + 模板改（分钟到小时级）。成本从「开发与采购」变成「订阅 + credits」（$0 起）。这是它最锋利的地方，也是它最容易被打断的地方——因为上游模型一旦直接产出 app，这段差价就没了。</p>
+    </div>
+    <div class="info-card">
+      <h4>② 脏活谁干</h4>
+      <p>它啃掉数据存储、视图、判断（agent）、执行（automation）与界面（Genesis）五件事；甩回的是「设计判断」：一句话能生成 app，但业务该怎么跑、字段该怎么设、谁能看什么，仍然要人定。它把工程的活接走了，把产品的活留下了。</p>
+    </div>
+    <div class="info-card">
+      <h4>③ 出来能不能用</h4>
+      <p>能用，但要人改一轮：App Kit 是「改一改」的起点，不是终稿；生成的 app 在真实业务里通常要调字段、权限与流程。本期未实测，此判断只据官方文档与 App Kit 的配方结构（如 Invoice Generator Pro = 3 projects + 1 agent + 3 automations）。</p>
+    </div>
+    <div class="info-card">
+      <h4>④ 错了怎么兜</h4>
+      <p>兜底设计得比同类好：agent 工具可设「需人工批准」，自动化有 Approval step，EVE 会请求批准；但「一句话生成的 app」本身没有公开的失败率或回滚说明——这一层兜底仍是空白。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑤ 错一次多贵</h4>
+      <p>大体可逆：.tsk 导出、GitHub 导出、版本历史（Free 7 天 / Pro 1 年 / Business 5 年）都给了退路。不可逆的是「把客户拉进你的 app」：一旦客户在门户里提交了数据，换工具就等于迁客户。</p>
+    </div>
+    <div class="info-card">
+      <h4>⑥ 不用它的替代</h4>
+      <p>个人换得掉（Notion 模板 + Zapier 能拼出七八成），团队换不掉：数据、agent 记忆、自动化接线、已发布 app 的终端用户，四样都在它这里。所以它的留存来自「资产在这里」，而不是「功能更好」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §11 METRICS -->
+<section id="s11">
+  <div class="section-head">
+    <span class="num">11</span>
+    <h3>他们真正在优化什么指标</h3>
+    <span class="pill">[推断] 北极星 + 护栏</span>
+  </div>
+  <p class="section-intro">官方只公开三个累计量（150,000+ Genesis apps built、500K+ AI agents deployed、3M+ automation executions）与 sitemap 规模。以下分两类：可核实的公开事实，与标注 [推断] 的「它应该看什么」——后者不是真实数据。</p>
+  <div class="metrics-grid">
+    <div class="metric-card north">
+      <span class="tag">北极星</span>
+      <h5>每周被真实业务使用（不是被创建）的 live app 数（[推断]）</h5>
+      <p>[推断] 它的收入按 credits 与 app 数量分档，但价值只在「app 真的有人用」时成立。「已建 app 数」会被一句话生成灌水（官方那个 150,000+ 就是这类口径），所以真正的北美星必须是「周活跃的已发布 app」。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 1</span>
+      <h5>克隆 → 发布 → 有终端用户的转化漏斗</h5>
+      <p>它的增长全押在「克隆即用」上（Free 可克隆 1,000+ free kits）。但克隆不等于使用：真正决定收入的是「克隆后有没有发布」与「发布后有没有 App User 登录」——这两个动作才叫「业务在用」。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 2</span>
+      <h5>Automation 的周执行次数与失败率</h5>
+      <p>自动化是它从「工具」变「流程」的分界线。执行次数决定黏性，失败率决定信任——一条每天跑失败一次的催款 flow，比没有这条 flow 更快让客户流失。</p>
+    </div>
+    <div class="metric-card">
+      <span class="tag">输入指标 · 3</span>
+      <h5>App Kit 付费克隆的作者数与其收入分布</h5>
+      <p>如果「创作者能靠 App Kit 赚钱」成立，它就从一个 SaaS 变成一个市场（marketplace 的网络效应比功能更强）。这条指标看的是创作者侧的收入集中度：只有少数人赚到钱，说明市场还没形成。</p>
+    </div>
+    <div class="metric-card guard">
+      <span class="tag">护栏指标</span>
+      <h5>AI credits 的实际成本覆盖率 + 免费档用户的 credits 消耗</h5>
+      <p>Free 档没有月度 credits，但用户在 Free 上克隆、建 app、调 agent 时依然在消耗它的推理与托管成本。免费越受欢迎，成本越先爆——这条护栏不设，增长会先把毛利吃光。</p>
+    </div>
+    <div class="metric-card blind">
+      <span class="tag">盲区</span>
+      <h5>没有公开的留存曲线、付费转化率，以及 6,135 个社区 app 的活跃分布 [推断]</h5>
+      <p>[推断] 程序化 SEO 的规模可以数（28,602），但流量不能从 sitemap 推出来——本期未取 Similarweb / Ahrefs 类数据。另一个盲区是 GEO 的效果：llms.txt 与 SKILL.md 有没有真的让 AI 推荐它，本身没有公开的度量方式，所以这一层目前只能算「做对了动作」，不能算「拿到了结果」。</p>
+    </div>
+  </div>
+</section>
+
+<!-- §12 FRICTION & WEAKNESSES -->
+<section id="s12">
+  <div class="section-head">
+    <span class="num">12</span>
+    <h3>摩擦 & 短板</h3>
+    <span class="pill">批判性 PM 视角</span>
+  </div>
+  <p class="section-intro">直接、有观点。系统在哪里漏、哪里断、哪里过度设计。</p>
+  <div class="friction-list">
+    <div class="friction-item high">
+      <div class="head"><span class="title">概念密度：十个对象才能发挥全部能力</span><span class="sev">高</span></div>
+      <div class="body">project、view、field、agent、tool、knowledge、memory、trigger、action、app kit——要同时理解这十个对象，才用得出它的四层同构。对手 Notion 只要求理解 block。这不是设计缺陷，是它把「平台」和「工具」压在一个产品里的必然结果；但它决定了新用户必须靠模板/App Kit 起步，否则第一次打开就是一个空工作区。</div>
+    </div>
+    <div class="friction-item high">
+      <div class="head"><span class="title">两种货币，预算算不清</span><span class="sev">高 · High</span></div>
+      <div class="body">credits（AI 构建与调用）与 automation runs 是两套额度，六个档位各给不同数值；Free 档还没有月度 credits，只能靠邀请/克隆赚。用户最怕的不是贵，是「不知道这个月会不会超」。对一个把透明度做成卖点的产品，这一处最该改。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">规模口径自己没对齐</span><span class="sev">中</span></div>
+      <div class="body">官方同时存在 1,000+ free app kits、500+ community templates、sitemap 6,135 三个数字；累计量（150,000+ apps、500K+ agents、3M+ executions）也没写截止日。对外这是可信度问题，对内这是运营指标没统一的信号。</div>
+    </div>
+    <div class="friction-item">
+      <div class="head"><span class="title">页面规模很大，但手写内容只占 14.3%</span><span class="sev">中 · Medium</span></div>
+      <div class="body">28,602 页里，手写营销内容只有 14.3%（blog 1,125 / marketing 867 / learn 435 / wiki 573 / docs 169 / compare 197 等），其余是程序化页与 UGC。这意味着它的品牌叙事很薄：用户搜到它时常是「某个模板页」，而不是「一个观点」。对一个想从工具升级成平台的产品，这是长期风险。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §13 RISK MATRIX -->
+<section id="s13">
+  <div class="section-head">
+    <span class="num">13</span>
+    <h3>风险矩阵</h3>
+    <span class="pill">严重程度 × 发生概率</span>
+  </div>
+  <p class="section-intro">风险按「可能性 × 影响」排序，严重度是我的判断，不是公司披露。</p>
+  <table class="risk-table">
+    <thead>
+      <tr><th>风险</th><th>类别</th><th>严重程度</th><th>发生概率</th><th>缓解方案</th></tr>
+    </thead>
+    <tbody>
+      <tr><td><strong>「一句话建 app」被上游模型与通用 agent 商品化</strong></td><td>Strategy</td><td class="sev-high">High</td><td>High</td><td>守住三件上游做不到的：真实数据的持久化与权限（App Users / SAML / SCIM）、可发布的托管与域名、可流通的资产（App Kit / .tsk）。把「生成」当入口，「托管 + 权限 + 分发」当生意。</td></tr>
+      <tr><td><strong>三个市场同时作战，每个都有更专注的对手</strong></td><td>Strategy</td><td class="sev-high">High</td><td>Medium</td><td>明确只赢一条主线（建议是「代理机构交付客户 app」——Business 档已经这么写了），其余两线做成能力而不是卖点。</td></tr>
+      <tr><td><strong>程序化 SEO 规模大，但品牌叙事薄</strong></td><td>Growth</td><td class="sev-med">Medium</td><td>Medium</td><td>把 155 条 free-竞品-alternative 页的流量，导到一个有观点的品牌页上（为什么「成品」比「模板」值钱）。现在它 28,602 页里只有 14.3% 是手写内容，长期会被更会讲故事的对手截流。</td></tr>
+      <tr><td><strong>credits 成本与免费档消耗的错配</strong></td><td>Business</td><td class="sev-med">Medium</td><td>Medium</td><td>给免费档设一道真正的成本护栏（不是额度护栏）：限制并发的 agent 调用、把重任务排队、对 BYOK 用户降 credits 消耗。免费越受欢迎，这一条越关键。</td></tr>
+    </tbody>
+  </table>
+</section>
+
+<!-- §14 OPPORTUNITIES -->
+<section id="s14">
+  <div class="section-head">
+    <span class="num">14</span>
+    <h3>机会 & 重设计</h3>
+    <span class="pill">可落地的 PM 思考</span>
+  </div>
+
+  <div class="opp-grid">
+    <div class="opp-card">
+      <div class="kicker">改进 · 1</div>
+      <h5>（我的判断）把「Living Loop」抄成记忆产品的默认结构</h5>
+      <div class="desc">怎么做：让 AI 的记忆落成用户可浏览、可编辑、可搜索、可 fork 的「一张表」，而不是藏在向量库里；每次任务的产出自动写回这张表。为什么：这是 Taskade 全套架构里最可迁移的一招，也是最容易被忽略的一招——大多数 AI 产品的记忆是黑盒，用户既看不见也改不了。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 2</div>
+      <h5>（我的判断）GEO 不是写文章，是把机器可读接口做全</h5>
+      <div class="desc">怎么做：最低配三件套——llms.txt（写清事实、FAQ、以及「该怎么引用我」）+ SKILL.md（给 agent 的操作手册）+ 一个 MCP 入口；进阶再加 .well-known 元数据、Accept: text/markdown、OpenAPI。为什么：Taskade 证明这套能做成标准动作，而多数团队还停在「写一篇讲 AI 的博客」。</div>
+    </div>
+    <div class="opp-card">
+      <div class="kicker">改进 · 3</div>
+      <h5>（我的判断）把「额度」当拉新货币，但要给非 AI 用户一条干净的路</h5>
+      <div class="desc">怎么做：照抄「邀请/被克隆给 credits」这个机制（它确实把增长动机焊进了账本），但同时给「我只想用项目管理」的用户一档纯席位价。为什么：Taskade 的 Free 档小得反常（3 个 app、10 次自动化）是为了逼用户做增长动作，这对它有效，对只想管项目的团队却是劝退——两种用户不该用同一套计价。</div>
+    </div>
+    <div class="opp-card strategic">
+      <div class="kicker">战略转向</div>
+      <h5>它的赌注：让「成品」变成可流通的资产，而不是让功能更强</h5>
+      <div class="desc">三个动作叠在一起：把四层压成一份对象图（同一份数据四种封装），把成品做成可克隆可售卖可导出的 App Kit，再把机器入口做全（MCP + SKILL.md + llms.txt）让 AI 替它分发。前两个是产品动作，第三个是它的真赌注——在 AI 成为主要入口的年代，「被 AI 引用」可能比「被人搜到」更便宜。代价是它必须同时做三个市场的产品：协作工具、自动化平台、app builder，而每个市场都有一个更专注的对手。</div>
+    </div>
+    <div class="opp-card moonshot">
+      <div class="kicker">🌙 登月构想</div>
+      <h5>终局：不会写代码的人，交付的也是软件</h5>
+      <div class="desc">如果「一句话生成一个能跑的 app」真的稳定，那么小企业的软件采购会从「买 SaaS」变成「生成自己的 app」——那是一个比项目管理大得多的市场，而且天然带分发（每个 app 都是一个独立站点）。距离不在生成能力（这一层已经过剩），在两件事：一是生成的 app 能不能被信任到无人复核（失败率、回滚、审计），二是不同 app 之间的数据边界（客户门户里的数据，凭什么给另一家客户看）。它现在用 App Users 与 SAML/SCIM 在补第二件。</div>
+    </div>
+  </div>
+</section>
+
+<!-- §15 FINAL VERDICT -->
+<section id="s15">
+  <div class="section-head">
+    <span class="num">15</span>
+    <h3>终局判断</h3>
+    <span class="pill">综合判定</span>
+  </div>
+  <div class="final">
+    <div class="final-col win">
+      <h5>为什么它赢</h5>
+      <p>四层共享一份对象图、把 agent 记忆做成可编辑的 Project、6,135 个可克隆的 App Kit、28,602 页的程序化 SEO + UGC + 一整套 GEO 接口（llms.txt / SKILL.md / MCP / .well-known）、以及「用额度当货币」的增长机制。</p>
+    </div>
+    <div class="final-col break">
+      <h5>在哪里断裂</h5>
+      <p>需要强协作与治理的大企业（成员上限、权限颗粒度、合规都不够）；只想管项目、不想要 AI 的团队（credits 计价是噪音）；要复杂数据关系的业务（关系型建模不如 Airtable）；要高度定制界面的产品（Genesis 的自由度不如 Bubble）。</p>
+    </div>
+    <div class="final-col moat">
+      <h5>长期护城河</h5>
+      <p>护城河是「中」：强在四层同构与分发规模（28,602 页 + 6,135 个 UGC app + 完整的 GEO 层），弱在每一层都能被更专注的对手单点击穿（数据模型不如 Airtable、自动化连接器不如 Zapier、界面不如 Bubble、品牌不如 Notion）。它真正的资产是那条 Living Loop 与创作者侧的资产市场——如果 App Kit 真能让人赚到钱，它就从「工具」变成「市场」，那是唯一别人抄不快的部分。</p>
+    </div>
+  </div>
+</section>
+
+<section id="s16">
+  <div class="section-head">
+    <span class="num">16</span>
+    <h3>对标竞品地图</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">这份名单不靠猜，直接读它自己的对比页结构：197 条 /compare/* 里，<strong>155 条是 free-&lt;竞品&gt;-alternative</strong>（free-notion-alternative、free-zapier-alternative 这类），<strong>33 条是纯第三方模型对比</strong>（gpt-vs-claude、qwen-vs-kimi、glm-vs-gpt，与产品无关），<strong>只有 6 条是 taskade-vs-*</strong>。也就是说它的 SEO 主战场不是「品牌对比」，是「免费替代品」这个搜索意图——谁被搜成「XX 的免费替代」，谁就是它的对手。</p><table class="risk-table"><thead><tr><th>谁</th><th>抢同一个需求</th><th>抢同一段链路</th><th>用户实际迁移</th></tr></thead><tbody><tr><td>Notion</td><td>同一个需求：想要一个「什么都能放」的工作区的小团队与创作者</td><td>数据与文档这一段（Notion 是 block 模型，Taskade 是 project/task/field 模型）</td><td>它给 Notion 备了 free-notion-alternative 页，另一头又有 30+ 导入器直接从 Notion 搬数据——两头都在打</td></tr><tr><td>Asana / ClickUp / Monday / Trello</td><td>要「项目被跟踪」的团队</td><td>任务与流程这一段（Taskade 用 project + automation 接）</td><td>对应 4 个 free-alternative 页 + 导入器；但它真正的差异不是项目管理，是「项目能变成 app」</td></tr><tr><td>Zapier / Make</td><td>已经有工具、只需要把工具连起来的人</td><td>自动化这一段（触发-动作编排）</td><td>它的 automate（2,361 页）+ integrations（180 页）正对着打；但 Zapier 不持有数据层，这是它的机会</td></tr><tr><td>Softr / Bubble / Glide</td><td>要「把数据做成一个能给客户用的界面」的人</td><td>界面这一段——这是 Genesis 最直接的对手</td><td>这一格它最难赢：对方的界面自由度更高，而它靠「数据+agent+自动化一体」来换</td></tr><tr><td>Airtable</td><td>要强结构化数据与视图的团队</td><td>数据模型这一段</td><td>复杂业务会被 Airtable 挡住；Taskade 用「流程 + agent」而不是「字段能力」来避战</td></tr><tr><td>通用 AI agent（ChatGPT / Claude 等）</td><td>所有想「说一句话就把活干了」的人</td><td>智能这一段，且不持界面的包袱</td><td>最不确定的一路：如果用户直接跟 agent 说话，中间那层工作区就多余了</td></tr></tbody></table><p class="section-intro">读法：它在地图上的位置很独特——不在「项目管理」的正中央，而在「协作工具 × 自动化 × app builder」的三角中段。好处是几乎没有同构的对手；坏处是每一格都有一个更专注的强者，用户随时可以说「我为什么不直接用 Zapier + Bubble」。竞品价格本次全部未核验，不做价格对比。</p>
+</section>
+
+<section id="s17">
+  <div class="section-head">
+    <span class="num">17</span>
+    <h3>竞品技术底座</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro"><strong>AI 构建过程（Taskade 怎么把原子拼成工作流）</strong>：① 四层——Memory（Projects 存数据）/ Intelligence（Agents 做判断）/ Execution（Automations 跨 100+ 集成执行）/ Interface（Genesis App 当界面）；② 一条环——Living Loop：Memory 给上下文 → Intelligence 做决定 → Execution 出结果 → 结果回流成新的 Memory；③ 八个基元——Project/Task/Field、View、AI Agent、Agent Tool/Skill、Knowledge Source、Automation Trigger/Action、Genesis App、App Kit；④ 一条公式——数据 × 智能（指令 + 知识 + 工具 + 记忆）× 执行 × 界面 = 一个 Living App。所以它的 AI 不是「加了一个助手」，而是把工作区按四层重写、再让 AI 长在每一层上。下表先摊开它自己的装配线，再看各家的底座锁住了什么。</p><table class="risk-table"><thead><tr><th>产品</th><th>底座</th><th>它锁住了什么能力</th></tr></thead><tbody><tr><td>Taskade</td><td>一份对象图（Project/Task/Field）+ 四层封装（Projects / Agents / Automations / Genesis App）+ 模型路由（TSK 阶梯，可 BYOK）+ 托管与发布（自有域名、App Users）</td><td>锁住「从数据到可交付界面」这一整条：别人卖其中一段，它把四段焊在一起</td></tr><tr><td>Notion</td><td>block 模型（页面即数据）+ 数据库视图 + 模板生态</td><td>锁住「知识 + 文档」的心智与模板分发；自动化与执行是外挂</td></tr><tr><td>Airtable</td><td>关系型 base + view + automation</td><td>锁住「结构化数据建模」这一段：字段类型与关联能力是它的护城河</td></tr><tr><td>Zapier / Make</td><td>触发-动作编排引擎 + 海量连接器</td><td>锁住「系统之间的胶水」：连接器数量本身就是壁垒，但它不存数据、不做界面</td></tr><tr><td>Softr / Bubble / Glide</td><td>no-code 界面构建器 + 外部数据源</td><td>锁住「界面自由度」：能把界面做到像定制软件，但数据与 AI 要外接</td></tr></tbody></table><p class="section-intro">[推断] <strong>真护城河不在「一句话生成」，在「生成之后的那三件事」：数据存在哪、权限怎么给、产物怎么分发。</strong>因为生成能力是模型给的，任何人都能调；而 App Users（终端用户体系）、自有域名与 SSL、App Kit 的可克隆/可售卖/可导出，是产品自己搭的工程。Taskade 把这三件放在付费墙上（Business 起白标与 SEO、Enterprise 起 SCIM），说明它也知道钱在哪。<br>它最脆的一层是「生成」本身：一旦上游模型自己做到「一句话建 app 并托管」，它的入口价值就被抽走。所以它急着做 MCP + SKILL.md + llms.txt——不是因为时髦，是因为要确保即使 AI 变成入口，自己仍是那个被调用的执行层。</p>
+</section>
+
+<section id="s18">
+  <div class="section-head">
+    <span class="num">18</span>
+    <h3>可迁移的机会（我的判断）</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <ol><li><strong>把 「Living Loop」抄成记忆产品的默认结构</strong>——记忆落成用户可浏览、可编辑、可搜索、可 fork 的一张表，每次产出自动写回。为什么值得抄：这是它全套架构里最可迁移、也最容易被忽略的一招；大多数 AI 产品的记忆是黑盒，用户既看不见也改不了。<em>最轻，改的是存储形态不是模型。</em></li><li><strong>GEO 不是写文章，是把机器可读接口做全</strong>——最低配三件套：llms.txt（事实 + FAQ + 该怎么引用我）、SKILL.md（给 agent 的操作手册）、一个 MCP 入口；进阶再加 .well-known、Accept: text/markdown、OpenAPI。为什么：它证明这套能做成标准动作，而多数团队还停在「写一篇讲 AI 的博客」。<em>最快见效，一周能上。</em></li><li><strong>把「额度」当拉新货币</strong>——邀请与被克隆给 credits，是新用户拿到额度的唯一路径，等于把增长动机焊进账本。但要给「我只想用基础功能」的用户一条干净的路（纯席位价），别让两种用户共用一套计价。</li><li><strong>让用户的产出自动带发现层</strong>——每个已发布作品自动产出 robots/sitemap/llms.txt。做任何「用户作品」类产品，这一层应该默认打开：UGC 直接变成搜索与 AI 发现节点。<em>最难被抄，因为它要求你的产品先有「已发布的作品」。</em></li></ol><p class="section-intro">四个里哪个最该先做？<strong>第 2 个</strong>：它不依赖产品改造，只依赖把「给机器看的那一页」写对。哪个最容易被忽略？<strong>第 1 个</strong>——大家都把记忆当技术问题，其实它是产品问题：用户能不能看见、能不能改。</p>
+</section>
+
+<section id="s19">
+  <div class="section-head">
+    <span class="num">19</span>
+    <h3>流量与变现拆解</h3>
+    <span class="pill">附录 A</span>
+  </div>
+  <p class="section-intro">先把规模摊开（官方 sitemap 实测，2026-11-26，17 个子 sitemap 合计 <strong>28,602</strong> 条 URL）。结构比总量更重要：<strong>程序化资源页 18,376 页 = 64.2%</strong>（templates 3,997 / generate 4,526 / agents 3,169 / automate 2,361 / prompts 2,205 / convert 2,118）、<strong>UGC app 页 6,135 页 = 21.4%</strong>（community apps + 495 个作者页）、<strong>手写营销内容只占 14.3%</strong>（blog 1,125 / marketing 867 / wiki 573 / learn 435 / docs 169 / compare 197 / integrations 180 / ai 43 等）。再叠一层别人没有的：<strong>GEO 发现层</strong>——llms.txt（含 How to Cite Taskade 的指定引用措辞）+ SKILL.md + Hosted MCP + .well-known 元数据 + Accept: text/markdown + OpenAPI + TSK-Bench，robots.txt 明确 ai-train=yes / search=yes / ai-input=yes。</p><table class="risk-table"><thead><tr><th>环节</th><th>它怎么做的</th><th>为什么有效 / 哪里漏</th></tr></thead><tbody><tr><td>拉新</td><td>程序化资源页 18,376 条 + 197 条对比页（155 条 free-竞品-alternative）+ UGC 6,135 条 + GEO 层</td><td>有效：搜索意图覆盖极全，「免费替代品」这种高转化词都有页接。漏点：sitemap 只证明页面规模，不证明流量；本期未取 Similarweb/Ahrefs</td></tr><tr><td>激活</td><td>克隆即用（Free 可克隆 1,000+ free kits）+ 一句话建 app + 模板改一改</td><td>有效：新人一上手就在用「别人的成品」，不是空工作区。漏点：克隆占 Free 的 3 个 app 额度，第二次克隆就撞墙</td></tr><tr><td>留存</td><td>数据 + agent 记忆 + 自动化接线 + 已发布 app 的终端用户（App Users）</td><td>有效：四层都在它这里，迁走等于重建业务。漏点：留存的前提是「真的跑起来了」，而 6,135 个社区 app 的活跃分布未核验</td></tr><tr><td>变现</td><td>订阅 + credits：Free $0 / Starter $6 / Pro $10（月付 $20）/ Business $25 / Max $100 / Enterprise $250</td><td>有效：付费墙立在「开始对外交付」那一刻（更多成员、更多 app、自有域名、白标）。漏点：credits 与 runs 两种货币，预算算不清</td></tr><tr><td>扩张</td><td>成员数 × app 数 × credits 三轴同时扩张；Business 起无限成员与域名；Enterprise 加 SCIM</td><td>[推断] 扩张最顺的一轴是「代理机构」：一个客户一个 app，天然推动 app 数与域名数同时上涨</td></tr></tbody></table><p class="section-intro">套利三问。<strong>钱从谁的兜里出：</strong>小企业主与代理机构的经营预算（不是 IT 预算），所以它用信用卡可付的 $6–$25 档做主力，而不是先攻企业。<strong>还能拿多久：</strong>[推断] 「程序化 SEO + UGC + GEO」这三层的组合窗口还有 1–2 年；一旦所有人都做 llms.txt，这一层的相对优势会归零。<strong>凭什么你拿到：</strong>凭它把「生成 → 托管 → 权限 → 分发」四段焊在一起，而这四段的工程难度递增——生成最容易，托管与权限最难。</p><p class="section-intro">最脆的那根梁：<strong>「一句话生成」这个入口</strong>。它既是它最响的卖点，也是最容易被上游吃掉的一层。真正的护城河在入口之后——已发布 app 的终端用户、可售卖的 App Kit、以及每个 app 自带的发现层。如果它继续把营销重心放在「一句话」，就会一直站在最容易被替代的位置上；如果重心移到「成品资产」，它才站得住。</p>
+</section>
+
+<section id="sources" class="notice" style="margin-bottom:32px">
+  <strong>引用来源：</strong>该报告的事实层均来自以下公开页面；一手体验来自实测（燃冰）。
+  <ul style="margin:10px 0 0;padding-left:20px;line-height:1.9;font-size:13px">
+    <li><a href="https://www.taskade.com/llms.txt" target="_blank" rel="noopener">官方 llms.txt（Workspace DNA / Living Loop 定义、六档定价与额度、How to Cite Taskade；2026-11-18 更新）</a></li>
+    <li><a href="https://www.taskade.com/SKILL.md" target="_blank" rel="noopener">官方 SKILL.md（The user is usually a business owner, not a developer；连接方式与工具清单）</a></li>
+    <li><a href="https://www.taskade.com/pricing" target="_blank" rel="noopener">定价页（Free / Starter / Pro / Business / Max / Enterprise 与功能矩阵）</a></li>
+    <li><a href="https://www.taskade.com/create" target="_blank" rel="noopener">Genesis 建 app 入口（一句话生成 live app）</a></li>
+    <li><a href="https://www.taskade.com/agents" target="_blank" rel="noopener">Agents（agent 模板库与角色）</a></li>
+    <li><a href="https://www.taskade.com/automate" target="_blank" rel="noopener">Automate（自动化配方库）</a></li>
+    <li><a href="https://www.taskade.com/apps" target="_blank" rel="noopener">App Factory / App Kits（社区成品，可克隆，72 个分类）</a></li>
+    <li><a href="https://www.taskade.com/integrations" target="_blank" rel="noopener">Integrations（173 个连接器，6 类）</a></li>
+    <li><a href="https://www.taskade.com/mcp" target="_blank" rel="noopener">Hosted MCP（OAuth 2.0 + PKCE）</a></li>
+    <li><a href="https://www.taskade.com/robots.txt" target="_blank" rel="noopener">robots.txt（ai-train=yes, search=yes, ai-input=yes 的 Content-Signal 声明）</a></li>
+    <li><a href="https://www.taskade.com/sitemap.xml" target="_blank" rel="noopener">sitemap 索引（17 个子 sitemap，合计 28,602 条 URL）</a></li>
+    <li><a href="https://www.taskade.com/learn/automation/triggers" target="_blank" rel="noopener">自动化触发文档（Taskade 内部 / 外部 app / 时间 / 入站四类）</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/agent-tools" target="_blank" rel="noopener">Agent 工具文档（Research / Documents / AI / Workspace / External apps / Custom，可设人工批准）</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/knowledge" target="_blank" rel="noopener">持久记忆文档（记忆存成 Project，可浏览可编辑可 fork）</a></li>
+    <li><a href="https://www.taskade.com/learn/account/clone-creator-credits" target="_blank" rel="noopener">克隆与邀请赚 credits（Earn Credits When Others Clone / Inviting Friends）</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/sell-app-kits" target="_blank" rel="noopener">出售 App Kit（Let others clone；Earnings 提现）</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/publishing" target="_blank" rel="noopener">Publish 与自定义域名（*.taskade.app / 自有域名 + SSL）</a></li>
+    <li><a href="https://www.taskade.com/learn/genesis/app-users" target="_blank" rel="noopener">App Users / GenesisAuth（独立于 Taskade 账号的终端用户体系）</a></li>
+    <li><a href="https://www.taskade.com/learn/agents/thinking-modes" target="_blank" rel="noopener">TSK 模型阶梯（Auto / Instant / Standard / Thinking / Reasoning）</a></li>
+    <li><a href="https://www.taskade.com/about" target="_blank" rel="noopener">About（2017 成立、YC S19、2022 Taskade AI、2024 Workspace DNA、2025 Genesis、2026 80 releases）</a></li>
+    <li><a href="https://www.taskade.com/press" target="_blank" rel="noopener">Press（150,000+ Genesis apps built / 500K+ AI agents deployed / 3M+ automation executions）</a></li>
+    <li><a href="https://techcrunch.com/2019/10/24/yc-grad-taskade-raises-5m-to-take-on-notion-with-a-more-collaborative-productivity-platform/" target="_blank" rel="noopener">TechCrunch（2019-10-24，YC grad Taskade raises $5M）</a></li>
+  </ul>
+</section>
+
+<footer>
+  <div class="brand-block">
+    <div>
+      <div class="brand-sub">Created by <strong>ranbing</strong> · 拆解100个AI+产品。</div>
+      <div class="brand-sub">— 产品拆解 · Principal PM 分析</div>
+    </div>
+  </div>
+</footer>
+
+</div>
+<script>
+(function () {
+  var SKIP = 'script, style, svg, .report-tools, .lang-tools, .lang-btn, .export-btn';
+  function walk (node) {
+    if (!node) return '';
+    if (node.nodeType === 3) return node.textContent.replace(/\s+/g, ' ');
+    if (node.nodeType !== 1) return '';
+    if (node.matches && node.matches(SKIP)) return '';
+    var tag = node.tagName.toLowerCase();
+    var kids = function () { return Array.from(node.childNodes).map(walk).join(''); };
+    var txt  = function () { return node.textContent.trim().replace(/\s+/g, ' '); };
+    switch (tag) {
+      case 'h1': return '\n\n# '     + txt() + '\n\n';
+      case 'h2': return '\n\n## '    + txt() + '\n\n';
+      case 'h3': return '\n\n### '   + txt() + '\n\n';
+      case 'h4': return '\n\n#### '  + txt() + '\n\n';
+      case 'h5':
+      case 'h6': return '\n\n##### ' + txt() + '\n\n';
+      case 'p':  return kids().trim() + '\n\n';
+      case 'br': return '\n';
+      case 'hr': return '\n---\n\n';
+      case 'strong': case 'b': return '**' + kids().trim() + '**';
+      case 'em': case 'i':     return '_' + kids().trim() + '_';
+      case 'code': return '`' + node.textContent + '`';
+      case 'a': {
+        var href = node.getAttribute('href') || '';
+        var t = kids().trim();
+        return href ? '[' + t + '](' + href + ')' : t;
+      }
+      case 'ul':
+      case 'ol': {
+        var items = Array.from(node.children).filter(function (c) { return c.tagName === 'LI'; });
+        return '\n' + items.map(function (li, i) {
+          var marker = tag === 'ol' ? (i + 1) + '.' : '-';
+          var content = Array.from(li.childNodes).map(walk).join('').trim().replace(/\n+/g, ' ');
+          return marker + ' ' + content;
+        }).join('\n') + '\n\n';
+      }
+      case 'table': {
+        var rows = Array.from(node.querySelectorAll('tr'));
+        if (!rows.length) return '';
+        var cells = function (r) {
+          return Array.from(r.children).map(function (c) {
+            return c.textContent.trim().replace(/\|/g, '\\|').replace(/\s+/g, ' ');
+          });
+        };
+        var head = cells(rows[0]);
+        var lines = ['| ' + head.join(' | ') + ' |',
+                     '| ' + head.map(function () { return '---'; }).join(' | ') + ' |'];
+        rows.slice(1).forEach(function (r) { lines.push('| ' + cells(r).join(' | ') + ' |'); });
+        return '\n' + lines.join('\n') + '\n\n';
+      }
+      case 'blockquote': return '\n' + kids().trim().split('\n').map(function (l) { return '> ' + l; }).join('\n') + '\n\n';
+      default: return kids();
+    }
+  }
+  window.reportExportMarkdown = function () {
+    var title = (document.title || 'report').trim();
+    var root  = document.querySelector('.page, body');
+    var md = walk(root);
+    md = md.replace(/\n{3,}/g, '\n\n').replace(/[ \t]+\n/g, '\n').trim() + '\n';
+    var slug = title.replace(/[\\/:*?"<>|]+/g, '-').replace(/\s+/g, '-').slice(0, 100) || 'report';
+    var blob = new Blob([md], { type: 'text/markdown;charset=utf-8' });
+    var url  = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url; a.download = slug + '.md';
+    document.body.appendChild(a); a.click(); a.remove();
+    setTimeout(function () { URL.revokeObjectURL(url); }, 1000);
+  };
+})();
+</script>
+</body>
+</html>

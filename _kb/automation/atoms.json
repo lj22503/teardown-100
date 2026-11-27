@@ -1,0 +1,108 @@
+{
+  "version": 1,
+  "root": "D:\\claudework\\teardown-100",
+  "groups": {
+    "kb": [
+      {
+        "id": "kb.templates.modules",
+        "name": "抓模板模块（What's Included / Template features）",
+        "cmd": ["python", "_kb/_tools/collect_template_modules.py"],
+        "writes": true,
+        "inputs": ["网络：taskade.com / slack.com 模板页"],
+        "outputs": ["_kb/08-template-modules.csv", "_kb/09-template-anatomy.md"],
+        "timeout": 600
+      },
+      {
+        "id": "kb.templates.fit",
+        "name": "抓模板适配（适合谁 / 场景 / 怎么用）",
+        "cmd": ["python", "_kb/_tools/collect_template_fit.py"],
+        "writes": true,
+        "inputs": ["网络：taskade.com / slack.com 模板页"],
+        "outputs": ["_kb/11-template-fit.csv", "_kb/12-template-fit.md"],
+        "timeout": 600
+      },
+      {
+        "id": "kb.picker",
+        "name": "生成按模块反查索引",
+        "cmd": ["python", "_kb/_tools/build_picker.py"],
+        "writes": true,
+        "inputs": ["_kb/08-template-modules.csv", "_kb/11-template-fit.csv"],
+        "outputs": ["_kb/10-template-picker.md"],
+        "timeout": 120
+      },
+      {
+        "id": "kb.db",
+        "name": "重建 SQLite 主库 + index/SKILL + 分产品 JSON",
+        "cmd": ["python", "_kb/_tools/build_db.py"],
+        "writes": true,
+        "inputs": ["_kb/01..05.csv", "_kb/08", "_kb/11"],
+        "outputs": ["_kb/db/kb.sqlite", "_kb/index.json", "_kb/SKILL.md", "_kb/llms.txt", "_kb/by-product/*.json"],
+        "timeout": 180
+      },
+      {
+        "id": "kb.xlsx",
+        "name": "导出 Excel 快照",
+        "cmd": ["python", "_kb/_tools/build_xlsx.py"],
+        "writes": true,
+        "inputs": ["_kb/*.csv"],
+        "outputs": ["_kb/知识库.xlsx"],
+        "timeout": 180
+      },
+      {
+        "id": "kb.qa",
+        "name": "质量闸（结构/主键/出处/行数一致性）",
+        "cmd": ["python", "_kb/automation/qa_gate.py"],
+        "writes": false,
+        "inputs": ["_kb 全部结构层 + db"],
+        "outputs": ["退出码 0/1"],
+        "timeout": 120
+      },
+      {
+        "id": "kb.snapshot",
+        "name": "打快照（带 manifest + sha256）",
+        "cmd": ["python", "_kb/automation/version.py", "snapshot", "--tag", "manual"],
+        "writes": true,
+        "inputs": ["_kb 全部"],
+        "outputs": ["_kb/history/<ts>/", "_kb/CHANGELOG.md"],
+        "timeout": 120
+      }
+    ],
+    "episode": [
+      {
+        "id": "episode.collect_pages",
+        "name": "采集产品官网/定价/演示页",
+        "cmd": ["node", "_tools/collect-product.mjs", "--dir", "{dir}"],
+        "writes": true,
+        "vars": ["dir"],
+        "outputs": ["<dir>/_raw.md"],
+        "timeout": 300
+      },
+      {
+        "id": "episode.collect_reviews",
+        "name": "采集 PH / G2 评论",
+        "cmd": ["node", "_tools/collect-g2-reviews.mjs", "--dir", "{dir}"],
+        "writes": true,
+        "vars": ["dir"],
+        "outputs": ["<dir>/*评论.md"],
+        "timeout": 300
+      },
+      {
+        "id": "episode.render",
+        "name": "渲染中英双语报告 HTML",
+        "cmd": ["python", "_tools/build_teardown.py", "{dir}"],
+        "writes": true,
+        "vars": ["dir"],
+        "outputs": ["<dir>/teardown-zh.html", "<dir>/teardown-en.html"],
+        "timeout": 180
+      },
+      {
+        "id": "episode.wall",
+        "name": "刷新进度墙 README",
+        "cmd": ["python", "_tools/build_wall.py"],
+        "writes": true,
+        "outputs": ["README.md"],
+        "timeout": 120
+      }
+    ]
+  }
+}

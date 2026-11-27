@@ -1,0 +1,285 @@
+{
+  "product": {
+    "no": "001",
+    "slug": "notion",
+    "name": "Notion",
+    "category": "AI 工作空间 / 知识管理",
+    "one_liner": "它卖的不是 AI 能力，是「你的工作已经在它里面」",
+    "icp_primary": "企业版用户",
+    "icp_secondary": "小型企业与团队；初创与开发者",
+    "jtbd": "把散的会议、决策、流程收进一个能查的地方",
+    "core_scenarios": "写作与结构化存档/文档即数据库/AI 查询与 AI 速记/团队协作与权限治理/MCP·API 接入上下文",
+    "ai_mode": "嵌入 [推断]",
+    "pricing_model": "存信息免费，调用与查找收费（月租＋AI 额度双轨）",
+    "free_tier": "Free $0（仅含 Trial of Notion AI）",
+    "paid_tiers": "Plus $10/人/月；Business $20/人/月（每席位 1,500 Standard + 500 Select credits）；Enterprise 定制",
+    "atoms_count": "-",
+    "workflows_count": "-",
+    "primary_channels": "长尾为主：模板生态＋初创公司折扣页＋公开页面分享（官网可见入口）",
+    "moat_hypothesis": "迁移成本是真护城河；AI 能力不是，12 个月内会被追平",
+    "evidence_urls": "https://www.notion.com/pricing; https://www.notion.com/zh-cn/product/ai; https://www.notion.com/compare-against/notion-vs-confluence",
+    "updated_at": "2026-11-26"
+  },
+  "atoms": [
+    {
+      "atom_id": "H-001-01",
+      "product": "notion",
+      "atom_name": "Page",
+      "atom_type": "容器",
+      "what_it_does": "一页承载内容与子页",
+      "composable_with": "block/database/view",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-02",
+      "product": "notion",
+      "atom_name": "Block",
+      "atom_type": "容器",
+      "what_it_does": "段落/待办/代码等最小内容块",
+      "composable_with": "page/database",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-03",
+      "product": "notion",
+      "atom_name": "Database",
+      "atom_type": "容器",
+      "what_it_does": "结构化数据表（行=页面）",
+      "composable_with": "property/view/relation",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-04",
+      "product": "notion",
+      "atom_name": "Property",
+      "atom_type": "工具",
+      "what_it_does": "字段：文本/数字/日期/选择/关系",
+      "composable_with": "database/view",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-05",
+      "product": "notion",
+      "atom_name": "View",
+      "atom_type": "界面",
+      "what_it_does": "同一数据库的表格/看板/日历等视图",
+      "composable_with": "database/property",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-06",
+      "product": "notion",
+      "atom_name": "Relation",
+      "atom_type": "工具",
+      "what_it_does": "库与库之间建立关联",
+      "composable_with": "database/property",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "atom_id": "H-001-07",
+      "product": "notion",
+      "atom_name": "Template",
+      "atom_type": "工具",
+      "what_it_does": "预填页面/数据库结构",
+      "composable_with": "page/database",
+      "evidence_url": "https://www.notion.com/templates"
+    },
+    {
+      "atom_id": "H-001-08",
+      "product": "notion",
+      "atom_name": "Notion AI",
+      "atom_type": "智能",
+      "what_it_does": "问答/写作/总结/数据库属性填充",
+      "composable_with": "page/database",
+      "evidence_url": "https://www.notion.com/product/ai"
+    },
+    {
+      "atom_id": "H-001-09",
+      "product": "notion",
+      "atom_name": "Custom Agent",
+      "atom_type": "身份",
+      "what_it_does": "可执行任务的 agent",
+      "composable_with": "database/AI/MCP",
+      "evidence_url": "https://www.notion.com/custom-agent-templates"
+    },
+    {
+      "atom_id": "H-001-10",
+      "product": "notion",
+      "atom_name": "MCP / API",
+      "atom_type": "协议",
+      "what_it_does": "外部 agent 读写工作区",
+      "composable_with": "agent/database",
+      "evidence_url": "https://developers.notion.com/"
+    }
+  ],
+  "workflows": [
+    {
+      "workflow_id": "H-001-W1",
+      "product": "notion",
+      "workflow_name": "模板 → 工作区",
+      "input": "一个模板",
+      "atoms_used": "Template/Page/Database",
+      "steps": "选模板 → Duplicate → 改字段/视图",
+      "output": "可用的工作区",
+      "who_uses": "个人/团队",
+      "evidence_url": "https://www.notion.com/templates"
+    },
+    {
+      "workflow_id": "H-001-W2",
+      "product": "notion",
+      "workflow_name": "数据库 → 多视图",
+      "input": "一批结构化数据",
+      "atoms_used": "Database/Property/View",
+      "steps": "建库 → 加字段 → 切视图",
+      "output": "看板/日历/表格",
+      "who_uses": "项目/运营",
+      "evidence_url": "https://www.notion.com/"
+    },
+    {
+      "workflow_id": "H-001-W3",
+      "product": "notion",
+      "workflow_name": "页面 → AI 总结/改写",
+      "input": "一篇长文",
+      "atoms_used": "Page/Block/AI",
+      "steps": "打开页 → 选 AI 操作 → 采用结果",
+      "output": "摘要/改写稿",
+      "who_uses": "个人",
+      "evidence_url": "https://www.notion.com/product/ai"
+    },
+    {
+      "workflow_id": "H-001-W4",
+      "product": "notion",
+      "workflow_name": "Agent 读库 → 产出",
+      "input": "一个数据库",
+      "atoms_used": "Agent/Database/MCP",
+      "steps": "配 agent → 授权读库 → 触发执行",
+      "output": "摘要/任务/更新",
+      "who_uses": "团队",
+      "evidence_url": "https://www.notion.com/custom-agent-templates"
+    },
+    {
+      "workflow_id": "H-001-W5",
+      "product": "notion",
+      "workflow_name": "外部 agent → 读写工作区",
+      "input": "外部请求",
+      "atoms_used": "MCP/API/Database",
+      "steps": "授权 → 调工具 → 写回",
+      "output": "跨系统工作流",
+      "who_uses": "开发者",
+      "evidence_url": "https://developers.notion.com/"
+    }
+  ],
+  "channels": [],
+  "resources": [
+    {
+      "resource_id": "RS-HIST-001-1",
+      "product": "notion",
+      "resource_name": "模板市场（30,000+）",
+      "resource_type": "模板",
+      "problem_solved": "不知道从哪开始、要现成工作流",
+      "how_to_access": "notion.com/templates 搜索/分类 → Duplicate",
+      "reuse_form": "克隆后改字段与视图",
+      "reuse_score": "5",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.notion.com/templates"
+    },
+    {
+      "resource_id": "RS-HIST-001-2",
+      "product": "notion",
+      "resource_name": "Custom Agent 模板（166 个）",
+      "resource_type": "Agent",
+      "problem_solved": "要一个能执行任务的 agent",
+      "how_to_access": "notion.com/custom-agent-templates",
+      "reuse_form": "套用模板 → 接自己的数据库",
+      "reuse_score": "4",
+      "migration_cost": "3",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.notion.com/custom-agent-templates"
+    },
+    {
+      "resource_id": "RS-HIST-001-3",
+      "product": "notion",
+      "resource_name": "认证顾问（281 位）",
+      "resource_type": "服务",
+      "problem_solved": "要人帮忙搭系统",
+      "how_to_access": "notion.com/explore-consultants",
+      "reuse_form": "按行业/语言找顾问",
+      "reuse_score": "3",
+      "migration_cost": "5",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.notion.com/explore-consultants"
+    },
+    {
+      "resource_id": "RS-HIST-001-4",
+      "product": "notion",
+      "resource_name": "Connections（集成）",
+      "resource_type": "集成",
+      "problem_solved": "要接外部系统",
+      "how_to_access": "notion.com/connections",
+      "reuse_form": "授权连接",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.notion.com/connections"
+    },
+    {
+      "resource_id": "RS-HIST-001-5",
+      "product": "notion",
+      "resource_name": "Skills（技能模板）",
+      "resource_type": "Agent",
+      "problem_solved": "想让 AI 按固定流程干活",
+      "how_to_access": "notion.com/skills-templates",
+      "reuse_form": "选技能 → 加到 agent",
+      "reuse_score": "4",
+      "migration_cost": "4",
+      "evidence_strength": "A",
+      "evidence_url": "https://www.notion.com/skills-templates"
+    }
+  ],
+  "template_modules": [],
+  "template_fit": [
+    {
+      "template_id": "TP-notion-weekly-planner-450",
+      "product": "notion",
+      "template_name": "Weekly Planner",
+      "for_whom": "个人用户（学生/职场）",
+      "scenario": "每周计划、目标与简单复盘",
+      "how_to_use": "Duplicate 到自己的 workspace → 按页面说明改日期与目标（模板页未公开模块清单）",
+      "value": "4.85 分（300+ 评分）；评价集中在「简单、好看、能坚持」",
+      "what_it_is": "每周计划模板：日目标/周目标 + 月历 + 简单日记 + 习惯清单",
+      "composition": "",
+      "evidence_url": "https://www.notion.com/templates/weekly-planner-450",
+      "fit_basis": "适合谁/场景=推断；价值=评分与评论原文；模块未公开"
+    },
+    {
+      "template_id": "TP-notion-2026-monthly-planner",
+      "product": "notion",
+      "template_name": "2026 Monthly Planner",
+      "for_whom": "需要年度/季度目标管理的个人",
+      "scenario": "把大目标拆到月与周，并在季度末复盘",
+      "how_to_use": "Duplicate → 填 4 个季度目标区 → 每周用 Monday–Sunday 清单 → 季度末复盘",
+      "value": "预填 4 个季度目标区与季度末复盘；每周有周一到周日清单",
+      "what_it_is": "年度/月度计划模板，含季度目标与每周清单",
+      "composition": "",
+      "evidence_url": "https://www.notion.com/templates/2026-monthly-planner-goals-weekly-planning-reflection",
+      "fit_basis": "适合谁/场景=推断；怎么用/价值=模板页描述原文"
+    }
+  ],
+  "template_catalog": [
+    {
+      "no": "001",
+      "product": "Notion",
+      "has_gallery": "yes",
+      "gallery_type": "官方模板市场",
+      "gallery_url": "https://www.notion.com/templates",
+      "url_pattern": "/templates/<slug>",
+      "scale_note": "官方称 30,000+；分类计数：Personal Productivity 26,462 / Personal Planner 10,178 / Personal Goals 6,174 / Habit Tracking 3,555 / Student Life 8,064",
+      "access": "public",
+      "modules_available": "no",
+      "sampled_templates": "2（Weekly Planner / 2026 Monthly Planner）",
+      "notes": "模板详情页的 About this template 是 JS 渲染；2026-11-26 登录后复查仍为空，公开页面拿不到模块清单；用分类计数 + 评分/评论作为结构信号",
+      "evidence_url": "https://www.notion.com/templates"
+    }
+  ]
+}
